@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Filterable Command Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/filterable-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- An issue list. Each row keeps its state in data attributes; CSS draws it from them. -->
+<div class="board">
+  <header class="board-bar"><span class="team">N</span>Northwind <span class="dim">/</span> Active issues <span class="dim">6</span></header>
+  <div class="issues">
+    <button class="issue" type="button" data-id="NW-142" data-status="progress" data-assignee="MK" data-labels="feature"><span class="issue-id">NW-142</span><span class="fm-glyph"></span><span class="issue-title">Retry failed webhook deliveries with backoff</span></button>
+    <button class="issue" type="button" data-id="NW-141" data-status="todo" data-assignee="TP" data-labels="bug"><span class="issue-id">NW-141</span><span class="fm-glyph"></span><span class="issue-title">Invoice PDF cuts off long customer names</span></button>
+    <button class="issue" type="button" data-id="NW-139" data-status="progress" data-assignee="ID" data-labels="feature improvement"><span class="issue-id">NW-139</span><span class="fm-glyph"></span><span class="issue-title">Keyboard shortcuts for the board view</span></button>
+    <button class="issue" type="button" data-id="NW-137" data-status="backlog" data-assignee="MK" data-labels="improvement"><span class="issue-id">NW-137</span><span class="fm-glyph"></span><span class="issue-title">Audit color contrast in the dark theme</span></button>
+    <button class="issue" type="button" data-id="NW-136" data-status="done" data-assignee="TP" data-labels="bug"><span class="issue-id">NW-136</span><span class="fm-glyph"></span><span class="issue-title">Search ignores accented characters</span></button>
+    <button class="issue" type="button" data-id="NW-133" data-status="canceled" data-assignee="ID" data-labels=""><span class="issue-id">NW-133</span><span class="fm-glyph"></span><span class="issue-title">Move notifications to the new queue</span></button>
+  </div>
+  <output class="status">6 issues</output>
+</div>
+
+<!-- Zero-size anchor. Script moves it to the pointer; the menu anchors to it. -->
+<div class="fm-anchor"></div>
+
+<!-- The menu: a filter field that drives a listbox (WAI-ARIA combobox pattern). -->
+<div class="fm" id="issue-menu" popover>
+  <div class="fm-panel">
+    <div class="fm-field">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="search" role="combobox" aria-expanded="true" aria-controls="issue-actions" aria-autocomplete="list"
+             aria-label="Filter actions" placeholder="Filter actions…" autocomplete="off" spellcheck="false" autofocus>
+      <span class="fm-target"></span>
+    </div>
+    <!-- tabindex="-1": Chrome makes scrollers focusable, but focus belongs in the field. -->
+    <div class="fm-list" id="issue-actions" role="listbox" aria-label="Issue actions" tabindex="-1">
+      <div class="fm-group" role="group" aria-labelledby="fm-h-status" data-field="status">
+        <div class="fm-heading" id="fm-h-status"><span>Status</span><kbd aria-hidden="true">S</kbd></div>
+        <div role="option" data-value="backlog"><span class="fm-glyph" data-status="backlog"></span><span class="fm-label">Backlog</span><kbd aria-hidden="true">1</kbd></div>
+        <div role="option" data-value="todo"><span class="fm-glyph" data-status="todo"></span><span class="fm-label">Todo</span><kbd aria-hidden="true">2</kbd></div>
+        <div role="option" data-value="progress"><span class="fm-glyph" data-status="progress"></span><span class="fm-label">In Progress</span><kbd aria-hidden="true">3</kbd></div>
+        <div role="option" data-value="done"><span class="fm-glyph" data-status="done"></span><span class="fm-label">Done</span><kbd aria-hidden="true">4</kbd></div>
+        <div role="option" data-value="canceled"><span class="fm-glyph" data-status="canceled"></span><span class="fm-label">Canceled</span><kbd aria-hidden="true">5</kbd></div>
+      </div>
+      <div class="fm-group" role="group" aria-labelledby="fm-h-assignee" data-field="assignee">
+        <div class="fm-heading" id="fm-h-assignee"><span>Assignee</span><kbd aria-hidden="true">A</kbd></div>
+        <div role="option" data-value="MK"><span class="fm-avatar" aria-hidden="true">MK</span><span class="fm-label">Mara Kim</span></div>
+        <div role="option" data-value="TP"><span class="fm-avatar" aria-hidden="true">TP</span><span class="fm-label">Theo Park</span></div>
+        <div role="option" data-value="ID"><span class="fm-avatar" aria-hidden="true">ID</span><span class="fm-label">Ines Duarte</span></div>
+      </div>
+      <div class="fm-group" role="group" aria-labelledby="fm-h-labels" data-field="labels" data-multi>
+        <div class="fm-heading" id="fm-h-labels"><span>Labels</span><kbd aria-hidden="true">L</kbd></div>
+        <div role="option" data-value="bug"><span class="fm-dot" style="--dot: var(--fm-label-bug)"></span><span class="fm-label">Bug</span></div>
+        <div role="option" data-value="feature"><span class="fm-dot" style="--dot: var(--fm-label-feature)"></span><span class="fm-label">Feature</span></div>
+        <div role="option" data-value="improvement"><span class="fm-dot" style="--dot: var(--fm-label-improvement)"></span><span class="fm-label">Improvement</span></div>
+      </div>
+      <div class="fm-group" role="group" aria-labelledby="fm-h-actions">
+        <div class="fm-heading" id="fm-h-actions"><span>Actions</span></div>
+        <div role="option"><svg class="icon"><use href="#i-link"/></svg><span class="fm-label">Copy link</span><kbd aria-hidden="true">⌘⇧C</kbd></div>
+        <div role="option"><svg class="icon"><use href="#i-copy"/></svg><span class="fm-label">Duplicate</span><kbd aria-hidden="true">⌘D</kbd></div>
+        <div role="option" class="danger"><svg class="icon"><use href="#i-trash-2"/></svg><span class="fm-label">Delete</span><kbd aria-hidden="true">⌘⌫</kbd></div>
+      </div>
+    </div>
+    <p class="fm-empty">No matching actions</p>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match the menu ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --fm-bg: light-dark(#ffffff, #1c1d22);                                   /* Surface */
+  --fm-border: light-dark(rgb(16 18 27 / 0.1), rgb(255 255 255 / 0.08));   /* Hairline border, 1px */
+  --fm-radius: 12px;                                                       /* Corner radius */
+  --fm-width: 280px;                                    /* Fixed width, so filtering never changes it */
+  --fm-max-h: 380px;                                    /* Maximum height; the list scrolls beyond it */
+  --fm-shadow: 0 1px 2px light-dark(rgb(16 18 27 / 0.05), rgb(0 0 0 / 0.3)),
+               0 4px 12px light-dark(rgb(16 18 27 / 0.06), rgb(0 0 0 / 0.25)),
+               0 20px 44px -10px light-dark(rgb(16 18 27 / 0.22), rgb(0 0 0 / 0.6));   /* Elevation, three layers */
+
+  /* @group Filter field */
+  --fm-field-h: 42px;                                   /* Field row height, with a 1px rule below */
+  --fm-field-size: 13.5px;                              /* Typed text and placeholder, weight 400 */
+  --fm-placeholder: light-dark(#9a9ca6, #6c6f79);       /* Placeholder and search icon (15px) */
+  --fm-divider: light-dark(#ececf0, #2b2c33);           /* Rule under the field, 1px */
+  --fm-chip-bg: light-dark(#f1f1f4, #2a2b31);           /* Issue ID chip, radius 5px */
+  --fm-chip-fg: light-dark(#5d606b, #a3a6b0);           /* Issue ID chip text, 11.5px, weight 500 */
+
+  /* @group Group heading */
+  --fm-heading-h: 28px;                                 /* Height; text sits 6px above the bottom */
+  --fm-heading-size: 11.5px;                            /* Text size, weight 500 */
+  --fm-heading-fg: light-dark(#71747e, #858892);        /* Heading, letter hint and empty state */
+
+  /* @group Option */
+  --fm-pad: 4px;                                        /* List padding, all sides */
+  --fm-item-h: 30px;                                    /* Row height */
+  --fm-item-px: 8px;                                    /* Horizontal padding */
+  --fm-item-radius: 6px;                                /* Highlight corner radius */
+  --fm-gap: 10px;                                       /* Gap between slot, label, hint and check */
+  --fm-icon: 16px;                                      /* Leading slot: icon, glyph, dot or avatar */
+  --fm-font-size: 13px;                                 /* Label size, line height 18px, weight 450 */
+  --fm-fg: light-dark(#1d1e24, #e6e7ea);                /* Label and typed text */
+  --fm-icon-fg: light-dark(#6e717c, #8f929b);           /* Icon */
+  --fm-hint-fg: light-dark(#8f919b, #72757f);           /* Shortcut hint, 12px */
+  --fm-active: light-dark(#f0f0f3, #2a2b31);            /* Active option: keyboard and pointer share it */
+  --fm-check: light-dark(#1d1e24, #e6e7ea);             /* Check on current values, 9×5px, 1.5px stroke */
+  --fm-check-w: 12px;                                   /* Check column, reserved on every option */
+
+  /* @group Match */
+  --fm-match-fg: light-dark(#3e47c9, #b3b9ff);                                  /* Matched characters */
+  --fm-match-bg: light-dark(rgb(94 106 210 / 0.14), rgb(124 133 224 / 0.24));   /* Behind matched characters */
+
+  /* @group Destructive option */
+  --fm-danger: light-dark(#d93036, #ff6b6b);                          /* Label and icon */
+  --fm-danger-active: light-dark(#fdeeee, rgb(255 107 107 / 0.13));   /* Active fill */
+
+  /* @group Status glyph */
+  --fm-glyph: 14px;                                     /* Size: 1.5px ring, 2px gap, fill shows progress */
+  --fm-status-backlog: light-dark(#a3a6ae, #686b74);    /* Backlog: dashed ring */
+  --fm-status-todo: light-dark(#868993, #9c9fa8);       /* Todo: empty ring */
+  --fm-status-progress: light-dark(#e09b00, #f2c94c);   /* In Progress: half filled */
+  --fm-status-done: light-dark(#5e6ad2, #8a93f0);       /* Done: filled */
+  --fm-status-canceled: light-dark(#a3a6ae, #686b74);   /* Canceled: struck through */
+
+  /* @group Labels and people */
+  --fm-dot: 8px;                                        /* Label dot */
+  --fm-label-bug: light-dark(#e5484d, #ff6369);         /* Bug */
+  --fm-label-feature: light-dark(#8e4ec6, #bf7af0);     /* Feature */
+  --fm-label-improvement: light-dark(#0b8ae6, #4fb2ff); /* Improvement */
+  --fm-avatar: 18px;                                    /* Avatar; initials 8px, weight 600, when there’s no photo */
+  --fm-avatar-bg: light-dark(#e8e9ee, #33343b);         /* Avatar fallback fill */
+  --fm-avatar-fg: light-dark(#52555f, #c2c4cb);         /* Avatar initials */
+
+  /* @group Motion */
+  --fm-in: 110ms;                                       /* Open duration */
+  --fm-out: 80ms;                                       /* Close duration */
+  --fm-ease: cubic-bezier(0.25, 1, 0.5, 1);             /* Easing (quart ease-out) */
+  --fm-from: 0.98;                                      /* Scale the menu grows from */
+}
+
+/* ---- Anchor at the pointer ---- */
+.fm-anchor { position: fixed; width: 0; height: 0; pointer-events: none; }
+
+/* ---- Popover shell: placement only ---- */
+.fm {
+  /* Reset the UA popover box; the panel draws the menu. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* Top-left corner at the pointer, then flip on whichever axis runs out of room. */
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+
+  /* Lets the panel ask which fallback won (to grow from the right corner). */
+  container-type: anchored;
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition: display var(--fm-out) allow-discrete, overlay var(--fm-out) allow-discrete;
+}
+
+/* ---- The menu: field on top, scrolling list below ---- */
+.fm-panel {
+  display: flex;
+  flex-direction: column;
+  width: var(--fm-width);
+  max-height: var(--fm-max-h);
+  background: var(--fm-bg);
+  border: 1px solid var(--fm-border);
+  border-radius: var(--fm-radius);
+  box-shadow: var(--fm-shadow);
+  color: var(--fm-fg);
+  font-size: var(--fm-font-size);
+  line-height: 18px;
+  overflow: hidden;
+  user-select: none;
+
+  opacity: 0;
+  scale: var(--fm-from);
+  transform-origin: top left;
+  transition: opacity var(--fm-out) var(--fm-ease), scale var(--fm-out) var(--fm-ease);
+}
+.fm:popover-open .fm-panel {
+  opacity: 1;
+  scale: 1;
+  transition-duration: var(--fm-in);
+  @starting-style { opacity: 0; scale: var(--fm-from); }
+}
+/* Grow from the corner nearest the pointer, whichever way the menu flipped. */
+@container anchored(fallback: flip-block)             { .fm-panel { transform-origin: bottom left; } }
+@container anchored(fallback: flip-inline)            { .fm-panel { transform-origin: top right; } }
+@container anchored(fallback: flip-block flip-inline) { .fm-panel { transform-origin: bottom right; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .fm, .fm-panel { transition: none; }
+}
+
+/* Field row: [search icon] [input] [issue chip] */
+.fm-field {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--fm-field-h);
+  padding: 0 10px 0 12px;
+  border-bottom: 1px solid var(--fm-divider);
+  color: var(--fm-placeholder);
+}
+.fm-field .icon { width: 15px; height: 15px; }
+.fm-field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  outline: none;                    /* The caret and the active option show where focus is. */
+  color: var(--fm-fg);
+  font-size: var(--fm-field-size);
+}
+.fm-field input::placeholder { color: var(--fm-placeholder); }
+.fm-field input::-webkit-search-cancel-button { display: none; }   /* Esc clears instead */
+.fm-target {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--fm-chip-bg);
+  color: var(--fm-chip-fg);
+  font-size: 11.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.fm-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: var(--fm-pad);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: var(--fm-pad);
+  scrollbar-width: thin;
+}
+
+/* Group heading: [name] [letter hint] */
+.fm-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: var(--fm-heading-h);
+  padding: 0 var(--fm-item-px) 6px;
+  font-size: var(--fm-heading-size);
+  font-weight: 500;
+  line-height: 14px;
+  color: var(--fm-heading-fg);
+}
+
+/* Option: [slot] [label] [hint] [check]. The check column is always reserved,
+   so hints and checks line up in every group. */
+.fm-list [role="option"] {
+  display: grid;
+  grid-template-columns: var(--fm-icon) minmax(0, 1fr) auto var(--fm-check-w);
+  align-items: center;
+  column-gap: var(--fm-gap);
+  height: var(--fm-item-h);
+  padding: 0 var(--fm-item-px);
+  border-radius: var(--fm-item-radius);
+  font-weight: 450;
+  white-space: nowrap;
+  cursor: default;
+}
+.fm-list [role="option"][hidden] { display: none; }
+.fm-list [role="option"][aria-selected="true"] { background: var(--fm-active); }
+.fm-list [role="option"] > .icon { width: var(--fm-icon); height: var(--fm-icon); color: var(--fm-icon-fg); }
+.fm-label { overflow: hidden; text-overflow: ellipsis; }
+.fm-panel kbd {
+  grid-column: 3;
+  font: inherit;
+  font-size: 12px;
+  color: var(--fm-hint-fg);
+  font-variant-numeric: tabular-nums;
+}
+.fm-heading kbd { color: inherit; font-size: inherit; }
+
+/* Current value: a check drawn in CSS, in the last column. */
+.fm-list [aria-checked="true"]::after {
+  content: "";
+  grid-area: 1 / 4;
+  justify-self: center;
+  width: 9px;
+  height: 5px;
+  margin-bottom: 3px;
+  border-left: 1.5px solid var(--fm-check);
+  border-bottom: 1.5px solid var(--fm-check);
+  rotate: -45deg;
+}
+
+/* Destructive */
+.fm-list .danger, .fm-list .danger .icon { color: var(--fm-danger); }
+.fm-list .danger[aria-selected="true"] { background: var(--fm-danger-active); }
+
+/* Matched characters: painted by the Custom Highlight API, no markup changes. */
+::highlight(fm-match) { color: var(--fm-match-fg); background-color: var(--fm-match-bg); }
+
+/* Visibility is all CSS: script only sets `hidden` on options. */
+.fm-group:not(:has([role="option"]:not([hidden]))) { display: none; }   /* empty group */
+.fm-empty {
+  display: none;
+  margin: 0;
+  padding: 22px 12px;
+  text-align: center;
+  color: var(--fm-heading-fg);
+}
+.fm-panel:not(:has([role="option"]:not([hidden]))) {                     /* nothing matches */
+  .fm-list { display: none; }
+  .fm-empty { display: block; }
+}
+
+/* ---- Slot contents (rows in the list reuse the glyph) ---- */
+/* Status glyph: ring whose fill shows progress. Each status sets the variables. */
+.fm-glyph {
+  box-sizing: border-box;
+  width: var(--fm-glyph);
+  height: var(--fm-glyph);
+  justify-self: center;
+  padding: 2px;
+  border: 1.5px var(--ring, solid) var(--glyph);
+  border-radius: 50%;
+  background: var(--strike, none) content-box, conic-gradient(var(--glyph) var(--fill), transparent 0) content-box;
+}
+[data-status="backlog"]  { --glyph: var(--fm-status-backlog);  --fill: 0%; --ring: dashed; }
+[data-status="todo"]     { --glyph: var(--fm-status-todo);     --fill: 0%; }
+[data-status="progress"] { --glyph: var(--fm-status-progress); --fill: 50%; }
+[data-status="done"]     { --glyph: var(--fm-status-done);     --fill: 100%; }
+[data-status="canceled"] {
+  --glyph: var(--fm-status-canceled); --fill: 0%;
+  --strike: linear-gradient(-45deg, transparent calc(50% - 0.75px), var(--glyph) 0 calc(50% + 0.75px), transparent 0);
+}
+.fm-dot { width: var(--fm-dot); height: var(--fm-dot); justify-self: center; border-radius: 50%; background: var(--dot); }
+.fm-avatar {
+  display: grid;
+  place-items: center;
+  width: var(--fm-avatar);
+  height: var(--fm-avatar);
+  justify-self: center;
+  border-radius: 50%;
+  background: var(--fm-avatar-bg);
+  color: var(--fm-avatar-fg);
+  font-size: 8px;
+  font-weight: 600;
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#fbfbfc, #16171b); color: light-dark(#1d1e24, #e6e7ea); }
+.board { height: 100%; display: flex; flex-direction: column; }
+.board-bar {
+  display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px;
+  border-bottom: 1px solid light-dark(#ececf0, #26272d); font-size: 13px; font-weight: 500;
+}
+.board-bar .dim { color: light-dark(#9a9ca6, #6c6f79); font-weight: 400; }
+.team {
+  display: grid; place-items: center; width: 18px; height: 18px; border-radius: 5px;
+  background: light-dark(#5e6ad2, #5e6ad2); color: light-dark(#fff, #fff); font-size: 10px; font-weight: 700;
+}
+.issues { flex: 1; padding: 4px 0; }
+.issue {
+  display: grid; grid-template-columns: 52px 16px minmax(0, 1fr) 18px; align-items: center; gap: 12px;
+  width: 100%; height: 40px; padding: 0 16px; border: 0; background: none;
+  font-size: 13px; text-align: start; cursor: default;
+}
+.issue:hover { background: light-dark(#f4f4f6, #1c1d22); }
+.issue:focus-visible { outline: 2px solid light-dark(#5e6ad2, #8a93f0); outline-offset: -2px; }
+.issue.is-target { background: light-dark(rgb(94 106 210 / 0.09), rgb(138 147 240 / 0.12)); }
+.issue-id { color: light-dark(#8a8c96, #73767f); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.issue-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The avatar reads the row's data-assignee, so reassigning redraws it with no extra script. */
+.issue::after {
+  content: attr(data-assignee) / "";
+  display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--fm-avatar-bg); color: var(--fm-avatar-fg); font-size: 8px; font-weight: 600;
+}
+.status { padding: 10px 16px; font-size: 12px; color: light-dark(#8a8c96, #73767f); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Right-click an issue → move the zero-size anchor to the pointer → open the menu there.
+// Native: placement and flipping, top layer, light dismiss, focus into the field (autofocus),
+// and Esc, which <input type="search"> spends on clearing the text before the popover closes.
+// Script: the pointer position, filtering, and the active option a combobox needs.
+const issues = document.querySelector('.issues');
+const anchor = document.querySelector('.fm-anchor');
+const menu = document.getElementById('issue-menu');
+const input = menu.querySelector('input');
+const list = menu.querySelector('[role="listbox"]');
+const options = [...list.querySelectorAll('[role="option"]')];
+const status = document.querySelector('.status');
+const marks = new Highlight();                       // matched text, painted by ::highlight(fm-match)
+CSS.highlights.set('fm-match', marks);
+let target = null;                                   // the issue the menu acts on
+let active = null;                                   // the option Enter would run
+
+issues.addEventListener('contextmenu', e => {
+  const row = e.target.closest('.issue');
+  if (!row) return;                                  // empty space keeps the browser's own menu
+  e.preventDefault();
+  // pointerType "" means no pointing device: the browser's own keyboard trigger.
+  openFor(row, e.pointerType === '' ? null : e);
+});
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+issues.addEventListener('keydown', e => {
+  const row = e.target.closest('.issue');
+  if (!row || (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10'))) return;
+  e.preventDefault();
+  openFor(row, null);
+});
+
+/** Open for an issue: at the pointer, or just inside the row for keyboard opens. */
+function openFor(row, pointer) {
+  if (menu.matches(':popover-open')) menu.hidePopover();   // re-open at the new point
+  target?.classList.remove('is-target');
+  target = row;
+  row.classList.add('is-target');
+  menu.querySelector('.fm-target').textContent = row.dataset.id;
+  // Check the issue's current values; data-labels holds a space-separated list.
+  for (const o of list.querySelectorAll('[data-field] > [role="option"]')) {
+    o.ariaChecked = String(row.dataset[o.parentElement.dataset.field].split(' ').includes(o.dataset.value));
+  }
+  input.value = '';
+  filter();
+  const box = row.getBoundingClientRect();
+  anchor.style.left = `${pointer?.clientX ?? box.left + 16}px`;
+  anchor.style.top = `${pointer?.clientY ?? box.bottom - 6}px`;
+  menu.showPopover({ source: anchor });              // autofocus puts the caret in the field
+}
+
+input.addEventListener('input', filter);
+
+/** Hide options that don't match, highlight the ones that do, activate the first. */
+function filter() {
+  const q = input.value.trim().toLowerCase();
+  marks.clear();
+  for (const group of list.children) {
+    const named = mark(group.querySelector('.fm-heading span'), q);   // "labels" lists every label
+    for (const o of group.querySelectorAll('[role="option"]')) {
+      o.hidden = !mark(o.querySelector('.fm-label'), q) && !named && q !== '';
+    }
+  }
+  setActive(options.find(o => !o.hidden));
+}
+
+/** Highlight the first occurrence of q in el's text. Returns whether there was one. */
+function mark(el, q) {
+  const text = el.firstChild, at = text.data.toLowerCase().indexOf(q);
+  if (!q || at < 0) return false;
+  marks.add(new StaticRange({ startContainer: text, startOffset: at, endContainer: text, endOffset: at + q.length }));
+  return true;
+}
+
+/** Point the field at one option. DOM focus never leaves the field. */
+function setActive(o, scroll = false) {
+  if (active) active.ariaSelected = null;
+  active = o ?? null;
+  if (active) active.ariaSelected = 'true';
+  input.ariaActiveDescendantElement = active;        // element reflection: options need no ids
+  // container: 'nearest' scrolls the list only, never the page around the demo.
+  if (scroll) active?.scrollIntoView({ block: 'nearest', container: 'nearest' });
+}
+
+input.addEventListener('keydown', e => {
+  const step = { ArrowDown: 1, ArrowUp: -1 }[e.key];
+  if (step) {
+    e.preventDefault();                              // keep the caret where it is
+    const shown = options.filter(o => !o.hidden);
+    setActive(shown.at((shown.indexOf(active) + step) % shown.length), true);
+  }
+  if (e.key === 'Enter') { e.preventDefault(); run(active); }
+});
+
+// The pointer moves the same highlight as the arrow keys, so there is only ever one.
+list.addEventListener('pointermove', e => {
+  const o = e.target.closest('[role="option"]');
+  if (o && o !== active) setActive(o);
+});
+list.addEventListener('click', e => run(e.target.closest('[role="option"]')));
+// Pressing anywhere in the menu must not pull focus out of the field (that would close it).
+menu.addEventListener('mousedown', e => { if (e.target !== input) e.preventDefault(); });
+// Tab, or anything else that moves focus out, closes it like a native menu.
+menu.addEventListener('focusout', e => { if (!menu.contains(e.relatedTarget)) menu.hidePopover(); });
+menu.addEventListener('toggle', e => { if (e.newState === 'closed') target.classList.remove('is-target'); });
+
+/** Run an option: set a field, toggle a label, or do an action. */
+function run(o) {
+  if (!o) return;
+  const group = o.parentElement, { field } = group.dataset;
+  let note = o.querySelector('.fm-label').textContent;
+  if (group.hasAttribute('data-multi')) {
+    // Labels toggle and keep the menu open, so several can be set in one visit.
+    o.ariaChecked = String(o.ariaChecked !== 'true');
+    target.dataset[field] = [...group.querySelectorAll('[aria-checked="true"]')].map(x => x.dataset.value).join(' ');
+    note += o.ariaChecked === 'true' ? ' added' : ' removed';
+  } else {
+    if (field) target.dataset[field] = o.dataset.value;   // CSS redraws the row from its data
+    menu.hidePopover();
+  }
+  status.textContent = `${target.dataset.id} · ${note}`;
+}
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Right-click NW-142, then type "in", so the page shows the menu filtering at rest.
+requestAnimationFrame(() => {
+  const row = document.querySelector('.issue');
+  const r = row.getBoundingClientRect();
+  row.dispatchEvent(new MouseEvent('contextmenu', {
+    bubbles: true, cancelable: true, button: 2,
+    clientX: r.left + r.width * 0.42, clientY: r.top + r.height * 0.6,
+  }));
+  const field = document.querySelector('.fm input');
+  field.value = 'in';
+  field.dispatchEvent(new Event('input'));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="480" data-hint="Right-click an issue and type. Esc clears the filter, then closes. Shift+F10 opens it from a focused issue."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Container</th><td>Fixed 280px wide, so the menu never changes width while filtering. Height follows the results up to 380px, then the list scrolls under the field.</td></tr>
+          <tr><th>Filter field</th><td>Search icon, the field, and a chip naming the issue the menu acts on. A 1px rule separates it from the list.</td></tr>
+          <tr><th>Group heading</th><td>Names a group. The letter on the right is the list’s own shortcut for that group (Linear’s S, A, L). Hidden when none of its options match.</td></tr>
+          <tr><th>Option</th><td>Four columns: a 16px slot (status glyph, avatar, label dot or icon), the label, a shortcut hint, and a 12px check column that is always reserved, so hints and checks line up across groups. 30px rows.</td></tr>
+          <tr><th>Active option</th><td>Filled row. There is only one: pointer and arrow keys move the same highlight.</td></tr>
+          <tr><th>Match</th><td>Matched characters take the match color on a tinted background. A group heading is highlighted too when the query names the group.</td></tr>
+          <tr><th>Check</th><td>Marks the values the issue already has: its status, its assignee, each of its labels.</td></tr>
+          <tr><th>Status glyph</th><td>A ring whose fill shows progress: dashed for Backlog, empty for Todo, half for In Progress, full for Done, struck through for Canceled. Shape differs as well as color. The issue rows reuse it.</td></tr>
+          <tr><th>Destructive option</th><td>Last. Red label and icon, red-tinted active fill.</td></tr>
+          <tr><th>Empty state</th><td>One line in place of the list when nothing matches.</td></tr>
+          <tr><th>No disabled options</th><td>Commands that don’t apply are left out rather than dimmed. In a filtered list a dimmed match is noise; Raycast and Linear leave them out too.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Opens on</th><td>Right-click, Control-click on macOS, long-press on touch, <kbd>Shift</kbd>+<kbd>F10</kbd> or the Menu key on a focused issue. Empty space keeps the browser’s own menu.</td></tr>
+          <tr><th>Placement</th><td>Top-left corner at the pointer; flips on whichever axis runs out of room. Same technique as the Right-Click Menu: a zero-size anchor moved to the pointer and <code>showPopover({ source })</code>.</td></tr>
+          <tr><th>Field</th><td>Focused on open by <code>autofocus</code> inside the popover. The query is cleared every time the menu opens.</td></tr>
+          <tr><th>Filtering</th><td>Case-insensitive substring of the option label or its group name, so “assignee” lists everyone. Script only sets <code>hidden</code> on options; <code>:has()</code> hides empty groups and swaps in the empty state.</td></tr>
+          <tr><th>Active option</th><td>The first match after every keystroke. <kbd>↑</kbd> <kbd>↓</kbd> move it and scroll it into view inside the list only (<code>scrollIntoView({ container: 'nearest' })</code>), so the page never moves. The pointer moves it too.</td></tr>
+          <tr><th>Running</th><td>Status and Assignee set the value and close. Labels toggle and stay open, so several can be set in one visit. Actions run and close. The issue row redraws itself from its data attributes.</td></tr>
+          <tr><th>Esc</th><td>The first press clears the query, the second closes and returns focus to the issue. Both come free from <code>&lt;input type="search"&gt;</code> inside a popover.</td></tr>
+          <tr><th>Motion</th><td>Fades in and grows from 98% out of the pointer corner, 110ms, quart ease-out. Closes in 80ms. No motion with reduced-motion set.</td></tr>
+          <tr><th>Dismiss</th><td><kbd>Esc</kbd> on an empty field, a click outside, <kbd>Tab</kbd>, or a right-click on another issue (which reopens it there).</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th>Typing</th><td>Filter. The first match becomes active.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move the active option, wrapping at the ends. Focus stays in the field.</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>Run the active option.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Clear the filter; on an empty field, close and return focus to the issue.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close the menu and move on.</td></tr>
+          <tr><th><kbd>Shift</kbd>+<kbd>F10</kbd></th><td>Open from a focused issue (also the Menu key).</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>This is the APG combobox pattern with a listbox popup, not a menu: <code>role="menu"</code> can’t contain a text field. The field is <code>role="combobox"</code> with <code>aria-controls</code> and an active descendant; options sit in <code>role="group"</code>s named by their headings. cmdk and VS Code’s Quick Open use the same structure.</li>
+          <li>The active option is set through <code>ariaActiveDescendantElement</code> (element reflection), so options need no ids. It is also <code>aria-selected</code>; the issue’s current values use <code>aria-checked</code>.</li>
+          <li>Highlights paint over text without changing the DOM, so screen readers read each label exactly as written. Hints, initials and glyphs are hidden from assistive tech.</li>
+          <li>Gap: the number of results isn’t announced while typing. Add a polite live region (“3 results”) if your audience needs it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/combobox/">Combobox pattern</a>, WAI-ARIA Authoring Practices: the roles and keys for a field that drives a listbox.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/CSS_Custom_Highlight_API">CSS Custom Highlight API</a>, MDN: <code>Highlight</code>, <code>CSS.highlights</code> and <code>::highlight()</code>.</li>
+        <li><a href="https://github.com/pacocoursey/cmdk">cmdk</a>: grouped command lists with a filter field, the structure most React command menus share.</li>
+        <li><a href="https://developers.raycast.com/api-reference/user-interface/action-panel">Action Panel</a>, Raycast: sections of actions with shortcuts behind a search field.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/ariaActiveDescendantElement">ariaActiveDescendantElement</a>, MDN: pointing at the active option without ids.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

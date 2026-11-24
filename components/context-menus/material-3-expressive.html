@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Material 3 Expressive Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/material-3-expressive">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- An Android-style notes app: top app bar with an overflow button, a list, a FAB. -->
+<div class="app">
+  <header class="top-bar">
+    <div class="top-bar-title">
+      <h1>Notes</h1>
+      <p class="top-bar-subtitle">Sorted by last edited</p>
+    </div>
+    <button class="icon-btn" type="button" aria-label="Search"><svg class="icon"><use href="#i-search"/></svg></button>
+    <!-- The trigger. Invoker command: opens the menu and anchors it here, no script. -->
+    <button class="icon-btn" type="button" aria-label="More options" aria-haspopup="menu"
+            commandfor="notes-menu" command="toggle-popover"><svg class="icon"><use href="#i-ellipsis-vertical"/></svg></button>
+  </header>
+
+  <ul class="notes">
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-check"/></svg></span><span class="note-text"><strong>Grocery run</strong><span>Oat milk, lemons, sourdough, coffee beans</span></span><time>9:41</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-flag"/></svg></span><span class="note-text"><strong>Lisbon trip</strong><span>Tram 28 early, pastéis at Manteigaria</span></span><time>Mon</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-bookmark"/></svg></span><span class="note-text"><strong>Book club</strong><span>Chapters 7–9 before Thursday</span></span><time>Sun</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-heart"/></svg></span><span class="note-text"><strong>Gift ideas</strong><span>Film camera for Sam, ceramics class</span></span><time>Nov 18</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-sun"/></svg></span><span class="note-text"><strong>Garden</strong><span>Plant garlic before the first frost</span></span><time>Nov 12</time></li>
+  </ul>
+
+  <!-- Demo control, not part of the component: switch the menu's color style. -->
+  <div class="style-switch" role="radiogroup" aria-label="Menu color style">
+    <label><input type="radio" name="menu-color" value="standard" checked><svg class="icon"><use href="#i-check"/></svg>Standard</label>
+    <label><input type="radio" name="menu-color" value="vibrant"><svg class="icon"><use href="#i-check"/></svg>Vibrant</label>
+  </div>
+
+  <button class="fab" type="button" aria-label="New note"><svg class="icon"><use href="#i-plus"/></svg></button>
+</div>
+
+<!-- The menu. The popover is the shell; the focusgroup inside is the menu.
+     Groups are separate surfaces with a 2px gap ("menu with gap").
+     data-color="vibrant" switches it to the Vibrant color style. -->
+<div class="md-menu" id="notes-menu" popover>
+  <div class="md-menu-list" focusgroup="menu nomemory" tabindex="-1" aria-label="Notes options">
+
+    <div class="md-menu-group" role="group" aria-label="Sort by">
+      <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="true">
+        <svg class="icon"><use href="#i-clock"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <span class="md-menu-text">Last edited</span>
+      </button>
+      <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="false">
+        <svg class="icon"><use href="#i-calendar"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <span class="md-menu-text">Date created</span>
+      </button>
+      <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="false">
+        <svg class="icon"><use href="#i-type"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <span class="md-menu-text">Title</span>
+      </button>
+    </div>
+
+    <div class="md-menu-group" role="group" aria-label="Notebook">
+      <!-- Plain commands close the menu declaratively. -->
+      <button type="button" class="md-menu-item" commandfor="notes-menu" command="hide-popover">
+        <svg class="icon"><use href="#i-share"/></svg>
+        <span class="md-menu-text">Share notebook<small>Anyone with the link can view</small></span>
+      </button>
+      <button type="button" class="md-menu-item" commandfor="notes-menu" command="hide-popover">
+        <svg class="icon"><use href="#i-printer"/></svg>
+        <span class="md-menu-text">Print</span><kbd aria-hidden="true">Ctrl+P</kbd>
+      </button>
+      <button type="button" class="md-menu-item" disabled>
+        <svg class="icon"><use href="#i-clipboard-paste"/></svg>
+        <span class="md-menu-text">Paste note</span><kbd aria-hidden="true">Ctrl+V</kbd>
+      </button>
+    </div>
+
+    <div class="md-menu-group" role="group" aria-label="Manage">
+      <button type="button" class="md-menu-item" commandfor="notes-menu" command="hide-popover">
+        <svg class="icon"><use href="#i-settings"/></svg>
+        <span class="md-menu-text">Settings</span>
+      </button>
+      <button type="button" class="md-menu-item danger" commandfor="notes-menu" command="hide-popover">
+        <svg class="icon"><use href="#i-trash-2"/></svg>
+        <span class="md-menu-text">Delete notebook</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* Roboto Flex from Google Fonts; the font stack below falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..500&display=swap");
+
+/* ---- Tokens ----
+   Values come from the Material 3 Compose token source (SegmentedMenuTokens,
+   StandardMenuTokens, VibrantMenuTokens, ShapeTokens, baseline color scheme), dp → px. */
+:root {
+  color-scheme: light dark;
+
+  /* Baseline color roles. Component tokens below point at these. */
+  --md-sys-color-surface: light-dark(#FEF7FF, #141218);
+  --md-sys-color-surface-container-low: light-dark(#F7F2FA, #1D1B20);
+  --md-sys-color-on-surface: light-dark(#1D1B20, #E6E0E9);
+  --md-sys-color-on-surface-variant: light-dark(#49454F, #CAC4D0);
+  --md-sys-color-outline: light-dark(#79747E, #938F99);
+  --md-sys-color-outline-variant: light-dark(#CAC4D0, #49454F);
+  --md-sys-color-primary-container: light-dark(#EADDFF, #4F378B);
+  --md-sys-color-on-primary-container: light-dark(#21005D, #EADDFF);
+  --md-sys-color-secondary: light-dark(#625B71, #CCC2DC);
+  --md-sys-color-secondary-container: light-dark(#E8DEF8, #4A4458);
+  --md-sys-color-on-secondary-container: light-dark(#1D192B, #E8DEF8);
+  --md-sys-color-tertiary: light-dark(#7D5260, #EFB8C8);
+  --md-sys-color-on-tertiary: light-dark(#FFFFFF, #492532);
+  --md-sys-color-tertiary-container: light-dark(#FFD8E4, #633B48);
+  --md-sys-color-on-tertiary-container: light-dark(#31111D, #FFD8E4);
+  --md-sys-color-error: light-dark(#B3261E, #F2B8B5);
+
+  /* @group Container */
+  --md-menu-container-color: var(--md-sys-color-surface-container-low);   /* Group fill · SurfaceContainerLow */
+  --md-menu-container-shape: 16px;                                        /* Outer corners of the menu: first group’s top, last group’s bottom · Large */
+  --md-menu-group-shape: 8px;                                             /* Group corners that face a gap · Small */
+  --md-menu-segmented-gap: 2px;                                           /* Gap between groups · SegmentedGap */
+  --md-menu-group-padding: 4px;                                           /* Inset of items from the group edge · GroupPadding */
+  --md-menu-container-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 6px 2px rgb(0 0 0 / 0.15);   /* Elevation level 2, cast by every group */
+
+  /* @group Item */
+  --md-menu-item-height: 44px;                 /* Minimum height; 60px with supporting text */
+  --md-menu-item-leading-space: 16px;          /* Start padding · ItemLeadingSpace */
+  --md-menu-item-trailing-space: 16px;         /* End padding · ItemTrailingSpace */
+  --md-menu-item-top-space: 8px;               /* Top padding · ItemTopSpace */
+  --md-menu-item-bottom-space: 8px;            /* Bottom padding · ItemBottomSpace */
+  --md-menu-item-between-space: 12px;          /* Icon to label, label to trailing text · ItemBetweenSpace */
+  --md-menu-item-icon-size: 20px;              /* Leading and trailing icon */
+  --md-menu-item-shape: 4px;                   /* Item corners inside a group · ExtraSmall */
+  --md-menu-item-edge-shape: 12px;             /* First item’s top corners, last item’s bottom corners · Medium */
+  --md-menu-item-selected-shape: 12px;         /* Selected item, all corners · Medium */
+
+  /* @group Type */
+  --md-menu-font: "Roboto Flex", Roboto, system-ui, sans-serif;   /* Typeface; system UI font when Roboto Flex is unavailable */
+  --md-menu-item-label-text-size: 16px;                  /* Label · BodyLarge: line height 24px, weight 400, tracking 0.5px */
+  --md-menu-item-supporting-text-size: 14px;             /* Supporting text · BodyMedium: line height 20px, weight 400, tracking 0.25px */
+  --md-menu-item-trailing-supporting-text-size: 11px;    /* Trailing text · LabelSmall: line height 16px, weight 500, tracking 0.5px */
+
+  /* @group Standard color style */
+  --md-menu-item-label-text-color: var(--md-sys-color-on-surface);                /* Label · OnSurface */
+  --md-menu-item-icon-color: var(--md-sys-color-on-surface-variant);              /* Leading and trailing icons · OnSurfaceVariant */
+  --md-menu-item-supporting-text-color: var(--md-sys-color-on-surface-variant);   /* Supporting and trailing text · OnSurfaceVariant */
+  --md-menu-item-selected-container-color: var(--md-sys-color-tertiary-container);   /* Selected item fill · TertiaryContainer */
+  --md-menu-item-selected-content-color: var(--md-sys-color-on-tertiary-container);  /* Selected label, icon and text · OnTertiaryContainer */
+  --md-menu-item-disabled-color: color-mix(in srgb, var(--md-sys-color-on-surface) 38%, transparent);   /* Disabled label, icon and text · OnSurface at 38% */
+
+  /* @group Vibrant color style */
+  --md-menu-vibrant-container-color: var(--md-sys-color-tertiary-container);         /* Group fill · TertiaryContainer */
+  --md-menu-vibrant-item-content-color: var(--md-sys-color-on-tertiary-container);   /* Label, icons and all text · OnTertiaryContainer */
+  --md-menu-vibrant-item-active-icon-color: var(--md-sys-color-tertiary);            /* Icons while hovered, focused or pressed · Tertiary */
+  --md-menu-vibrant-item-selected-container-color: var(--md-sys-color-tertiary);     /* Selected item fill · Tertiary */
+  --md-menu-vibrant-item-selected-content-color: var(--md-sys-color-on-tertiary);    /* Selected label, icon and text · OnTertiary */
+  --md-menu-vibrant-item-disabled-color: color-mix(in srgb, var(--md-sys-color-on-tertiary-container) 38%, transparent);   /* Disabled · OnTertiaryContainer at 38% */
+
+  /* @group States */
+  --md-menu-item-hover-state-layer-opacity: 8%;      /* Hover layer, tinted with the item’s content color */
+  --md-menu-item-focus-state-layer-opacity: 10%;     /* Keyboard focus layer */
+  --md-menu-item-pressed-state-layer-opacity: 10%;   /* Pressed layer */
+  --md-focus-ring-color: var(--md-sys-color-secondary);   /* Focus indicator · Secondary */
+  --md-focus-ring-width: 3px;                         /* Focus indicator thickness; drawn inside the item */
+  --md-focus-ring-active-width: 8px;                  /* Width the indicator grows to before settling */
+  --md-focus-ring-duration: 600ms;                    /* Grow (first 25%) then settle (75%) */
+
+  /* @group Destructive item (not in the M3 menu spec) */
+  --md-menu-item-error-color: var(--md-sys-color-error);   /* Label and icon · Error role */
+
+  /* @group Motion */
+  --md-menu-scale-from: 0.8;   /* Scale the menu opens from and closes to (Compose ClosedScaleTarget) */
+  --md-sys-motion-spring-fast-spatial: linear(0, 0.105, 0.331, 0.581, 0.797, 0.952, 1.045, 1.088, 1.094, 1.079, 1.056, 1.033, 1.014, 1.001, 0.994, 0.991, 0.991, 0.993, 0.995, 0.997, 1);   /* Fast spatial spring, stiffness 800, damping 0.6: scale and corner morphs */
+  --md-sys-motion-spring-fast-spatial-duration: 360ms;    /* Settle time of the fast spatial spring */
+  --md-sys-motion-spring-fast-effects: linear(0, 0.237, 0.552, 0.764, 0.884, 0.945, 0.974, 0.988, 0.995, 0.998, 1);   /* Fast effects spring, stiffness 3800, damping 1: opacity and color */
+  --md-sys-motion-spring-fast-effects-duration: 150ms;    /* Settle time of the fast effects spring */
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);   /* Focus indicator easing */
+}
+
+/* Animatable width for the focus indicator (grow, then settle). */
+@property --md-ring {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* ---- Popover shell: placement and open/close ---- */
+.md-menu {
+  /* Reset the UA popover box; the groups draw the menu. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* Below the trigger with right edges aligned; flips above when there is no room. */
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-block;
+  container-type: anchored;   /* lets the list ask whether it flipped */
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition:
+    display var(--md-sys-motion-spring-fast-effects-duration) allow-discrete,
+    overlay var(--md-sys-motion-spring-fast-effects-duration) allow-discrete;
+
+  /* Standard color style, resolved to private variables the parts read. */
+  --_container: var(--md-menu-container-color);
+  --_content: var(--md-menu-item-label-text-color);
+  --_icon: var(--md-menu-item-icon-color);
+  --_supporting: var(--md-menu-item-supporting-text-color);
+  --_active-icon: var(--_icon);
+  --_selected-container: var(--md-menu-item-selected-container-color);
+  --_selected-content: var(--md-menu-item-selected-content-color);
+  --_disabled: var(--md-menu-item-disabled-color);
+}
+/* Vibrant color style: same parts, tertiary roles. Google: use sparingly. */
+.md-menu[data-color="vibrant"] {
+  --_container: var(--md-menu-vibrant-container-color);
+  --_content: var(--md-menu-vibrant-item-content-color);
+  --_icon: var(--_content);
+  --_supporting: var(--_content);
+  --_active-icon: var(--md-menu-vibrant-item-active-icon-color);
+  --_selected-container: var(--md-menu-vibrant-item-selected-container-color);
+  --_selected-content: var(--md-menu-vibrant-item-selected-content-color);
+  --_disabled: var(--md-menu-vibrant-item-disabled-color);
+}
+
+/* ---- The menu: a column of groups ---- */
+.md-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-menu-segmented-gap);
+  min-width: 112px;            /* Compose width limits, unchanged from the baseline menu */
+  max-width: 280px;
+  font-family: var(--md-menu-font);
+  outline: none;
+  user-select: none;
+
+  /* Open: scale up from 80% on the fast spatial spring, fade on fast effects. */
+  opacity: 0;
+  scale: var(--md-menu-scale-from);
+  transform-origin: top right;
+  transition:
+    opacity var(--md-sys-motion-spring-fast-effects-duration) var(--md-sys-motion-spring-fast-effects),
+    scale var(--md-sys-motion-spring-fast-spatial-duration) var(--md-sys-motion-spring-fast-spatial);
+}
+.md-menu:popover-open .md-menu-list {
+  opacity: 1;
+  scale: 1;
+  @starting-style { opacity: 0; scale: var(--md-menu-scale-from); }
+}
+/* Grow from the corner nearest the trigger when the menu flips above it. */
+@container anchored(fallback: flip-block) { .md-menu-list { transform-origin: bottom right; } }
+
+/* Group: its own surface. Outer corners Large, corners facing a gap Small. */
+.md-menu-group {
+  display: flex;
+  flex-direction: column;
+  padding: var(--md-menu-group-padding);
+  border-radius: var(--md-menu-group-shape);
+  background: var(--_container);
+  box-shadow: var(--md-menu-container-shadow);
+}
+.md-menu-group:first-child {
+  border-start-start-radius: var(--md-menu-container-shape);
+  border-start-end-radius: var(--md-menu-container-shape);
+}
+.md-menu-group:last-child {
+  border-end-start-radius: var(--md-menu-container-shape);
+  border-end-end-radius: var(--md-menu-container-shape);
+}
+
+/* Item: [leading icon] [label + supporting text] [trailing text] */
+.md-menu-item {
+  --_layer: 0%;   /* state layer opacity, set by the state rules below */
+  display: grid;
+  grid-template-columns: var(--md-menu-item-icon-size) 1fr auto;
+  align-items: center;
+  column-gap: var(--md-menu-item-between-space);
+  min-height: var(--md-menu-item-height);
+  padding: var(--md-menu-item-top-space) var(--md-menu-item-trailing-space)
+           var(--md-menu-item-bottom-space) var(--md-menu-item-leading-space);
+  border: 0;
+  border-radius: var(--md-menu-item-shape);
+  color: var(--_content);
+  /* State layer over the item fill, in the content color (OnSurface, OnTertiaryContainer…). */
+  background-color: transparent;
+  background-image: linear-gradient(color-mix(in srgb, currentColor var(--_layer), transparent) 0 0);
+  font-size: var(--md-menu-item-label-text-size);
+  line-height: 24px;
+  letter-spacing: 0.5px;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-radius var(--md-sys-motion-spring-fast-spatial-duration) var(--md-sys-motion-spring-fast-spatial),
+    background-color var(--md-sys-motion-spring-fast-effects-duration) var(--md-sys-motion-spring-fast-effects),
+    color var(--md-sys-motion-spring-fast-effects-duration) var(--md-sys-motion-spring-fast-effects);
+}
+/* Concentric with the group: first item’s top corners and last item’s bottom corners. */
+.md-menu-item:first-child {
+  border-start-start-radius: var(--md-menu-item-edge-shape);
+  border-start-end-radius: var(--md-menu-item-edge-shape);
+}
+.md-menu-item:last-child {
+  border-end-start-radius: var(--md-menu-item-edge-shape);
+  border-end-end-radius: var(--md-menu-item-edge-shape);
+}
+
+.md-menu-item > .icon {
+  grid-column: 1; grid-row: 1;   /* icon and selected check share the slot */
+  width: var(--md-menu-item-icon-size);
+  height: var(--md-menu-item-icon-size);
+  color: var(--_icon);
+}
+.md-menu-text { grid-column: 2; min-width: 0; }
+.md-menu-text small {
+  display: block;
+  font-size: var(--md-menu-item-supporting-text-size);
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: var(--_supporting);
+}
+.md-menu-item kbd {
+  grid-column: 3;
+  font: 500 var(--md-menu-item-trailing-supporting-text-size)/16px var(--md-menu-font);
+  letter-spacing: 0.5px;
+  color: var(--_supporting);
+}
+
+/* Selected: inset fill, rounder corners, leading icon swaps to a check. */
+.md-menu-item[aria-checked="true"] {
+  border-radius: var(--md-menu-item-selected-shape);
+  background-color: var(--_selected-container);
+  color: var(--_selected-content);
+  --_icon: var(--_selected-content);
+  --_supporting: var(--_selected-content);
+  --_active-icon: var(--_selected-content);
+}
+.md-menu-check,
+.md-menu-item[aria-checked="true"] > .icon:not(.md-menu-check) { display: none; }
+.md-menu-item[aria-checked="true"] > .md-menu-check { display: block; }
+
+/* States. Hover and keyboard focus are separate, as in Compose: the pointer never moves focus. */
+.md-menu-item:enabled:hover { --_layer: var(--md-menu-item-hover-state-layer-opacity); }
+.md-menu-item:focus-visible { --_layer: var(--md-menu-item-focus-state-layer-opacity); }
+.md-menu-item:enabled:active { --_layer: var(--md-menu-item-pressed-state-layer-opacity); }
+.md-menu-item:enabled:is(:hover, :focus-visible, :active) > .icon { color: var(--_active-icon); }
+
+/* Focus indicator: drawn inward so it stays inside the 4px group padding. */
+.md-menu-item:focus-visible {
+  --md-ring: var(--md-focus-ring-width);
+  outline: var(--md-ring) solid var(--md-focus-ring-color);
+  outline-offset: calc(var(--md-ring) * -1);
+  animation: md-focus-ring var(--md-focus-ring-duration) var(--md-sys-motion-easing-emphasized);
+}
+@keyframes md-focus-ring {
+  from { --md-ring: 0px; }
+  25%  { --md-ring: var(--md-focus-ring-active-width); }
+  to   { --md-ring: var(--md-focus-ring-width); }
+}
+
+.md-menu-item:disabled {
+  color: var(--_disabled);
+  --_icon: var(--_disabled);
+  --_supporting: var(--_disabled);
+  cursor: default;
+}
+
+/* Destructive: Error role for label and icon (and so for its state layers). */
+.md-menu-item.danger {
+  color: var(--md-menu-item-error-color);
+  --_icon: var(--md-menu-item-error-color);
+  --_active-icon: var(--md-menu-item-error-color);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-menu, .md-menu-list, .md-menu-item { transition: none; }
+  .md-menu-item:focus-visible { animation: none; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body {
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--md-menu-font);
+}
+.app { position: relative; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+.top-bar { display: flex; align-items: center; gap: 4px; min-height: 64px; padding: 8px 4px 8px 16px; }
+.top-bar-title { flex: 1; min-width: 0; }
+.top-bar h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 400; }
+.top-bar-subtitle { margin: 0; font-size: 12px; line-height: 16px; letter-spacing: 0.4px; color: var(--md-sys-color-on-surface-variant); }
+.icon-btn {
+  display: grid; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%;
+  background: none; color: var(--md-sys-color-on-surface-variant); cursor: pointer;
+}
+.icon-btn .icon { width: 24px; height: 24px; }
+.icon-btn:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.icon-btn:focus-visible { outline: 3px solid var(--md-sys-color-secondary); outline-offset: 2px; }
+/* Trigger keeps a pressed layer while its menu is open. */
+body:has(#notes-menu:popover-open) [commandfor="notes-menu"].icon-btn { background: color-mix(in srgb, currentColor 10%, transparent); }
+
+.notes { list-style: none; margin: 0; padding: 0; }
+.note { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; align-items: center; gap: 16px; min-height: 72px; padding: 8px 24px 8px 16px; }
+.note-icon {
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%;
+  background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+}
+.note:nth-child(3n+2) .note-icon { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.note:nth-child(3n+3) .note-icon { background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container); }
+.note-icon .icon { width: 20px; height: 20px; }
+.note-text strong { display: block; font-size: 16px; line-height: 24px; font-weight: 400; letter-spacing: 0.5px; }
+.note-text span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; line-height: 20px; letter-spacing: 0.25px; color: var(--md-sys-color-on-surface-variant); }
+.note time { font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.5px; color: var(--md-sys-color-on-surface-variant); }
+
+/* M3 segmented button, used here as the demo's color-style switch. */
+.style-switch { position: absolute; left: 16px; bottom: 24px; display: flex; }
+.style-switch label {
+  display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px;
+  border: 1px solid var(--md-sys-color-outline); font-size: 14px; line-height: 20px; font-weight: 500;
+  letter-spacing: 0.1px; cursor: pointer;
+}
+.style-switch label:first-child { border-radius: 20px 0 0 20px; }
+.style-switch label + label { border-left: 0; border-radius: 0 20px 20px 0; }
+.style-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.style-switch .icon { display: none; width: 18px; height: 18px; }
+.style-switch label:has(:checked) { background: var(--md-sys-color-secondary-container); color: var(--md-sys-color-on-secondary-container); }
+.style-switch label:has(:checked) .icon { display: block; }
+.style-switch label:has(:focus-visible) { outline: 3px solid var(--md-sys-color-secondary); outline-offset: 2px; position: relative; }
+
+.fab {
+  position: absolute; right: 16px; bottom: 16px; display: grid; place-items: center;
+  width: 56px; height: 56px; border: 0; border-radius: 16px; cursor: pointer;
+  background: var(--md-sys-color-primary-container); color: var(--md-sys-color-on-primary-container);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3), 0 4px 8px 3px rgb(0 0 0 / 0.15);
+}
+.fab .icon { width: 24px; height: 24px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opening, placement, arrow keys, Esc and click-outside are all native.
+// Script covers focus on open, the radio items, Tab-to-close, and the demo's style switch.
+const menu = document.getElementById('notes-menu');
+const trigger = document.querySelector('[commandfor="notes-menu"]');
+const subtitle = document.querySelector('.top-bar-subtitle');
+
+// Opening puts focus on the first item (menu button pattern). The focus indicator shows
+// only if the trigger had one, i.e. the menu was opened from the keyboard.
+// (`autofocus` on the item needs no script, but it scrolls the page to the menu.)
+menu.addEventListener('toggle', e => {
+  if (e.newState !== 'open') return;
+  const fromKeyboard = document.activeElement.matches(':focus-visible');
+  menu.querySelector('.md-menu-item:enabled').focus({ preventScroll: true, focusVisible: fromKeyboard });
+});
+
+// Sort options are radio items: check the chosen one, let the fill and corner morph
+// play, then close. (Plain commands close at once via command="hide-popover".)
+menu.addEventListener('click', e => {
+  const item = e.target.closest('[role="menuitemradio"]');
+  if (!item) return;
+  for (const radio of item.parentElement.children) radio.ariaChecked = String(radio === item);
+  subtitle.textContent = `Sorted by ${item.textContent.trim().toLowerCase()}`;
+  setTimeout(() => menu.hidePopover(), 250);
+});
+
+// Tab (or any focus leaving the menu) closes it, like a native menu.
+menu.addEventListener('focusout', e => {
+  if (!menu.contains(e.relatedTarget)) menu.hidePopover();
+});
+
+// Demo control: switch the color style and reopen the menu so both are one click apart.
+document.querySelector('.style-switch').addEventListener('change', e => {
+  menu.dataset.color = e.target.value;
+  if (!menu.matches(':popover-open')) menu.showPopover({ source: trigger });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Tap the overflow button so the page shows the menu at rest. A tap focuses the
+// button without a focus ring; focusVisible: false reproduces that before the click.
+requestAnimationFrame(() => {
+  const trigger = document.querySelector('[commandfor="notes-menu"]');
+  trigger.focus({ focusVisible: false, preventScroll: true });
+  trigger.click();
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="520" data-hint="Tap ⋮ to open. Switch Standard and Vibrant at the bottom left."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Menu with gap</th><td>Groups stack with a 2px gap, each its own surface with a level 2 shadow. The menu’s outer corners are 16px; corners that face a gap are 8px. Google: one or two gaps per menu, and none in a scrolling menu. The other layout, “with divider”, keeps one surface and separates groups with dividers.</td></tr>
+        <tr><th>Group</th><td>4px padding on all sides, so item fills and highlights never touch the group edge.</td></tr>
+        <tr><th>Item</th><td>44px minimum height, 16px side padding, 8px top and bottom. A 20px leading icon sits 12px from the label. Corners are 4px; the first item’s top corners and the last item’s bottom corners are 12px, concentric with the 16px group.</td></tr>
+        <tr><th>Supporting text</th><td>One line under the label in BodyMedium. The item grows to 60px.</td></tr>
+        <tr><th>Trailing text</th><td>LabelSmall at the end of the row, usually a keyboard shortcut. Hidden from screen readers.</td></tr>
+        <tr><th>Selected item</th><td>TertiaryContainer fill with 12px corners on all sides, inset rather than full width. The leading icon swaps to a check (Compose <code>selectedLeadingIcon</code>).</td></tr>
+        <tr><th>Disabled item</th><td>OnSurface at 38% for label, icon and text. No state layers; skipped by arrow keys.</td></tr>
+        <tr><th>Destructive item</th><td>M3 menus define no destructive style, and Google’s own apps keep Delete in the label color. This demo uses the Error role; reserve it for actions that can’t be undone.</td></tr>
+        <tr><th>Color styles</th><td>Standard sits on SurfaceContainerLow and suits most menus. Vibrant fills with TertiaryContainer for emphasis; Google says to use it sparingly. In Vibrant, icons turn Tertiary while hovered, focused or pressed.</td></tr>
+        <tr><th>Baseline menu</th><td>The older M3 menu is one surface with 4px corners, 48px items and a full-width selection. Both share the 112–280px width limits.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>A tap or click on the overflow button, or <kbd>Enter</kbd> / <kbd>Space</kbd> when it has focus. <code>commandfor</code> and <code>command="toggle-popover"</code> do this with no script.</td></tr>
+        <tr><th>Placement</th><td>Directly below the button with right edges aligned, using the button as the implicit anchor. Flips above it when there is no room below.</td></tr>
+        <tr><th>Motion</th><td>Scales up from 80% out of the corner nearest the button while fading in, as Compose does. Scale and corner morphs use the fast spatial spring (stiffness 800, damping 0.6: 360ms with about 9% overshoot); opacity and color use fast effects (stiffness 3800, damping 1: 150ms). Both springs are sampled into CSS <code>linear()</code>. No motion with reduced motion set.</td></tr>
+        <tr><th>States</th><td>Hover 8%, focus 10%, pressed 10%, as a layer in the item’s content color. Hover and focus are separate: the pointer does not move keyboard focus.</td></tr>
+        <tr><th>Selection</th><td>Sort options are radio items. The chosen one morphs to 12px corners and fills on the springs above, then the menu closes after 250ms.</td></tr>
+        <tr><th>Shape morph</th><td>Not built here. Compose also morphs group corners as the pointer moves through cascading submenus: 24px for the active menu, 8px for one that has been left.</td></tr>
+        <tr><th>Color style</th><td><code>data-color="vibrant"</code> on the popover swaps every color in one place. The segmented button in the demo sets it and reopens the menu.</td></tr>
+        <tr><th>Dismiss</th><td>Choosing an item, <kbd>Esc</kbd>, a tap outside, or <kbd>Tab</kbd>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd> on ⋮</th><td>Open the menu with focus on the first item. A pointer open focuses it too, without the focus indicator.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items across all groups, wrapping at the ends (native <code>focusgroup</code>).</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the command, or choose a sort option.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close and return focus to the ⋮ button.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close the menu and move on.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> infers <code>role="menu"</code> and <code>menuitem</code>. Sort options set <code>menuitemradio</code> and <code>aria-checked</code>. Each segment is a named <code>role="group"</code>, so the gaps are announced as group boundaries.</li>
+          <li>The button carries <code>aria-haspopup="menu"</code>; the browser reports <code>aria-expanded</code> from the popover state.</li>
+          <li>Focus indicator: the standard M3 indicator is 3dp in Secondary with a 2dp outer offset. Material Web draws it inward on list and menu items, and so does this demo, so it stays inside the 4px group padding. It grows to 8px and settles at 3px over 600ms.</li>
+          <li>Contrast: OnSurface on SurfaceContainerLow is 15.5:1 light and 13.2:1 dark. Vibrant labels are 13.2:1 and 7.2:1; selected Vibrant labels 6.5:1 and 7.8:1. Error on either container is at least 5:1.</li>
+          <li>Not built: <kbd>↓</kbd> on the button to open the menu (WAI-ARIA menu button pattern) and typeahead.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://m3.material.io/components/menus/specs">Menus: specs</a>, Material Design 3: anatomy, the vertical menu layouts and both color styles.</li>
+        <li><a href="https://9to5google.com/2025/11/22/material-3-expressive-menus/">Material 3 Expressive menus</a>, 9to5Google: the gap guidance (one or two per menu), Vibrant “should be used sparingly”, inset selection and submenu shape morphing.</li>
+        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/SegmentedMenuTokens.kt">SegmentedMenuTokens.kt</a>, with <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/StandardMenuTokens.kt">StandardMenuTokens.kt</a> and <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/VibrantMenuTokens.kt">VibrantMenuTokens.kt</a>, Jetpack Compose: every size, shape and color role on this page.</li>
+        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/MenuDefaults.kt">MenuDefaults.kt</a> and <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/Menu.kt">Menu.kt</a>, Jetpack Compose: group and item corners by position, the 80% open scale and which springs drive it.</li>
+        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ExpressiveMotionTokens.kt">ExpressiveMotionTokens.kt</a>, Jetpack Compose: spring stiffness and damping behind the <code>linear()</code> curves.</li>
+        <li><a href="https://github.com/material-components/material-web/blob/main/tokens/_md-comp-focus-ring.scss">Focus ring tokens</a>, Material Web: 3px width, 2px outer offset, 8px grow width, 600ms. Its menu items use the inward ring.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

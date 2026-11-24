@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Overflow Action Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/overflow-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- An invoices table. Each row ends with a ⋯ button; its menu is the very next element.
+     Opening, anchoring, focus, closing and the open state are all attributes and CSS. -->
+<div class="app">
+  <header class="app-bar">
+    <h1>Invoices</h1>
+    <button class="app-btn" type="button"><svg class="icon"><use href="#i-plus"/></svg>New invoice</button>
+  </header>
+  <div class="sheet">
+    <table class="invoices">
+      <thead>
+        <tr><th>Customer</th><th>Status</th><th class="num">Amount</th><th><span class="sr-only">Actions</span></th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Kestrel Labs<small>INV-1048 · Not sent</small></td>
+          <td><span class="badge" data-state="draft">Draft</span></td>
+          <td class="num">$2,400.00</td>
+          <td class="act">
+            <button class="om-trigger" type="button" commandfor="menu-1048" command="toggle-popover" aria-haspopup="menu" aria-label="Actions for INV-1048"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            <div class="om" id="menu-1048" popover>
+              <div class="om-panel" focusgroup="menu nomemory">
+                <button type="button" commandfor="menu-1048" command="hide-popover" autofocus><svg class="icon"><use href="#i-pencil"/></svg>Edit draft</button>
+                <button type="button" commandfor="menu-1048" command="hide-popover"><svg class="icon"><use href="#i-send"/></svg>Send invoice</button>
+                <button type="button" commandfor="menu-1048" command="hide-popover"><svg class="icon"><use href="#i-files"/></svg>Duplicate</button>
+                <button type="button" disabled><svg class="icon"><use href="#i-download"/></svg>Download PDF</button>
+                <hr>
+                <button type="button" commandfor="menu-1048" command="hide-popover" class="danger"><svg class="icon"><use href="#i-trash-2"/></svg>Delete draft</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Northwind Traders<small>INV-1047 · Due Dec 8</small></td>
+          <td><span class="badge" data-state="open">Open</span></td>
+          <td class="num">$12,850.00</td>
+          <td class="act">
+            <button class="om-trigger" type="button" commandfor="menu-1047" command="toggle-popover" aria-haspopup="menu" aria-label="Actions for INV-1047"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            <div class="om" id="menu-1047" popover>
+              <div class="om-panel" focusgroup="menu nomemory">
+                <button type="button" commandfor="menu-1047" command="hide-popover" autofocus><svg class="icon"><use href="#i-eye"/></svg>View invoice</button>
+                <button type="button" commandfor="menu-1047" command="hide-popover"><svg class="icon"><use href="#i-mail"/></svg>Send reminder</button>
+                <button type="button" commandfor="menu-1047" command="hide-popover"><svg class="icon"><use href="#i-files"/></svg>Duplicate</button>
+                <button type="button" commandfor="menu-1047" command="hide-popover"><svg class="icon"><use href="#i-download"/></svg>Download PDF</button>
+                <hr>
+                <button type="button" commandfor="menu-1047" command="hide-popover" class="danger"><svg class="icon"><use href="#i-x"/></svg>Void invoice</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Halcyon Health<small>INV-1046 · Due Nov 18</small></td>
+          <td><span class="badge" data-state="overdue">Overdue</span></td>
+          <td class="num">$4,120.00</td>
+          <td class="act">
+            <button class="om-trigger" type="button" commandfor="menu-1046" command="toggle-popover" aria-haspopup="menu" aria-label="Actions for INV-1046"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            <div class="om" id="menu-1046" popover>
+              <div class="om-panel" focusgroup="menu nomemory">
+                <button type="button" commandfor="menu-1046" command="hide-popover" autofocus><svg class="icon"><use href="#i-eye"/></svg>View invoice</button>
+                <button type="button" commandfor="menu-1046" command="hide-popover"><svg class="icon"><use href="#i-mail"/></svg>Send reminder</button>
+                <button type="button" commandfor="menu-1046" command="hide-popover"><svg class="icon"><use href="#i-files"/></svg>Duplicate</button>
+                <button type="button" commandfor="menu-1046" command="hide-popover"><svg class="icon"><use href="#i-download"/></svg>Download PDF</button>
+                <hr>
+                <button type="button" commandfor="menu-1046" command="hide-popover" class="danger"><svg class="icon"><use href="#i-x"/></svg>Void invoice</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Brightline Studio<small>INV-1045 · Paid Nov 20</small></td>
+          <td><span class="badge" data-state="paid">Paid</span></td>
+          <td class="num">$860.00</td>
+          <td class="act">
+            <button class="om-trigger" type="button" commandfor="menu-1045" command="toggle-popover" aria-haspopup="menu" aria-label="Actions for INV-1045"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            <div class="om" id="menu-1045" popover>
+              <div class="om-panel" focusgroup="menu nomemory">
+                <button type="button" commandfor="menu-1045" command="hide-popover" autofocus><svg class="icon"><use href="#i-eye"/></svg>View invoice</button>
+                <button type="button" disabled><svg class="icon"><use href="#i-mail"/></svg>Send reminder</button>
+                <button type="button" commandfor="menu-1045" command="hide-popover"><svg class="icon"><use href="#i-files"/></svg>Duplicate</button>
+                <button type="button" commandfor="menu-1045" command="hide-popover"><svg class="icon"><use href="#i-download"/></svg>Download PDF</button>
+                <hr>
+                <button type="button" commandfor="menu-1045" command="hide-popover" class="danger"><svg class="icon"><use href="#i-undo-2"/></svg>Refund payment…</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>Orbital Freight<small>INV-1044 · Paid Nov 14</small></td>
+          <td><span class="badge" data-state="paid">Paid</span></td>
+          <td class="num">$7,300.00</td>
+          <td class="act">
+            <button class="om-trigger" type="button" commandfor="menu-1044" command="toggle-popover" aria-haspopup="menu" aria-label="Actions for INV-1044"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            <div class="om" id="menu-1044" popover>
+              <div class="om-panel" focusgroup="menu nomemory">
+                <button type="button" commandfor="menu-1044" command="hide-popover" autofocus><svg class="icon"><use href="#i-eye"/></svg>View invoice</button>
+                <button type="button" disabled><svg class="icon"><use href="#i-mail"/></svg>Send reminder</button>
+                <button type="button" commandfor="menu-1044" command="hide-popover"><svg class="icon"><use href="#i-files"/></svg>Duplicate</button>
+                <button type="button" commandfor="menu-1044" command="hide-popover"><svg class="icon"><use href="#i-download"/></svg>Download PDF</button>
+                <hr>
+                <button type="button" commandfor="menu-1044" command="hide-popover" class="danger"><svg class="icon"><use href="#i-undo-2"/></svg>Refund payment…</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="app-foot">5 invoices · $16,970.00 outstanding</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match the trigger and menu ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Trigger */
+  --om-trigger-size: 28px;                                  /* ⋯ button, square; 16px icon */
+  --om-trigger-radius: 6px;                                 /* ⋯ button corner radius */
+  --om-trigger-fg: light-dark(#6b7080, #8b90a0);            /* ⋯ icon at rest */
+  --om-trigger-hover: light-dark(#eceef3, #2a2c33);         /* ⋯ background on hover */
+  --om-trigger-open: light-dark(#e2e5ec, #343741);          /* ⋯ background while its menu is open */
+  --om-trigger-open-fg: light-dark(#1b1d24, #f1f2f5);       /* ⋯ icon while its menu is open */
+  --om-ring: light-dark(#4f5bd5, #8b95ff);                  /* Focus ring, 2px, on the ⋯ button and items */
+
+  /* @group Container */
+  --om-bg: light-dark(#ffffff, #1f2127);                                   /* Surface */
+  --om-border: light-dark(rgb(17 19 28 / 0.1), rgb(255 255 255 / 0.08));   /* Hairline border, 1px */
+  --om-radius: 10px;                                                       /* Corner radius */
+  --om-pad: 6px;                                            /* Space above the first and below the last item */
+  --om-min-w: 200px;                                        /* Minimum width; grows to fit labels */
+  --om-offset: 4px;                                         /* Gap between the ⋯ button and the menu */
+  --om-shadow: 0 2px 4px light-dark(rgb(17 19 28 / 0.04), rgb(0 0 0 / 0.24)),
+               0 12px 32px -4px light-dark(rgb(17 19 28 / 0.16), rgb(0 0 0 / 0.5));   /* Elevation, two layers */
+
+  /* @group Item */
+  --om-item-h: 34px;                                        /* Row height with a mouse or trackpad */
+  --om-item-h-touch: 44px;                                  /* Row height when the main pointer is touch (`pointer: coarse`) */
+  --om-item-px: 14px;                                       /* Horizontal padding; highlight runs edge to edge */
+  --om-gap: 12px;                                           /* Icon to label gap */
+  --om-icon: 16px;                                          /* Icon size */
+  --om-font-size: 14px;                                     /* Label size, line height 20px, weight 400 */
+  --om-fg: light-dark(#1b1d24, #eceef2);                    /* Label */
+  --om-icon-fg: light-dark(#6b7080, #8b90a0);               /* Icon */
+  --om-hover: light-dark(#f2f3f6, #2a2c33);                 /* Highlight: hover, and keyboard focus under the ring */
+  --om-disabled: light-dark(#b9bcc6, #50535d);              /* Disabled label and icon */
+
+  /* @group Destructive item */
+  --om-danger: light-dark(#d92d20, #ff7a6e);                         /* Label and icon */
+  --om-danger-hover: light-dark(#fef0ef, rgb(255 122 110 / 0.12));    /* Highlight */
+
+  /* @group Structure */
+  --om-sep: light-dark(#eceef2, #2e3038);                    /* Separator, 1px, full width */
+  --om-sep-space: 6px;                                      /* Space above and below a separator */
+
+  /* @group Motion */
+  --om-in: 140ms;                                           /* Open duration */
+  --om-out: 100ms;                                          /* Close duration */
+  --om-ease: cubic-bezier(0.16, 1, 0.3, 1);                 /* Easing (expo ease-out) */
+  --om-shift: 6px;                                          /* Distance the menu slides out of the ⋯ button */
+}
+
+/* ---- Trigger ---- */
+.om-trigger {
+  display: inline-grid;
+  place-items: center;
+  width: var(--om-trigger-size);
+  height: var(--om-trigger-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--om-trigger-radius);
+  background: none;
+  color: var(--om-trigger-fg);
+  cursor: pointer;
+}
+.om-trigger:hover { background: var(--om-trigger-hover); }
+.om-trigger:focus-visible { outline: 2px solid var(--om-ring); outline-offset: 1px; }
+/* Open state. The menu is the trigger's next sibling, so :has() can see it: no script, no aria-expanded to sync. */
+.om-trigger:has(+ .om:popover-open) { background: var(--om-trigger-open); color: var(--om-trigger-open-fg); }
+
+/* ---- Popover shell: placement only ---- */
+.om {
+  /* Reset the UA popover box; the panel draws the menu. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* A popover opened by commandfor is anchored to that button implicitly: no anchor-name needed.
+     Below the trigger with right edges aligned; flips up near the bottom, left near the left edge. */
+  position-area: block-end span-inline-start;
+  margin-block-start: var(--om-offset);
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+
+  /* Lets the panel ask which fallback won (to slide the right way). */
+  container-type: anchored;
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition: display var(--om-out) allow-discrete, overlay var(--om-out) allow-discrete;
+}
+
+/* ---- The menu ---- */
+.om-panel {
+  --om-dir: -1;                       /* Slide direction: -1 drops down, 1 rises up (set when flipped) */
+  min-width: var(--om-min-w);
+  padding: var(--om-pad) 0;
+  background: var(--om-bg);
+  border: 1px solid var(--om-border);
+  border-radius: var(--om-radius);
+  box-shadow: var(--om-shadow);
+  color: var(--om-fg);
+  font-size: var(--om-font-size);
+  line-height: 20px;
+
+  opacity: 0;
+  translate: 0 calc(var(--om-shift) * var(--om-dir));
+  transition: opacity var(--om-out) var(--om-ease), translate var(--om-out) var(--om-ease);
+}
+.om:popover-open .om-panel {
+  opacity: 1;
+  translate: 0;
+  transition-duration: var(--om-in);
+  @starting-style { opacity: 0; translate: 0 calc(var(--om-shift) * var(--om-dir)); }
+}
+/* Flipped above the trigger: rise up out of it instead of dropping down. */
+@container anchored(fallback: flip-block)             { .om-panel { --om-dir: 1; } }
+@container anchored(fallback: flip-block flip-inline) { .om-panel { --om-dir: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .om, .om-panel { transition: none; }
+}
+
+/* Item: [icon] [label]. Full-width rows; no shortcuts, since this menu is often tapped. */
+.om-panel button {
+  display: flex;
+  align-items: center;
+  gap: var(--om-gap);
+  width: 100%;
+  height: var(--om-item-h);
+  padding: 0 var(--om-item-px);
+  border: 0;
+  background: none;
+  font-weight: 400;
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.om-panel button .icon { width: var(--om-icon); height: var(--om-icon); color: var(--om-icon-fg); }
+.om-panel button:hover { background: var(--om-hover); }
+/* Keyboard focus adds a ring, so it reads apart from a hover elsewhere in the menu. */
+.om-panel button:focus-visible { background: var(--om-hover); outline: 2px solid var(--om-ring); outline-offset: -2px; }
+.om-panel button:disabled { background: none; color: var(--om-disabled); cursor: default; }
+.om-panel button:disabled .icon { color: inherit; }
+
+/* Destructive */
+.om-panel .danger, .om-panel .danger .icon { color: var(--om-danger); }
+.om-panel .danger:is(:hover, :focus-visible) { background: var(--om-danger-hover); }
+
+/* Separator */
+.om-panel hr {
+  height: 1px;
+  margin: var(--om-sep-space) 0;
+  border: 0;
+  background: var(--om-sep);
+}
+
+/* Touch: taller rows for fingers. */
+@media (pointer: coarse) {
+  .om-panel button { height: var(--om-item-h-touch); }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#f5f6f8, #121317); color: light-dark(#1b1d24, #eceef2); }
+.app { padding: 16px 20px; }
+.app-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.app-bar h1 { margin: 0; font-size: 16px; font-weight: 600; }
+.app-btn {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px 0 10px;
+  border: 0; border-radius: 7px; background: light-dark(#1b1d24, #eceef2); color: light-dark(#fff, #121317);
+  font-size: 13px; font-weight: 500;
+}
+.sheet {
+  background: light-dark(#fff, #191b20); border-radius: 10px;
+  box-shadow: 0 0 0 1px light-dark(rgb(17 19 28 / 0.08), rgb(255 255 255 / 0.06));
+  overflow: hidden;
+}
+.invoices { width: 100%; border-collapse: collapse; font-size: 13px; }
+.invoices th {
+  padding: 9px 16px; text-align: start; font-size: 12px; font-weight: 500;
+  color: light-dark(#6b7080, #8b90a0);
+}
+.invoices td { padding: 9px 16px; border-top: 1px solid light-dark(#eef0f3, #25272d); font-weight: 500; }
+.invoices small { display: block; font-size: 12px; font-weight: 400; color: light-dark(#6b7080, #8b90a0); }
+.invoices .num { text-align: end; font-variant-numeric: tabular-nums; }
+.invoices .act { width: 1%; padding: 0 10px 0 4px; text-align: end; }
+/* The row whose menu is open keeps a tint, so it's clear what the menu acts on. */
+.invoices tbody tr:has(.om:popover-open) { background: light-dark(#f7f8fa, #1f2127); }
+.badge {
+  display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 500;
+  background: var(--tint); color: var(--ink);
+}
+.badge[data-state="draft"]   { --tint: light-dark(#eef0f3, #2a2c33); --ink: light-dark(#585d6b, #a3a8b6); }
+.badge[data-state="open"]    { --tint: light-dark(#e8efff, #1d2a4a); --ink: light-dark(#2f5bd3, #8fb0ff); }
+.badge[data-state="overdue"] { --tint: light-dark(#fdecea, #3a1d1c); --ink: light-dark(#c4321f, #ff8f80); }
+.badge[data-state="paid"]    { --tint: light-dark(#e5f5ec, #16302a); --ink: light-dark(#177a48, #6fd3a0); }
+/* Phone width: drop the status column so the ⋯ column always fits. */
+@media (width < 460px) {
+  .invoices :is(th, td):nth-child(2) { display: none; }
+  .invoices :is(th, td) { padding-inline: 12px; }
+}
+.app-foot { margin: 12px 2px 0; font-size: 12px; color: light-dark(#6b7080, #8b90a0); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>
+
+<script type="text/plain" data-demo="pin">
+// Click the first row's ⋯ so the page shows its menu at rest, below the trigger.
+requestAnimationFrame(() => document.querySelector('.om-trigger').click());
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Click ⋯ on any row; the last rows open upward. Tab to a ⋯ and press Enter for the keyboard path."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Trigger</th><td>A 28px square ⋯ button at the end of the row. Always visible, since touch has no hover. Muted at rest, tinted on hover, filled while its menu is open. Its accessible name says which row it acts on.</td></tr>
+          <tr><th>Container</th><td>Popover surface with a 1px hairline border and a two-layer shadow, 4px from the trigger. Vertical padding only, so highlights run edge to edge.</td></tr>
+          <tr><th>Item</th><td>Icon and label, no shortcuts: this menu is tapped as often as it is clicked. 34px rows, 44px on touch screens.</td></tr>
+          <tr><th>Disabled item</th><td>Dimmed, skipped by arrow keys, kept in place. Here a paid invoice can’t get a reminder and a draft has no PDF yet.</td></tr>
+          <tr><th>Separator</th><td>Full-width 1px rule that sets the destructive item apart.</td></tr>
+          <tr><th>Destructive item</th><td>Last, after the separator. Red label and icon, red-tinted highlight. Items that open a confirmation end in an ellipsis.</td></tr>
+          <tr><th>Row tint</th><td>The row whose menu is open keeps a light tint (<code>tr:has(:popover-open)</code>), so the target stays clear while the menu covers its neighbors.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Opens on</th><td>Click or tap on ⋯, or <kbd>Enter</kbd> / <kbd>Space</kbd> on a focused ⋯. The button carries <code>commandfor</code> and <code>command="toggle-popover"</code>, so the same press closes it again.</td></tr>
+          <tr><th>Placement</th><td>Below the trigger, right edges aligned. Near the bottom of the viewport it flips above; near the left edge it aligns left edges instead. A popover opened by <code>commandfor</code> is anchored to that button implicitly, so there is no <code>anchor-name</code> to manage.</td></tr>
+          <tr><th>Motion</th><td>Fades in and slides 6px out of the trigger, 140ms, expo ease-out. When flipped above, it rises instead (<code>@container anchored(fallback: flip-block)</code>). Closes in 100ms. No motion with reduced-motion set.</td></tr>
+          <tr><th>Focus</th><td>The first item has <code>autofocus</code>, which a popover honors when it opens. After a keyboard open it shows the focus ring; after a click it stays quiet until an arrow key is pressed.</td></tr>
+          <tr><th>Choosing an item</th><td>Each item carries <code>commandfor</code> and <code>command="hide-popover"</code>, so it closes the menu and focus returns to ⋯. In an app the item is also a link or a form button that carries the row’s id; the command only handles the closing.</td></tr>
+          <tr><th>One menu per row</th><td>Each row renders its own menu right after its trigger, so items can follow the row’s state. A single shared menu also works, and the opener is on the <code>toggle</code> event’s <code>source</code>, but it costs script: one more click to switch rows (the other row’s ⋯ counts as the same invoker and just closes it), and <code>:has()</code> can no longer tell which trigger is open.</td></tr>
+          <tr><th>Dismiss</th><td><kbd>Esc</kbd>, a click outside, the same ⋯ again, or choosing an item. Another row’s ⋯ closes this menu and opens its own in one click.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd> on ⋯</th><td>Open the menu with focus on the first item; press again to close.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items, wrapping at the ends (native <code>focusgroup</code>).</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd> on an item</th><td>Run it; the menu closes and focus returns to ⋯.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close and return focus to ⋯.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Moves to the next control, but the menu stays open until the next click or <kbd>Esc</kbd>. See the gaps below.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> on the panel infers <code>role="menu"</code> and <code>menuitem</code> on each button; <code>&lt;hr&gt;</code> is exposed as a separator. The trigger states <code>aria-haspopup="menu"</code>, and Chrome reports it as expanded while its popover is open, with nothing to keep in sync.</li>
+          <li>Every ⋯ has an <code>aria-label</code> naming its row (“Actions for INV-1048”). A column of identical “More” buttons is useless in a screen reader’s button list.</li>
+          <li>Hover and keyboard focus are separate: the pointer fills a row, the keyboard fills it and adds a ring. Merging them takes a <code>pointermove</code> listener that moves focus.</li>
+          <li>Gaps against the APG menu button, each a few lines of script if your product needs them: <kbd>Tab</kbd> doesn’t close the menu; after a pointer open the first <kbd>↓</kbd> lands on the second item, because focus already sits on the first; <kbd>↑</kbd> on the trigger doesn’t open at the last item; no typeahead.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/">Menu button pattern</a>, WAI-ARIA Authoring Practices: the keyboard contract measured against above.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</a>, MDN: <code>commandfor</code>, <code>toggle-popover</code> and <code>hide-popover</code>.</li>
+        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a dropdown menu</a>, Chrome: <code>focusgroup="menu"</code> on a container inside the popover, and implicit anchoring to the invoker.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/position-area">position-area</a>, MDN: the spanning areas that align the menu to the trigger’s end edge.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

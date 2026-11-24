@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Long-Press Preview</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/long-press-preview">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- The surface: a phone showing a photo library. Each photo is a link that opens it;
+     pressing and holding one lifts it with its actions. -->
+<div class="phone">
+  <div class="status" aria-hidden="true">
+    <span>9:41</span>
+    <svg viewBox="0 0 46 12"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="2.5" width="3" height="9.5" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/><rect class="batt" x="23.5" y="0.5" width="19" height="11" rx="3.5"/><rect x="25.5" y="2.5" width="12" height="7" rx="2"/><rect x="43.5" y="4" width="1.5" height="4" rx="0.75"/></svg>
+  </div>
+  <div class="library">
+    <h1>Recents</h1>
+    <p>1,284 Items</p>
+    <div class="grid">
+      <a class="tile" href="#p1"  draggable="false" aria-label="Dusk over the bay, 12 October"><span class="photo ph-dusk"></span></a>
+      <a class="tile" href="#p2"  draggable="false" aria-label="Lemons on the table, 12 October"><span class="photo ph-citrus" data-fav></span></a>
+      <a class="tile" href="#p3"  draggable="false" aria-label="Ridge at first light, 11 October"><span class="photo ph-peak"></span></a>
+      <a class="tile" href="#p4"  draggable="false" aria-label="Video, 14 seconds, 11 October"><span class="photo ph-sea"><span class="dur">0:14</span></span></a>
+      <a class="tile" href="#p5"  draggable="false" aria-label="Pines in fog, 10 October"><span class="photo ph-forest"></span></a>
+      <a class="tile" href="#p6"  draggable="false" aria-label="Wildflowers, 9 October"><span class="photo ph-bloom"></span></a>
+      <a class="tile" href="#p7"  draggable="false" aria-label="Dunes at noon, 8 October"><span class="photo ph-dunes"></span></a>
+      <a class="tile" href="#p8"  draggable="false" aria-label="City at night, 8 October"><span class="photo ph-city" data-fav></span></a>
+      <a class="tile" href="#p9"  draggable="false" aria-label="Morning fog, 7 October"><span class="photo ph-fog"></span></a>
+      <a class="tile" href="#p10" draggable="false" aria-label="Pier at sunset, 6 October"><span class="photo ph-dusk flip"></span></a>
+      <a class="tile" href="#p11" draggable="false" aria-label="Garden, 5 October"><span class="photo ph-bloom flip"></span></a>
+      <a class="tile" href="#p12" draggable="false" aria-label="Valley, 4 October"><span class="photo ph-peak flip"></span></a>
+      <a class="tile" href="#p13" draggable="false" aria-label="Harbor, 3 October"><span class="photo ph-sea flip"></span></a>
+      <a class="tile" href="#p14" draggable="false" aria-label="Fruit stand, 2 October"><span class="photo ph-citrus flip"></span></a>
+      <a class="tile" href="#p15" draggable="false" aria-label="Woods, 1 October"><span class="photo ph-forest flip"></span></a>
+    </div>
+  </div>
+  <div class="home" aria-hidden="true"></div>
+</div>
+
+<!-- The lifted state. The dialog's own box is the action list (so a tap anywhere else is
+     outside it and light-dismisses); the preview is a child placed over the pressed photo. -->
+<dialog class="lp" closedby="any">
+  <div class="lp-preview" aria-hidden="true"></div>
+  <div class="lp-menu" focusgroup="menu inline block nomemory" tabindex="-1" aria-label="Photo actions">
+    <div class="lp-quick" role="group" aria-label="Quick actions">
+      <button type="button"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span></button>
+      <button type="button"><svg class="icon"><use href="#i-share"/></svg><span>Share</span></button>
+      <button type="button" role="menuitemcheckbox" aria-checked="false"><svg class="icon"><use href="#i-heart"/></svg><span>Favorite</span></button>
+    </div>
+    <hr>
+    <button type="button"><span>Duplicate</span><svg class="icon"><use href="#i-files"/></svg></button>
+    <button type="button"><span>Add to Album</span><svg class="icon"><use href="#i-folder-plus"/></svg></button>
+    <hr>
+    <button type="button" class="danger"><span>Delete</span><svg class="icon"><use href="#i-trash-2"/></svg></button>
+  </div>
+</dialog>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match the lift ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Long press */
+  --lp-hold: 500ms;                                                            /* Hold time before the menu opens */
+  --lp-slop: 8px;                                                              /* Movement that cancels the hold: it was a scroll or a drag */
+  --lp-press: 0.95;                                                            /* Card scale at the end of the hold; it shrinks over the whole hold */
+
+  /* @group Backdrop */
+  --lp-dim: light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.42));                   /* Dim over the page */
+  --lp-blur: 14px;                                                             /* Page blur */
+
+  /* @group Preview */
+  --lp-lift: 1.04;                                                             /* Scale over the card */
+  --lp-preview-radius: 14px;                                                   /* Corners; the card’s own are square */
+  --lp-preview-shadow: 0 2px 6px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.35)),
+                       0 20px 44px -12px light-dark(rgb(0 0 0 / 0.38), rgb(0 0 0 / 0.75));   /* Lift shadow, two layers */
+
+  /* @group Action list */
+  --lp-menu-w: 250px;                                                          /* Width */
+  --lp-gap: 10px;                                                              /* Space between preview and list */
+  --lp-edge: 8px;                                                              /* Minimum space from the screen edge */
+  --lp-menu-bg: light-dark(rgb(250 250 250 / 0.8), rgb(38 38 40 / 0.8));        /* Material, over its own blur */
+  --lp-menu-blur: 30px;                                                        /* Material blur, saturate 180% */
+  --lp-menu-radius: 14px;                                                      /* Corners */
+  --lp-menu-shadow: 0 10px 40px -8px light-dark(rgb(0 0 0 / 0.25), rgb(0 0 0 / 0.6));   /* Elevation */
+  --lp-row-h: 44px;                                                            /* Row height */
+  --lp-row-px: 16px;                                                           /* Row padding, both sides */
+  --lp-font-size: 17px;                                                        /* Label, line height 22px, weight 400 */
+  --lp-icon: 19px;                                                             /* Icon, trailing in rows */
+  --lp-fg: light-dark(#000000, #ffffff);                                       /* Label and icon */
+  --lp-line: light-dark(rgb(60 60 67 / 0.22), rgb(235 235 245 / 0.14));          /* Hairline between rows, 0.5px */
+  --lp-group-gap: 8px;                                                         /* Band between groups */
+  --lp-group-bg: light-dark(rgb(0 0 0 / 0.07), rgb(0 0 0 / 0.35));              /* Band fill */
+  --lp-hover: light-dark(rgb(0 0 0 / 0.09), rgb(255 255 255 / 0.11));            /* Row under the finger, pointer or keyboard focus */
+
+  /* @group Quick actions */
+  --lp-quick-h: 66px;                                                          /* Height of the icon-over-label row */
+  --lp-quick-size: 12px;                                                       /* Label, line height 14px, weight 400 */
+
+  /* @group Destructive item */
+  --lp-danger: light-dark(#ff3b30, #ff453a);                                   /* Label and icon (iOS system red) */
+
+  /* @group Focus */
+  --lp-focus: light-dark(#007aff, #0a84ff);                                    /* Keyboard focus ring on cards, 3px inset */
+
+  /* @group Motion */
+  --lp-in: 420ms;                                                              /* Lift, list and backdrop in */
+  --lp-spring: linear(0, 0.18 7%, 0.55 18%, 0.84 30%, 1.02 42%, 1.07 52%, 1.05 62%, 1.01 76%, 1);   /* Lift easing, a light spring */
+  --lp-out: 220ms;                                                             /* Everything back */
+  --lp-out-ease: cubic-bezier(0.3, 0, 0.2, 1);                                 /* Settle easing */
+  --lp-menu-from: 0.5;                                                         /* List scale it grows from, at the corner nearest the card */
+
+  /* Lucide's heart as a mask, for the filled states (the sprite only strokes). */
+  --lp-heart: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5'/%3E%3C/svg%3E");
+
+  /* Far-side margins of the list. The demo surface widens these to the phone screen. */
+  --lp-edge-x: var(--lp-edge);
+  --lp-edge-y: var(--lp-edge);
+}
+
+/* ---- Dialog: its own box is the action list, anchored to the pressed card ---- */
+.lp {
+  /* Reset the UA modal box. */
+  inset: auto; padding: 0; border: 0; background: none; color: inherit;
+  max-width: none; max-height: none; overflow: visible;
+  width: var(--lp-menu-w);
+
+  /* Below the card, left edges aligned. Flip right-aligned or above when it runs out of room.
+     Far-side margins keep it off the screen edge; flips swap them with the gap. */
+  position-anchor: --lp-source;
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+  margin: var(--lp-gap) var(--lp-edge-x) var(--lp-edge-y) 0;
+
+  /* Lets the list ask which fallback won (to grow from the right corner). */
+  container-type: anchored;
+  outline: none;
+  /* Stay in the top layer while the close transition runs. */
+  transition: display var(--lp-out) allow-discrete, overlay var(--lp-out) allow-discrete;
+}
+
+/* Backdrop: dims and blurs the page. */
+.lp::backdrop {
+  background: transparent;
+  backdrop-filter: blur(0);
+  transition: background var(--lp-out) var(--lp-out-ease), backdrop-filter var(--lp-out) var(--lp-out-ease);
+}
+.lp[open]::backdrop {
+  background: var(--lp-dim);
+  backdrop-filter: blur(var(--lp-blur));
+  transition-duration: var(--lp-in);
+}
+@starting-style {
+  .lp[open]::backdrop { background: transparent; backdrop-filter: blur(0); }
+}
+
+/* ---- Preview: an exact copy of the card, laid over it and lifted ---- */
+.lp-preview {
+  position: fixed;
+  position-anchor: --lp-source;
+  top: anchor(top);
+  left: anchor(left);
+  width: anchor-size(width);
+  height: anchor-size(height);
+  overflow: hidden;
+  border-radius: 0;
+  scale: 1;
+  box-shadow: none;
+  transition: scale var(--lp-out) var(--lp-out-ease), border-radius var(--lp-out) var(--lp-out-ease), box-shadow var(--lp-out) var(--lp-out-ease);
+}
+.lp[open] .lp-preview {
+  scale: var(--lp-lift);
+  border-radius: var(--lp-preview-radius);
+  box-shadow: var(--lp-preview-shadow);
+  transition: scale var(--lp-in) var(--lp-spring), border-radius var(--lp-in) ease-out, box-shadow var(--lp-in) ease-out;
+  @starting-style { scale: var(--lp-press); border-radius: 0; box-shadow: none; }
+}
+
+/* ---- Action list ---- */
+.lp-menu {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--lp-menu-radius);
+  background: var(--lp-menu-bg);
+  backdrop-filter: blur(var(--lp-menu-blur)) saturate(180%);
+  box-shadow: var(--lp-menu-shadow);
+  overflow: hidden;
+  outline: none;
+  font-size: var(--lp-font-size);
+  line-height: 22px;
+  color: var(--lp-fg);
+  user-select: none;
+  -webkit-user-select: none;
+
+  opacity: 0;
+  scale: var(--lp-menu-from);
+  transform-origin: top left;
+  transition: opacity var(--lp-out) var(--lp-out-ease), scale var(--lp-out) var(--lp-out-ease);
+}
+.lp[open] .lp-menu {
+  opacity: 1;
+  scale: 1;
+  transition: opacity calc(var(--lp-in) / 2) ease-out, scale var(--lp-in) var(--lp-spring);
+  @starting-style { opacity: 0; scale: var(--lp-menu-from); }
+}
+/* Grow from the corner nearest the card, whichever way the list flipped. */
+@container anchored(fallback: flip-inline)            { .lp-menu { transform-origin: top right; } }
+@container anchored(fallback: flip-block)             { .lp-menu { transform-origin: bottom left; } }
+@container anchored(fallback: flip-block flip-inline) { .lp-menu { transform-origin: bottom right; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp, .lp::backdrop, .lp-preview, .lp-menu { transition: none !important; }
+}
+
+/* Row: [label] [icon]. iOS puts the icon at the end. */
+.lp-menu > button {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  min-height: var(--lp-row-h);
+  padding: 0 var(--lp-row-px);
+  border: 0;
+  background: none;
+  font-weight: 400;
+  text-align: start;
+  cursor: default;
+}
+.lp-menu > button + button { border-top: 0.5px solid var(--lp-line); }
+.lp-menu .icon { width: var(--lp-icon); height: var(--lp-icon); stroke-width: 1.75; }
+
+/* Quick actions: three equal columns, icon over label. */
+.lp-quick { display: grid; grid-template-columns: repeat(3, 1fr); }
+.lp-quick button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--lp-quick-h);
+  border: 0;
+  background: none;
+  font-size: var(--lp-quick-size);
+  line-height: 14px;
+  cursor: default;
+}
+.lp-quick button + button { border-inline-start: 0.5px solid var(--lp-line); }
+
+/* Highlight follows the pointer or finger (script moves focus) and the keyboard. */
+.lp-menu button:is(:hover, :focus) { background: var(--lp-hover); outline: none; }
+
+/* Favorite is a checkbox: a filled heart when on. */
+.lp-menu [aria-checked="true"] .icon { background: currentColor; mask: var(--lp-heart) center / 100% no-repeat; }
+
+.lp-menu hr { flex: none; height: var(--lp-group-gap); margin: 0; border: 0; background: var(--lp-group-bg); }
+.lp-menu .danger { color: var(--lp-danger); }
+
+/* ---- Card states ---- */
+/* Holding: shrink over the whole hold so the press reads as progress. */
+.tile .photo { transition: scale 200ms var(--lp-out-ease), visibility 0s linear var(--lp-out); }
+.tile[data-press] .photo { scale: var(--lp-press); transition: scale var(--lp-hold) cubic-bezier(0.2, 0, 0.4, 1); }
+/* Lifted: the preview stands in for the card; it reappears once the preview has landed. */
+.tile[data-lifted] .photo { visibility: hidden; transition: none; }
+.tile:focus-visible { outline: 3px solid var(--lp-focus); outline-offset: -3px; z-index: 1; }
+
+/* ---- Demo surface (not part of the component) ---- */
+:root { --phone-w: min(390px, 100vw - 32px); --phone-h: calc(100vh - 32px); --phone-r: 44px; }
+body { background: light-dark(#eceef2, #141518); color: light-dark(#000000, #ffffff); }
+.phone {
+  position: fixed; inset: 0; margin: auto; width: var(--phone-w); height: var(--phone-h);
+  overflow: hidden; border-radius: var(--phone-r);
+  background: light-dark(#ffffff, #000000);
+  box-shadow: 0 0 0 1px light-dark(rgb(0 0 0 / 0.1), rgb(255 255 255 / 0.12)), 0 24px 60px -20px rgb(0 0 0 / 0.35);
+}
+/* At rest only: the pin opens the dialog without showModal() (whose focus would scroll the
+   concept page), and a non-modal dialog has no ::backdrop. The phone draws the same one. */
+.phone::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: var(--lp-dim); backdrop-filter: blur(var(--lp-blur));
+  opacity: 0; transition: opacity var(--lp-out) var(--lp-out-ease);
+}
+.phone:has(~ .lp[open]:not(:modal))::after { opacity: 1; }
+/* The phone screen is this demo's viewport: the backdrop covers it, and the list keeps its edge margin from it. */
+.lp::backdrop { inset: 0; margin: auto; width: var(--phone-w); height: var(--phone-h); border-radius: var(--phone-r); }
+.lp { --lp-edge-x: calc((100vw - var(--phone-w)) / 2 + var(--lp-edge)); --lp-edge-y: calc((100vh - var(--phone-h)) / 2 + var(--lp-edge)); }
+
+.status {
+  position: absolute; inset: 0 0 auto; z-index: 1; height: 44px; padding: 0 26px 0 34px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+  background: linear-gradient(light-dark(#ffffff, #000000) 70%, transparent);
+}
+.status svg { width: 46px; height: 12px; fill: currentColor; }
+.status .batt { fill: none; stroke: currentColor; opacity: 0.4; }
+.library { height: 100%; overflow-y: auto; padding-top: 44px; scrollbar-width: none; overscroll-behavior: contain; }
+.library h1 { margin: 14px 16px 0; font-size: 30px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em; }
+.library p { margin: 0 16px 12px; font-size: 13px; color: light-dark(#8a8a8e, #8d8d93); }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding-bottom: 34px; }
+.tile {
+  position: relative; display: block; aspect-ratio: 1; outline: none;
+  -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; touch-action: pan-y;
+}
+.photo { position: absolute; inset: 0; display: block; background-color: #888; }
+.photo[data-fav]::after {
+  content: ""; position: absolute; left: 6px; bottom: 6px; width: 14px; height: 14px;
+  background: #fff; mask: var(--lp-heart) center / 100% no-repeat;
+}
+.photo .dur { position: absolute; right: 6px; bottom: 4px; font-size: 12px; font-weight: 600; color: #fff; text-shadow: 0 1px 2px rgb(0 0 0 / 0.5); }
+.photo.flip { scale: -1 1; }
+.photo.flip .dur { scale: -1 1; }
+.photo.flip[data-fav]::after { left: auto; right: 6px; scale: -1 1; }
+.tile[data-press] .photo.flip { scale: calc(var(--lp-press) * -1) var(--lp-press); }
+.home { position: absolute; left: 50%; bottom: 8px; width: 134px; height: 5px; translate: -50% 0; border-radius: 3px; background: light-dark(#000000, #ffffff); }
+
+/* Synthetic photos: layered gradients, no images. */
+.ph-dusk {
+  background:
+    radial-gradient(circle at 50% 61%, #fff1c2 0 8%, transparent 8.5%),
+    linear-gradient(transparent 63%, #3b2a63 63% 65%, #2a1f4e 65%),
+    linear-gradient(#f9b277, #ec7680 42%, #84509f 63%);
+}
+.ph-citrus {
+  background:
+    radial-gradient(circle at 36% 40%, #fff7c7 0 4%, transparent 4.5%),
+    radial-gradient(circle at 40% 44%, #ffd83d 0 20%, transparent 20.5%),
+    radial-gradient(circle at 70% 70%, #fff7c7 0 3%, transparent 3.5%),
+    radial-gradient(circle at 73% 73%, #f6c425 0 16%, transparent 16.5%),
+    linear-gradient(135deg, #1f8a8a, #10646b);
+}
+.ph-peak {
+  background:
+    conic-gradient(from 140deg at 38% 34%, #f4f6fb 0 18deg, #7d8fb0 18deg 80deg, transparent 0),
+    conic-gradient(from 145deg at 72% 46%, #5a6d92 0 70deg, transparent 0),
+    linear-gradient(#ffd9c2, #c8d6f0 60%);
+}
+.ph-sea {
+  background:
+    linear-gradient(transparent 52%, rgb(255 255 255 / 0.55) 52% 53.5%, transparent 53.5%),
+    linear-gradient(#a9d8f0, #e7f5fb 52%, #3d8fbf 52%, #16577f);
+}
+.ph-forest {
+  background:
+    conic-gradient(from 150deg at 22% 38%, #2f5d3a 0 60deg, transparent 0),
+    conic-gradient(from 150deg at 52% 30%, #24492e 0 60deg, transparent 0),
+    conic-gradient(from 150deg at 80% 44%, #2f5d3a 0 60deg, transparent 0),
+    linear-gradient(#dbe9de, #9cc3a6);
+}
+.ph-bloom {
+  background:
+    radial-gradient(circle at 28% 34%, #ffb3d1 0 11%, transparent 11.5%),
+    radial-gradient(circle at 66% 56%, #ffd66e 0 9%, transparent 9.5%),
+    radial-gradient(circle at 42% 78%, #ff86ad 0 8%, transparent 8.5%),
+    radial-gradient(circle at 82% 22%, #ffffff 0 6%, transparent 6.5%),
+    linear-gradient(#86b86f, #4b8a3c);
+}
+.ph-dunes {
+  background:
+    radial-gradient(120% 60% at 18% 100%, #c47a3f 60%, transparent 61%),
+    radial-gradient(100% 50% at 92% 100%, #dc9a5a 60%, transparent 61%),
+    linear-gradient(#ffe3b3, #f2b97d);
+}
+.ph-city {
+  background:
+    radial-gradient(circle at 76% 22%, #fff4d6 0 6%, transparent 6.5%),
+    linear-gradient(90deg, #1b2245 0 16%, transparent 16% 20%, #252f5c 20% 38%, transparent 38% 44%, #1e2750 44% 62%, transparent 62% 66%, #2a3566 66% 86%, transparent 86%) 0 100% / 100% 52% no-repeat,
+    repeating-linear-gradient(#ffd77a 0 2px, transparent 2px 9px) 0 100% / 100% 44% no-repeat,
+    linear-gradient(#18163a, #4b3a7a);
+}
+.ph-fog { background: linear-gradient(#d9dee6, #b8c2cf 40%, #e5e8ee 62%, #9aa6b6); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// A still press of 500ms lifts the card. The platform does the rest: <dialog> gives the top
+// layer, backdrop, inert page, focus, Esc and light dismiss; anchor positioning lays the
+// preview over the card and the list beside it.
+const grid = document.querySelector('.grid');
+const dialog = document.querySelector('.lp');
+const preview = dialog.querySelector('.lp-preview');
+const menu = dialog.querySelector('.lp-menu');
+const favorite = menu.querySelector('[role="menuitemcheckbox"]');
+const token = name => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+const HOLD = token('--lp-hold'), SLOP = token('--lp-slop');
+
+let source = null;     // the card the menu acts on
+let press = null;      // a pending long-press: { tile, x, y, timer }
+let dragging = false;  // a hold opened the menu and the finger is still down
+
+/** Lift a card. via: 'hold' (finger still down), 'pointer' (right-click) or 'key'. */
+function lift(tile, via) {
+  if (dialog.open) return;
+  cancel();
+  source?.style.removeProperty('anchor-name');
+  source = tile;
+  tile.style.anchorName = '--lp-source';                       // preview and list anchor here
+  tile.toggleAttribute('data-lifted', true);
+  preview.replaceChildren(tile.querySelector('.photo').cloneNode(true));
+  favorite.ariaChecked = String(tile.querySelector('.photo').hasAttribute('data-fav'));
+  dialog.ariaLabel = tile.ariaLabel;
+  tile.focus({ preventScroll: true, focusVisible: false });   // so closing returns focus to the card
+  dragging = via === 'hold';
+  dialog.showModal();                                         // focuses the list, its first focusable element
+  if (via === 'key') menu.querySelector('button').focus({ preventScroll: true });
+  if (navigator.userActivation?.hasBeenActive) navigator.vibrate?.(10);
+}
+
+function cancel() {
+  if (!press) return;
+  clearTimeout(press.timer);
+  press.tile.removeAttribute('data-press');
+  press = null;
+}
+
+grid.addEventListener('pointerdown', e => {
+  const tile = e.target.closest('.tile');
+  if (!tile || e.button !== 0) return;
+  // Touch captures the pointer to the card; release it so the lift-off lands on the preview.
+  e.target.releasePointerCapture(e.pointerId);
+  tile.toggleAttribute('data-press', true);
+  press = { tile, x: e.clientX, y: e.clientY, timer: setTimeout(() => lift(tile, 'hold'), HOLD) };
+});
+grid.addEventListener('pointermove', e => {
+  if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > SLOP) cancel();
+});
+for (const type of ['pointerup', 'pointercancel']) grid.addEventListener(type, cancel);
+
+// Right-click, Android's own long-press, and keyboard/AT requests (pointerType "").
+grid.addEventListener('contextmenu', e => {
+  const tile = e.target.closest('.tile');
+  if (!tile) return;
+  e.preventDefault();
+  lift(tile, press ? 'hold' : e.pointerType === '' ? 'key' : 'pointer');
+});
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+grid.addEventListener('keydown', e => {
+  const tile = e.target.closest('.tile');
+  if (!tile || (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10'))) return;
+  e.preventDefault();
+  lift(tile, 'key');
+});
+
+// iOS: after a hold, slide onto an action and lift the finger to run it.
+document.addEventListener('pointerup', e => {
+  if (!dragging) return;
+  dragging = false;
+  e.target.closest('.lp-menu button')?.click();
+});
+// Highlight follows the pointer or finger by moving focus, so the keyboard picks up there.
+menu.addEventListener('pointermove', e => {
+  const item = e.target.closest('button');
+  if (item && item !== document.activeElement) item.focus({ preventScroll: true, focusVisible: false });
+});
+menu.addEventListener('pointerleave', () => menu.focus({ preventScroll: true, focusVisible: false }));
+// From the list itself (after a touch or pointer open), ↓ enters at the top and ↑ at the bottom.
+menu.addEventListener('keydown', e => {
+  if (e.target !== menu) return;
+  const items = menu.querySelectorAll('button');
+  if (e.key === 'ArrowDown') { e.preventDefault(); items[0].focus({ preventScroll: true }); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); items[items.length - 1].focus({ preventScroll: true }); }
+});
+
+menu.addEventListener('click', e => {
+  const item = e.target.closest('button');
+  if (!item) return;
+  if (item === favorite) source.querySelector('.photo').toggleAttribute('data-fav');
+  dialog.close();
+});
+preview.addEventListener('click', () => dialog.close());       // an app would open the photo here
+dialog.addEventListener('close', () => source.removeAttribute('data-lifted'));
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Press and hold the second photo with a finger, then lift the finger over the preview.
+// showModal() focuses the dialog, and Chrome scrolls an embedding page to that focus, so
+// loading would scroll the concept page whenever a frame is out of view. This one open
+// therefore skips focus: focus() is a no-op and the dialog opens with the open attribute
+// (not modal); .phone::after stands in for ::backdrop. The first click outside the list,
+// or any key, closes it; every open after that is the real showModal().
+requestAnimationFrame(() => {
+  const dialog = document.querySelector('.lp');
+  const photo = document.querySelectorAll('.tile .photo')[1];
+  const r = photo.getBoundingClientRect();
+  const at = { bubbles: true, pointerId: 1, pointerType: 'touch', isPrimary: true, clientX: r.x + r.width / 2, clientY: r.y + r.height / 2 };
+  const focus = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = () => {};
+  dialog.showModal = () => {            // the hold completed
+    dialog.toggleAttribute('open', true);
+    delete dialog.showModal;
+    HTMLElement.prototype.focus = focus;
+    setTimeout(() => dialog.querySelector('.lp-preview').dispatchEvent(new PointerEvent('pointerup', { ...at, button: 0 })));
+  };
+  photo.dispatchEvent(new PointerEvent('pointerdown', { ...at, button: 0, buttons: 1 }));
+  const settle = e => {
+    if (!dialog.open || dialog.matches(':modal')) return;
+    if (e.type === 'keydown' || !e.target.closest('.lp')) dialog.close();
+  };
+  addEventListener('pointerdown', settle, true);
+  addEventListener('keydown', settle, true);
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="640" data-hint="Press and hold a photo, or right-click it. Shift+F10 on a focused photo."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Card</th><td>The pressed item: a link that opens the photo. Not draggable, no text selection or touch callout, so the hold belongs to the menu.</td></tr>
+          <tr><th>Backdrop</th><td>The modal dialog’s <code>::backdrop</code>: the whole screen dimmed and blurred. Only the preview and the list stay sharp.</td></tr>
+          <tr><th>Preview</th><td>A copy of the card’s image laid exactly over the card, then scaled up with rounded corners and a shadow. The card underneath hides until the preview lands again.</td></tr>
+          <tr><th>Action list</th><td>The dialog’s own box: a 250px material surface with its own blur and 14px corners, 10px from the preview.</td></tr>
+          <tr><th>Quick actions</th><td>The top row: the three most common actions as icon-over-label buttons (UIKit’s medium element size).</td></tr>
+          <tr><th>Row</th><td>Label first, icon trailing, as iOS draws them. 44px tall, 0.5px hairline between rows.</td></tr>
+          <tr><th>Group band</th><td>An 8px band between groups. Three groups at most.</td></tr>
+          <tr><th>Destructive item</th><td>Last, in its own group, red label and icon.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Opens on</th><td>A 500ms press that moves less than 8px; right-click; <kbd>Shift</kbd>+<kbd>F10</kbd> or the Menu key on a focused card; Android’s own long-press (it fires <code>contextmenu</code>). A 10ms haptic tick where <code>navigator.vibrate</code> exists.</td></tr>
+          <tr><th>While holding</th><td>The card shrinks to 95% over the whole hold, so the press reads as progress. Moving more than 8px (a scroll) or lifting early cancels, and it springs back in 200ms.</td></tr>
+          <tr><th>Lift</th><td>The preview picks up at 95% and springs to 104% over 420ms while its corners round from 0 to 14px and its shadow grows. The backdrop dims and blurs to 14px at the same time.</td></tr>
+          <tr><th>List placement</th><td>Below the card with left edges aligned. Right-aligned when it would cross the right edge; above when there is no room below (<code>position-try-fallbacks</code>). It grows out of the corner nearest the card.</td></tr>
+          <tr><th>Drag to pick</th><td>After a hold, keep the finger down, slide onto an action and lift: it runs. The row under the finger is highlighted. Lifting over the preview leaves the menu open; lifting anywhere else closes it (light dismiss).</td></tr>
+          <tr><th>Actions</th><td>Run and close. Favorite toggles the heart on the photo. Delete is shown, not wired; a real app asks to confirm.</td></tr>
+          <tr><th>Dismiss</th><td>A tap outside the list (light dismiss), <kbd>Esc</kbd>, or a tap on the preview (an app would open the photo). Everything reverses in 220ms and the card reappears as the preview lands.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Shift</kbd>+<kbd>F10</kbd> <kbd>Menu</kbd></th><td>On a focused card: lift it and focus the first action.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>→</kbd> / <kbd>↑</kbd> <kbd>←</kbd></th><td>Next or previous action in reading order; the top row reads left to right (native <code>focusgroup</code>). After a touch or pointer open, <kbd>↓</kbd> enters at the top and <kbd>↑</kbd> at the bottom.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last action.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the focused action and close.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close. Focus returns to the card.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>showModal()</code> makes the page inert and moves focus into the dialog: to the list, its first focusable element. No <code>autofocus</code> attribute: it would also queue a page-level autofocus that can scroll an embedding page. <kbd>Esc</kbd> and light dismiss are native through <code>closedby="any"</code>. Focus returns to the card because script focuses it just before opening.</li>
+          <li>The dialog is named after the photo (its <code>aria-label</code> is copied on open). The preview is a decorative copy, <code>aria-hidden</code>.</li>
+          <li><code>focusgroup="menu"</code> infers <code>menu</code> and <code>menuitem</code> roles. Favorite is a <code>menuitemcheckbox</code>; the top row is a named <code>group</code>; group bands are <code>&lt;hr&gt;</code> separators. <code>inline block</code> is added because <code>menu</code> alone answers only <kbd>↑</kbd>/<kbd>↓</kbd>.</li>
+          <li>A long-press can’t be discovered and isn’t open to keyboard or switch users on its own: the same menu opens with right-click and <kbd>Shift</kbd>+<kbd>F10</kbd>, and every action should also live somewhere visible, like the photo viewer’s toolbar.</li>
+          <li>Not built here: reversing the list order when it opens above (iOS does, so the nearest item is the most common); it would make the visual and keyboard orders disagree.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://developer.apple.com/design/human-interface-guidelines/context-menus">Context menus</a>, Apple Human Interface Guidelines: a short list of relevant items, about three groups at most, destructive items last in red, a preview that emerges from the content while the screen dims, and every item also available in the main interface.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy">HTMLDialogElement: closedBy</a>, MDN: <code>any</code> adds light dismiss to the close request (<kbd>Esc</kbd>) a modal dialog gets by default.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/Try_options_hiding">Fallback options and conditional hiding</a>, MDN: <code>position-try-fallbacks</code> with <code>flip-block</code> and <code>flip-inline</code>, which also swap the margins used here as screen-edge insets.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

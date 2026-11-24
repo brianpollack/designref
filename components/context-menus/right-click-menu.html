@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Right-Click Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/right-click-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- The surface people right-click: a folder of files. -->
+<div class="desk">
+  <header class="desk-bar">
+    <svg class="icon"><use href="#i-folder"/></svg>
+    Projects <span>/</span> Northwind
+  </header>
+  <div class="files">
+    <button class="file" type="button" data-name="Brand Assets" data-kind="folder"><span class="file-icon"><svg class="icon"><use href="#i-folder"/></svg></span><span>Brand Assets</span></button>
+    <button class="file" type="button" data-name="Q3 Report.pdf" data-kind="doc"><span class="file-icon"><svg class="icon"><use href="#i-file-text"/></svg></span><span>Q3 Report.pdf</span></button>
+    <button class="file" type="button" data-name="Hero Shot.png" data-kind="image"><span class="file-icon"><svg class="icon"><use href="#i-file-image"/></svg></span><span>Hero Shot.png</span></button>
+    <button class="file" type="button" data-name="Launch Plan.md" data-kind="doc"><span class="file-icon"><svg class="icon"><use href="#i-file-text"/></svg></span><span>Launch Plan.md</span></button>
+    <button class="file" type="button" data-name="Research" data-kind="folder"><span class="file-icon"><svg class="icon"><use href="#i-folder"/></svg></span><span>Research</span></button>
+    <button class="file" type="button" data-name="Team Photo.jpg" data-kind="image"><span class="file-icon"><svg class="icon"><use href="#i-file-image"/></svg></span><span>Team Photo.jpg</span></button>
+    <button class="file" type="button" data-name="Budget.xlsx" data-kind="sheet"><span class="file-icon"><svg class="icon"><use href="#i-file"/></svg></span><span>Budget.xlsx</span></button>
+  </div>
+  <output class="status">7 items</output>
+</div>
+
+<!-- Zero-size anchor. Script moves it to the pointer; the menu anchors to it. -->
+<div class="cm-anchor"></div>
+
+<!-- Menu for a file. The popover is the shell; the focusgroup inside is the menu. -->
+<div class="cm" id="file-menu" popover>
+  <div class="cm-panel" focusgroup="menu nomemory" tabindex="-1" aria-label="File actions">
+    <div class="cm-label" aria-hidden="true">File</div>
+    <button type="button"><svg class="icon"><use href="#i-eye"/></svg><span>Open</span><kbd aria-hidden="true">⌘O</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-share"/></svg><span>Share…</span></button>
+    <hr>
+    <button type="button"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span><kbd aria-hidden="true">⌘C</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-files"/></svg><span>Duplicate</span><kbd aria-hidden="true">⌘D</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-pencil"/></svg><span>Rename</span><kbd aria-hidden="true">↵</kbd></button>
+    <button type="button" disabled><svg class="icon"><use href="#i-lock"/></svg><span>Lock</span></button>
+    <hr>
+    <button type="button" role="menuitemcheckbox" aria-checked="true"><svg class="icon"><use href="#i-check"/></svg><span>Starred</span></button>
+    <hr>
+    <button type="button" class="danger"><svg class="icon"><use href="#i-trash-2"/></svg><span>Move to Trash</span><kbd aria-hidden="true">⌘⌫</kbd></button>
+  </div>
+</div>
+
+<!-- Menu for empty space in the folder. -->
+<div class="cm" id="desk-menu" popover>
+  <div class="cm-panel" focusgroup="menu nomemory" tabindex="-1" aria-label="Folder actions">
+    <button type="button"><svg class="icon"><use href="#i-folder-plus"/></svg><span>New Folder</span><kbd aria-hidden="true">⇧⌘N</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-file-plus"/></svg><span>New File</span><kbd aria-hidden="true">⌘N</kbd></button>
+    <button type="button" disabled><svg class="icon"><use href="#i-clipboard-paste"/></svg><span>Paste</span><kbd aria-hidden="true">⌘V</kbd></button>
+    <hr>
+    <div class="cm-label" aria-hidden="true">Sort by</div>
+    <div role="group" aria-label="Sort by">
+      <button type="button" role="menuitemradio" aria-checked="true"><svg class="icon"><use href="#i-check"/></svg><span>Name</span></button>
+      <button type="button" role="menuitemradio" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Date Modified</span></button>
+      <button type="button" role="menuitemradio" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Size</span></button>
+    </div>
+    <hr>
+    <button type="button" role="menuitemcheckbox" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Show Hidden Files</span><kbd aria-hidden="true">⇧⌘.</kbd></button>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match the menu ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --cm-bg: light-dark(#ffffff, #26272b);                                   /* Surface */
+  --cm-border: light-dark(rgb(0 0 0 / 0.08), rgb(255 255 255 / 0.09));     /* Hairline border, 1px */
+  --cm-radius: 10px;                                                       /* Corner radius */
+  --cm-pad: 5px;                                                           /* Inner padding, all sides */
+  --cm-min-w: 224px;                                                       /* Minimum width; grows to fit labels */
+  --cm-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3)),
+               0 10px 28px -6px light-dark(rgb(0 0 0 / 0.18), rgb(0 0 0 / 0.55));   /* Elevation, two layers */
+
+  /* @group Item */
+  --cm-item-h: 30px;                                  /* Row height */
+  --cm-item-px: 8px;                                  /* Horizontal padding */
+  --cm-item-radius: 6px;                              /* Highlight corner radius */
+  --cm-gap: 10px;                                     /* Icon to label gap */
+  --cm-icon: 16px;                                    /* Icon and check mark size */
+  --cm-font-size: 13.5px;                             /* Label size, line height 20px, weight 450 */
+  --cm-fg: light-dark(#1c1d21, #ececef);              /* Label */
+  --cm-icon-fg: light-dark(#5c6068, #a5a9b1);         /* Icon */
+  --cm-key-fg: light-dark(#71757d, #8a8e96);          /* Shortcut text */
+  --cm-hover: light-dark(#eef0f3, #34363c);           /* Highlight (hover and keyboard focus) */
+  --cm-disabled: light-dark(#b4b7bd, #5b5e65);        /* Disabled label and icon */
+
+  /* @group Destructive item */
+  --cm-danger: light-dark(#d1242f, #ff7b72);                       /* Label and icon */
+  --cm-danger-hover: light-dark(#fdecec, rgb(255 123 114 / 0.14));  /* Highlight */
+
+  /* @group Structure */
+  --cm-sep: light-dark(#e9eaed, #36383e);             /* Separator, 1px */
+  --cm-sep-space: 4px;                                /* Space above and below a separator */
+  --cm-label-fg: light-dark(#71757d, #8a8e96);        /* Section label */
+  --cm-label-size: 11.5px;                            /* Section label size, weight 600 */
+
+  /* @group Motion */
+  --cm-in: 120ms;                                     /* Open duration */
+  --cm-out: 90ms;                                     /* Close duration */
+  --cm-ease: cubic-bezier(0.2, 0.9, 0.3, 1);          /* Easing (strong ease-out) */
+  --cm-from: 0.96;                                    /* Scale the menu grows from */
+}
+
+/* ---- Anchor at the pointer ---- */
+.cm-anchor { position: fixed; width: 0; height: 0; pointer-events: none; }
+
+/* ---- Popover shell: placement only ---- */
+.cm {
+  /* Reset UA popover box; the panel draws the menu. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* Top-left corner at the pointer, then flip on whichever axis runs out of room. */
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+
+  /* Lets the panel ask which fallback won (to grow from the right corner). */
+  container-type: anchored;
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition: display var(--cm-out) allow-discrete, overlay var(--cm-out) allow-discrete;
+}
+
+/* ---- The menu ---- */
+.cm-panel {
+  min-width: var(--cm-min-w);
+  padding: var(--cm-pad);
+  background: var(--cm-bg);
+  border: 1px solid var(--cm-border);
+  border-radius: var(--cm-radius);
+  box-shadow: var(--cm-shadow);
+  color: var(--cm-fg);
+  font-size: var(--cm-font-size);
+  line-height: 20px;
+  outline: none;
+  user-select: none;
+
+  opacity: 0;
+  scale: var(--cm-from);
+  transform-origin: top left;
+  transition: opacity var(--cm-out) var(--cm-ease), scale var(--cm-out) var(--cm-ease);
+}
+.cm:popover-open .cm-panel {
+  opacity: 1;
+  scale: 1;
+  transition-duration: var(--cm-in);
+  @starting-style { opacity: 0; scale: var(--cm-from); }
+}
+/* Grow from the corner nearest the pointer, whichever way the menu flipped. */
+@container anchored(fallback: flip-block)             { .cm-panel { transform-origin: bottom left; } }
+@container anchored(fallback: flip-inline)            { .cm-panel { transform-origin: top right; } }
+@container anchored(fallback: flip-block flip-inline) { .cm-panel { transform-origin: bottom right; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cm, .cm-panel { transition: none; }
+}
+
+/* Item: [icon slot] [label] [shortcut] */
+.cm-panel button {
+  display: grid;
+  grid-template-columns: var(--cm-icon) 1fr auto;
+  align-items: center;
+  column-gap: var(--cm-gap);
+  width: 100%;
+  height: var(--cm-item-h);
+  padding: 0 var(--cm-item-px);
+  border: 0;
+  border-radius: var(--cm-item-radius);
+  background: none;
+  font-weight: 450;
+  text-align: start;
+  white-space: nowrap;
+  cursor: default;
+}
+.cm-panel button .icon { width: var(--cm-icon); height: var(--cm-icon); color: var(--cm-icon-fg); }
+.cm-panel button:is(:hover, :focus-visible) { background: var(--cm-hover); outline: none; }
+.cm-panel button:disabled { color: var(--cm-disabled); }
+.cm-panel button:disabled .icon { color: inherit; }
+
+.cm-panel kbd {
+  margin-inline-start: 24px;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--cm-key-fg);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Checkable items: the check mark lives in the icon slot. */
+.cm-panel [aria-checked] .icon { color: var(--cm-fg); }
+.cm-panel [aria-checked="false"] .icon { visibility: hidden; }
+
+/* Destructive */
+.cm-panel .danger, .cm-panel .danger .icon { color: var(--cm-danger); }
+.cm-panel .danger:is(:hover, :focus-visible) { background: var(--cm-danger-hover); }
+
+/* Structure */
+.cm-panel hr {
+  height: 1px;
+  margin: var(--cm-sep-space) calc(var(--cm-item-px) * -0.5 + 2px);
+  border: 0;
+  background: var(--cm-sep);
+}
+.cm-label {
+  padding: 6px var(--cm-item-px) 2px calc(var(--cm-item-px) + var(--cm-icon) + var(--cm-gap));
+  font-size: var(--cm-label-size);
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--cm-label-fg);
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); }
+.desk { height: 100%; display: flex; flex-direction: column; }
+.desk-bar {
+  display: flex; align-items: center; gap: 8px; padding: 14px 20px;
+  font-weight: 600; font-size: 13px;
+}
+.desk-bar span { color: light-dark(#9a9ea6, #61656d); font-weight: 400; }
+.files {
+  flex: 1; display: grid; grid-template-columns: repeat(auto-fill, 104px);
+  align-content: start; gap: 8px 6px; padding: 8px 14px;
+}
+.file {
+  display: grid; justify-items: center; gap: 8px; padding: 10px 6px;
+  border: 0; border-radius: 10px; background: none; font-size: 12px; cursor: default;
+}
+.file:focus-visible { outline: 2px solid light-dark(#2f6fed, #7aa5ff); outline-offset: 0; }
+.file.is-target { background: light-dark(rgb(47 111 237 / 0.12), rgb(122 165 255 / 0.16)); }
+.file-icon {
+  display: grid; place-items: center; width: 52px; height: 52px; border-radius: 12px;
+  background: light-dark(#e6e9ef, #23252a); color: light-dark(#5c6068, #a5a9b1);
+}
+.file-icon .icon { width: 26px; height: 26px; }
+.file[data-kind="folder"] .file-icon { background: light-dark(#dbe7ff, #1d2a45); color: light-dark(#2f6fed, #7aa5ff); }
+.file[data-kind="image"] .file-icon { background: light-dark(#dcf3e6, #17302a); color: light-dark(#18864b, #6fd39b); }
+.file[data-kind="doc"] .file-icon { background: light-dark(#fde7e4, #3a1f1d); color: light-dark(#c5372c, #ff8f84); }
+.status { padding: 10px 20px; font-size: 12px; color: light-dark(#6a6e76, #8a8e96); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Right-click → move the zero-size anchor to the pointer → show the popover anchored to it.
+// Placement, flipping, top layer, Esc and click-outside are all native.
+const desk = document.querySelector('.desk');
+const anchor = document.querySelector('.cm-anchor');
+const status = document.querySelector('.status');
+const menus = document.querySelectorAll('.cm');
+let target = null;                                   // the file the menu acts on
+
+desk.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  // pointerType "" means no pointing device: the browser's own keyboard trigger.
+  openFor(e.target, e.pointerType === '' ? null : e);
+});
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+desk.addEventListener('keydown', e => {
+  if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
+  e.preventDefault();
+  openFor(e.target, null);
+});
+
+/** Pick the menu for what was clicked; open at the pointer, or at the element for keys. */
+function openFor(el, pointer) {
+  target = el.closest('.file');
+  const menu = document.getElementById(target ? 'file-menu' : 'desk-menu');
+  const box = (target ?? desk).getBoundingClientRect();
+  if (pointer) open(menu, pointer.clientX, pointer.clientY, false);
+  else open(menu, box.left + 12, box.bottom - 12, true);
+}
+
+function open(menu, x, y, keyboard) {
+  if (menu.matches(':popover-open')) menu.hidePopover();   // re-open at the new point
+  document.querySelector('.is-target')?.classList.remove('is-target');
+  target?.classList.add('is-target');
+  if (target) menu.querySelector('.cm-label').textContent = target.dataset.name;
+  anchor.style.left = `${x}px`;
+  anchor.style.top = `${y}px`;
+  menu.showPopover({ source: anchor });
+  const panel = menu.firstElementChild;
+  // Keyboard opens land on the first item; pointer opens wait for an arrow key.
+  if (keyboard) panel.querySelector('button:enabled').focus({ preventScroll: true });
+  else panel.focus({ focusVisible: false, preventScroll: true });
+}
+
+for (const menu of menus) {
+  const panel = menu.firstElementChild;
+  const items = () => [...panel.querySelectorAll('button:enabled')];
+
+  // From the panel itself, ↓/↑ enter the list; focusgroup handles keys between items.
+  panel.addEventListener('keydown', e => {
+    if (e.target !== panel) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); items()[0].focus(); }
+    if (e.key === 'ArrowUp') { e.preventDefault(); items().at(-1).focus(); }
+  });
+  // Hover follows focus, so the keyboard picks up where the pointer is.
+  panel.addEventListener('pointermove', e => {
+    const item = e.target.closest('button:enabled');
+    if (item && item !== document.activeElement) item.focus({ focusVisible: false });
+  });
+  panel.addEventListener('click', e => activate(menu, e.target.closest('button:enabled')));
+  // Tab (or any focus leaving the menu) closes it, like a native menu.
+  menu.addEventListener('focusout', e => { if (!menu.contains(e.relatedTarget)) menu.hidePopover(); });
+  menu.addEventListener('toggle', e => {
+    if (e.newState === 'closed') document.querySelector('.is-target')?.classList.remove('is-target');
+  });
+}
+
+function activate(menu, item) {
+  if (!item) return;
+  const role = item.getAttribute('role');
+  if (role === 'menuitemcheckbox') item.ariaChecked = String(item.ariaChecked !== 'true');
+  if (role === 'menuitemradio') {
+    item.parentElement.querySelectorAll('[role="menuitemradio"]').forEach(r => { r.ariaChecked = String(r === item); });
+  }
+  const label = item.querySelector('span').textContent;
+  status.textContent = target ? `${label} · ${target.dataset.name}` : label;
+  // Leave a changed check mark visible for a beat before closing, as native menus do.
+  setTimeout(() => menu.hidePopover(), role ? 250 : 0);
+}
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Open the file menu on "Q3 Report.pdf" so the page shows it at rest.
+requestAnimationFrame(() => {
+  const file = document.querySelectorAll('.file')[1];
+  const r = file.getBoundingClientRect();
+  file.dispatchEvent(new MouseEvent('contextmenu', {
+    bubbles: true, cancelable: true, button: 2,
+    clientX: r.left + r.width * 0.62, clientY: r.top + r.height * 0.58,
+  }));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Right-click a file or empty space. Shift+F10 opens it from a focused file."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Container</th><td>Popover surface with a 1px hairline border and a two-layer shadow. Inner padding inset so item highlights never touch the edge.</td></tr>
+          <tr><th>Section label</th><td>Optional. Names what the menu acts on (the file name) or titles a group. Not focusable.</td></tr>
+          <tr><th>Item</th><td>Three columns: a fixed 16px icon slot, the label, and an optional shortcut pushed to the end. The slot is reserved even without an icon so labels align.</td></tr>
+          <tr><th>Shortcut</th><td>Secondary color, tabular figures, hidden from screen readers.</td></tr>
+          <tr><th>Separator</th><td>1px rule between groups of related commands, never at the top or bottom.</td></tr>
+          <tr><th>Checkable item</th><td>Check mark replaces the icon in the slot. Radio groups share one label above them.</td></tr>
+          <tr><th>Disabled item</th><td>Dimmed and skipped by arrow keys, but kept in place so the menu’s shape doesn’t change.</td></tr>
+          <tr><th>Destructive item</th><td>Last, after a separator. Red label and icon, red-tinted highlight.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Opens on</th><td>Right-click, Control-click on macOS, long-press on touch (the browser fires <code>contextmenu</code>), <kbd>Shift</kbd>+<kbd>F10</kbd> or the Menu key.</td></tr>
+          <tr><th>Placement</th><td>Top-left corner exactly at the pointer. If the menu would overflow, it flips to the other side of the pointer on that axis, or both.</td></tr>
+          <tr><th>Motion</th><td>Fades in and grows from 96% scale out of the corner nearest the pointer, 120ms, strong ease-out. Closes in 90ms. No motion with reduced-motion set.</td></tr>
+          <tr><th>Pointer</th><td>Highlight follows the pointer. Leaving the menu clears the highlight. A click runs the command and closes the menu.</td></tr>
+          <tr><th>Checkable items</th><td>Toggle, stay open for 250ms so the new check mark is visible, then close.</td></tr>
+          <tr><th>Context</th><td>Different targets get different menus: a file gets file commands, empty space gets folder commands. The target stays highlighted while its menu is open.</td></tr>
+          <tr><th>Dismiss</th><td><kbd>Esc</kbd>, a click or right-click anywhere else (which reopens at the new spot), <kbd>Tab</kbd>, or focus leaving the window.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items (native <code>focusgroup</code>). From a pointer open, the first press enters the menu.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the focused command, or toggle a checkable item.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close and return focus to where it was (native popover behavior).</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close the menu and move on. Focus is never trapped.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> infers <code>role="menu"</code> on the panel and <code>menuitem</code> on each button, so the markup stays plain. Checkable items still set <code>role</code> and <code>aria-checked</code> explicitly.</li>
+          <li>With no trigger button, the menu is named with <code>aria-label</code>. Separators are real <code>&lt;hr&gt;</code> elements, which the browser exposes as separators.</li>
+          <li>Shortcut text is <code>aria-hidden</code>. When the shortcuts really work in your app, add <code>aria-keyshortcuts</code> to the item.</li>
+          <li>Not built here: typeahead (jump to an item by typing its first letters). Add it if menus run past about ten items.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a dropdown menu</a>: the zero-size placeholder anchor and <code>showPopover({ source })</code> for menus with no trigger.</li>
+        <li><a href="https://frontendmasters.com/blog/popover-context-menus-with-anchor-positioning/">Popover context menus with anchor positioning</a>, Frontend Masters.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/Try_options_hiding">Fallback options and conditional hiding</a>, MDN.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

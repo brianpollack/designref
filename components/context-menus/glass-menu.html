@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glass Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/glass-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- A photo library: colorful content for the glass to sit on. Photos are CSS gradients. -->
+<div class="library">
+  <header class="library-bar">
+    <strong>Library</strong>
+    <output class="status">November 2026 · 18 photos</output>
+  </header>
+  <div class="wall">
+    <button class="photo sunset" type="button" aria-label="Golden hour, Ocean Beach"></button>
+    <button class="photo peaks" type="button" aria-label="Ridgeline at dawn"></button>
+    <button class="photo aurora" type="button" aria-label="Aurora over Abisko"></button>
+    <button class="photo lagoon" type="button" aria-label="Lagoon"></button>
+    <button class="photo tulips" type="button" aria-label="Tulip field"></button>
+    <button class="photo snow" type="button" aria-label="First snow"></button>
+    <button class="photo dunes" type="button" aria-label="Dunes, Merzouga"></button>
+    <button class="photo city" type="button" aria-label="City lights"></button>
+    <button class="photo lavender" type="button" aria-label="Lavender rows"></button>
+    <button class="photo sunset tone-a" type="button" aria-label="Pink sky"></button>
+    <button class="photo lagoon tone-b" type="button" aria-label="Reef"></button>
+    <button class="photo aurora tone-a" type="button" aria-label="Northern lights"></button>
+    <button class="photo tulips tone-b" type="button" aria-label="Poppies"></button>
+    <button class="photo peaks tone-a" type="button" aria-label="Blue hour peaks"></button>
+    <button class="photo dunes tone-a" type="button" aria-label="Painted hills"></button>
+    <button class="photo lavender tone-b" type="button" aria-label="Wheat"></button>
+    <button class="photo snow tone-b" type="button" aria-label="Fog"></button>
+    <button class="photo city tone-b" type="button" aria-label="Neon street"></button>
+  </div>
+</div>
+
+<!-- Zero-size anchor. Script moves it to the pointer; the menu anchors to it. -->
+<div class="gm-anchor"></div>
+
+<!-- The menu. The popover is the shell; the glass panel inside is the menu. -->
+<div class="gm" id="photo-menu" popover>
+  <div class="gm-panel" focusgroup="menu nomemory" tabindex="-1" aria-label="Photo actions">
+    <button type="button"><svg class="icon"><use href="#i-info"/></svg><span>Get Info</span><kbd aria-hidden="true">⌘I</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-rotate-ccw"/></svg><span>Rotate Left</span><kbd aria-hidden="true">⌥⌘R</kbd></button>
+    <button type="button" role="menuitemcheckbox" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Favorite</span><kbd aria-hidden="true">.</kbd></button>
+    <hr>
+    <button type="button"><svg class="icon"><use href="#i-copy"/></svg><span>Copy</span><kbd aria-hidden="true">⌘C</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-files"/></svg><span>Duplicate</span><kbd aria-hidden="true">⌘D</kbd></button>
+    <button type="button"><svg class="icon"><use href="#i-share"/></svg><span>Share</span><svg class="icon gm-more"><use href="#i-chevron-right"/></svg></button>
+    <hr>
+    <button type="button" disabled><svg class="icon"><use href="#i-undo-2"/></svg><span>Revert to Original</span></button>
+    <hr>
+    <button type="button"><svg class="icon"><use href="#i-eye-off"/></svg><span>Hide</span><kbd aria-hidden="true">⌘L</kbd></button>
+    <button type="button" class="danger"><svg class="icon"><use href="#i-trash-2"/></svg><span>Delete</span><kbd aria-hidden="true">⌘⌫</kbd></button>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: our own values, inspired by Apple's Liquid Glass menus (not Apple specs) ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Glass */
+  --gm-fill: light-dark(rgb(246 246 248 / 0.8), rgb(30 30 34 / 0.84));    /* Tint over the blurred backdrop; opacity set for text contrast */
+  --gm-fill-solid: light-dark(#F2F2F4, #2A2A2E);                          /* Fill when Reduce transparency is on */
+  --gm-blur: 24px;                                                        /* Backdrop blur radius */
+  --gm-saturate: 180%;                                                    /* Backdrop saturation, keeps colors alive under the tint */
+  --gm-sheen: light-dark(rgb(255 255 255 / 0.5), rgb(255 255 255 / 0.06));   /* Gloss at the top, fading out over 64px */
+  --gm-shadow:
+    inset 0 1px 0 light-dark(rgb(255 255 255 / 0.95), rgb(255 255 255 / 0.22)),
+    inset 0 0 0 1px light-dark(rgb(255 255 255 / 0.45), rgb(255 255 255 / 0.08)),
+    0 0 0 0.5px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.6)),
+    0 18px 44px -12px light-dark(rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.6)),
+    0 3px 10px -2px light-dark(rgb(0 0 0 / 0.1), rgb(0 0 0 / 0.35));   /* Lit top edge, rim, outer hairline, two-layer drop shadow */
+
+  /* @group Shape */
+  --gm-corner-shape: squircle;   /* Corner shape of the panel and highlights (continuous curve) */
+  --gm-radius: 20px;             /* Panel corner radius; squircle reads smaller than round */
+  --gm-pad: 6px;                 /* Inner padding, all sides */
+  --gm-min-w: 220px;             /* Minimum width; grows to fit labels */
+
+  /* @group Item */
+  --gm-item-h: 24px;                         /* Row height */
+  --gm-item-px: 8px;                         /* Side padding */
+  --gm-item-radius: 14px;                    /* Highlight corner radius, concentric with the panel */
+  --gm-gap: 8px;                             /* Icon to label */
+  --gm-icon: 16px;                           /* Icon and check mark size */
+  --gm-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;   /* Typeface */
+  --gm-font-size: 13px;                      /* Label size, line height 16px, weight 400 */
+  --gm-fg: light-dark(#1D1D1F, #F5F5F7);     /* Label */
+  --gm-icon-fg: light-dark(#3A3A3F, #D8D8DE);   /* Icon */
+  --gm-key-fg: light-dark(#4E4E54, #C2C2C8);    /* Shortcut and submenu chevron */
+  --gm-disabled: light-dark(#9C9CA2, #6E6E75);  /* Disabled label and icon */
+
+  /* @group Highlight */
+  --gm-accent: light-dark(#0063E1, #0058D0);   /* Hover and keyboard focus fill */
+  --gm-on-accent: #FFFFFF;                     /* Label, icon and shortcut on the fill */
+
+  /* @group Destructive item */
+  --gm-danger: light-dark(#A80016, #FFAAA2);        /* Label and icon */
+  --gm-danger-fill: #D70015;                         /* Highlight fill, white label */
+
+  /* @group Structure */
+  --gm-sep: light-dark(rgb(0 0 0 / 0.12), rgb(255 255 255 / 0.14));   /* Separator, 1px, inset to the label edge */
+  --gm-sep-space: 5px;                                                /* Space above and below a separator */
+
+  /* @group Motion */
+  --gm-in: 140ms;                               /* Open duration */
+  --gm-out: 180ms;                              /* Close duration */
+  --gm-ease: cubic-bezier(0.2, 0.9, 0.3, 1);    /* Easing (strong ease-out) */
+  --gm-from: 0.96;                              /* Scale the menu grows from */
+}
+
+/* ---- Anchor at the pointer ---- */
+.gm-anchor { position: fixed; width: 0; height: 0; pointer-events: none; }
+
+/* ---- Popover shell: placement only ---- */
+.gm {
+  /* Reset the UA popover box; the panel draws the menu. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* Top-left corner at the pointer, then flip on whichever axis runs out of room. */
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  container-type: anchored;   /* lets the panel ask which fallback won */
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition: display var(--gm-out) allow-discrete, overlay var(--gm-out) allow-discrete;
+}
+
+/* ---- The glass panel ---- */
+.gm-panel {
+  min-width: var(--gm-min-w);
+  padding: var(--gm-pad);
+  border-radius: var(--gm-radius);
+  corner-shape: var(--gm-corner-shape);
+  /* Gloss over tint; the backdrop shows through both, blurred and saturated. */
+  background: linear-gradient(var(--gm-sheen), transparent 64px), var(--gm-fill);
+  backdrop-filter: blur(var(--gm-blur)) saturate(var(--gm-saturate));
+  box-shadow: var(--gm-shadow);
+  color: var(--gm-fg);
+  font: 400 var(--gm-font-size)/16px var(--gm-font);
+  outline: none;
+  user-select: none;
+
+  opacity: 0;
+  scale: var(--gm-from);
+  transform-origin: top left;
+  transition: opacity var(--gm-out) var(--gm-ease), scale var(--gm-out) var(--gm-ease);
+}
+.gm:popover-open .gm-panel {
+  opacity: 1;
+  scale: 1;
+  transition-duration: var(--gm-in);
+  @starting-style { opacity: 0; scale: var(--gm-from); }
+}
+/* Grow from the corner nearest the pointer, whichever way the menu flipped. */
+@container anchored(fallback: flip-block)             { .gm-panel { transform-origin: bottom left; } }
+@container anchored(fallback: flip-inline)            { .gm-panel { transform-origin: top right; } }
+@container anchored(fallback: flip-block flip-inline) { .gm-panel { transform-origin: bottom right; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gm, .gm-panel { transition: none; }
+}
+/* Reduce transparency (macOS, Windows): opaque fill, no blur. */
+@media (prefers-reduced-transparency: reduce) {
+  .gm-panel { background: var(--gm-fill-solid); backdrop-filter: none; }
+}
+
+/* Item: [icon slot] [label] [shortcut or chevron] */
+.gm-panel button {
+  display: grid;
+  grid-template-columns: var(--gm-icon) 1fr auto;
+  align-items: center;
+  column-gap: var(--gm-gap);
+  width: 100%;
+  height: var(--gm-item-h);
+  padding: 0 var(--gm-item-px);
+  border: 0;
+  border-radius: var(--gm-item-radius);
+  corner-shape: var(--gm-corner-shape);
+  background: none;
+  text-align: start;
+  white-space: nowrap;
+  cursor: default;
+}
+.gm-panel button .icon { width: var(--gm-icon); height: var(--gm-icon); color: var(--gm-icon-fg); }
+.gm-panel kbd {
+  margin-inline-start: 24px;
+  font: inherit;
+  color: var(--gm-key-fg);
+  font-variant-numeric: tabular-nums;
+}
+.gm-panel .gm-more { width: 12px; height: 12px; justify-self: end; color: var(--gm-key-fg); }
+
+/* Highlight: accent fill, everything on it white. */
+.gm-panel button:enabled:is(:hover, :focus-visible) { background: var(--gm-accent); color: var(--gm-on-accent); outline: none; }
+.gm-panel button:enabled:is(:hover, :focus-visible) :is(.icon, kbd) { color: var(--gm-on-accent); }
+
+.gm-panel button:disabled, .gm-panel button:disabled .icon { color: var(--gm-disabled); }
+
+/* Checkable item: the check mark lives in the icon slot. */
+.gm-panel [aria-checked] .icon { color: var(--gm-fg); }
+.gm-panel [aria-checked="false"] .icon { visibility: hidden; }
+
+/* Destructive: red at rest, red fill when highlighted. */
+.gm-panel .danger, .gm-panel .danger .icon { color: var(--gm-danger); }
+.gm-panel .danger:is(:hover, :focus-visible) { background: var(--gm-danger-fill); }
+
+.gm-panel hr {
+  height: 1px;
+  margin: var(--gm-sep-space) var(--gm-item-px);
+  border: 0;
+  background: var(--gm-sep);
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#F5F5F7, #1C1C1E); color: light-dark(#1D1D1F, #F5F5F7); }
+.library { height: 100%; display: flex; flex-direction: column; }
+.library-bar { display: flex; align-items: baseline; gap: 10px; padding: 14px 16px 12px; font-size: 13px; }
+.library-bar strong { font-size: 15px; }
+.status { color: light-dark(#6E6E73, #98989D); }
+.wall {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); align-content: start; gap: 3px;
+}
+.photo { position: relative; aspect-ratio: 1; border: 0; padding: 0; background: none; cursor: default; }
+/* The picture is painted on ::before so a hue shift never tints the selection ring. */
+.photo::before { content: ""; position: absolute; inset: 0; background: var(--scene); filter: var(--tone, none); }
+.photo.tone-a { --tone: hue-rotate(-40deg) saturate(1.1); }
+.photo.tone-b { --tone: hue-rotate(70deg); }
+.photo:focus-visible, .photo.is-target { outline: 3px solid light-dark(#0063E1, #3B8CFF); outline-offset: -3px; z-index: 1; }
+.photo.is-target::after { content: ""; position: absolute; inset: 3px; box-shadow: inset 0 0 0 1.5px #fff; }
+
+.sunset { --scene:
+  radial-gradient(circle at 50% 60%, #FFF4C2 0 6%, #FFC36B 9%, transparent 34%),
+  linear-gradient(#2A1458 0%, #B8326E 38%, #FF7A3D 58%, #241A45 60%, #3B2D6B 100%); }
+.peaks { --scene:
+  conic-gradient(from 135deg at 28% 48%, #33415C 0 90deg, transparent 0),
+  conic-gradient(from 135deg at 70% 36%, #5C677D 0 90deg, transparent 0),
+  linear-gradient(#7EC8FF, #FFD9A8 75%); }
+.aurora { --scene:
+  radial-gradient(ellipse 90% 28% at 35% 44%, rgb(70 255 170 / 0.85), transparent 70%),
+  radial-gradient(ellipse 60% 22% at 72% 28%, rgb(160 90 255 / 0.75), transparent 70%),
+  radial-gradient(circle at 20% 14%, #FFF 0 1px, transparent 1.5px),
+  radial-gradient(circle at 84% 62%, #FFF 0 1px, transparent 1.5px),
+  linear-gradient(#03050F 0%, #0B1736 72%, #050812 72%); }
+.lagoon { --scene:
+  radial-gradient(ellipse 75% 30% at 50% 100%, #F6E2B3 0 55%, transparent 56%),
+  repeating-linear-gradient(172deg, rgb(255 255 255 / 0.2) 0 2px, transparent 2px 14px),
+  linear-gradient(#9BE7FF 0 34%, #19B5C9 34%, #0B6E99 100%); }
+.tulips { --scene:
+  radial-gradient(circle at 22% 30%, #FF4D7D 0 13%, transparent 14%),
+  radial-gradient(circle at 66% 52%, #FFD23F 0 11%, transparent 12%),
+  radial-gradient(circle at 38% 76%, #FF8FAB 0 10%, transparent 11%),
+  radial-gradient(circle at 84% 20%, #FF6B35 0 8%, transparent 9%),
+  linear-gradient(140deg, #1F5F3F, #8FD694); }
+.snow { --scene:
+  radial-gradient(ellipse 120% 40% at 50% 100%, #FFFFFF 0 60%, transparent 61%),
+  conic-gradient(from 160deg at 72% 50%, #2F4F3F 0 40deg, transparent 0),
+  linear-gradient(#EEF4FF, #FFFFFF); }
+.dunes { --scene:
+  radial-gradient(ellipse 95% 45% at 28% 100%, #B5452F 0 60%, transparent 61%),
+  radial-gradient(ellipse 85% 50% at 82% 100%, #DF7350 0 60%, transparent 61%),
+  radial-gradient(circle at 75% 25%, #FFFBE6 0 7%, transparent 8%),
+  linear-gradient(#FFCF5C, #F59A3A 70%); }
+.city { --scene:
+  radial-gradient(circle at 78% 20%, #FFF7D6 0 6%, transparent 7%),
+  radial-gradient(circle, #FFCF6E 0 1.5px, transparent 2px) 0 40% / 10px 12px,
+  linear-gradient(#0D1330, #2A2160); }
+.lavender { --scene:
+  repeating-linear-gradient(80deg, #6C4AB6 0 7px, #A78BFA 7px 14px) bottom / 100% 54% no-repeat,
+  linear-gradient(#FFD6E8, #C3B1FF); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Right-click → move the zero-size anchor to the pointer → show the popover anchored to it.
+// Placement, flipping, top layer, Esc and click-outside are all native.
+const wall = document.querySelector('.wall');
+const anchor = document.querySelector('.gm-anchor');
+const status = document.querySelector('.status');
+const menu = document.getElementById('photo-menu');
+const panel = menu.firstElementChild;
+const items = () => [...panel.querySelectorAll('button:enabled')];
+let target = null;                                   // the photo the menu acts on
+
+wall.addEventListener('contextmenu', e => {
+  const photo = e.target.closest('.photo');
+  if (!photo) return;
+  e.preventDefault();
+  // pointerType "" means no pointing device: the browser's own keyboard trigger.
+  if (e.pointerType === '') openAt(photo, null);
+  else openAt(photo, e);
+});
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+wall.addEventListener('keydown', e => {
+  if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
+  const photo = e.target.closest('.photo');
+  if (!photo) return;
+  e.preventDefault();
+  openAt(photo, null);
+});
+
+/** Open at the pointer, or inside the photo for keyboard opens. */
+function openAt(photo, pointer) {
+  if (menu.matches(':popover-open')) menu.hidePopover();   // re-open at the new point
+  target?.classList.remove('is-target');
+  target = photo;
+  target.classList.add('is-target');
+  const box = photo.getBoundingClientRect();
+  anchor.style.left = `${pointer ? pointer.clientX : box.left + 16}px`;
+  anchor.style.top = `${pointer ? pointer.clientY : box.top + 16}px`;
+  menu.showPopover({ source: anchor });
+  // Keyboard opens land on the first item; pointer opens wait for an arrow key.
+  if (pointer) panel.focus({ focusVisible: false, preventScroll: true });
+  else items()[0].focus({ preventScroll: true });
+}
+
+// From the panel itself, ↓/↑ enter the list; focusgroup handles keys between items.
+panel.addEventListener('keydown', e => {
+  if (e.target !== panel) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); items()[0].focus(); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); items().at(-1).focus(); }
+});
+// Highlight follows the pointer and carries focus with it, as in a macOS menu.
+panel.addEventListener('pointermove', e => {
+  const item = e.target.closest('button:enabled');
+  if (item && item !== document.activeElement) item.focus({ focusVisible: false });
+});
+panel.addEventListener('click', e => {
+  const item = e.target.closest('button:enabled');
+  if (!item) return;
+  const checkable = item.getAttribute('role') === 'menuitemcheckbox';
+  if (checkable) item.ariaChecked = String(item.ariaChecked !== 'true');
+  status.textContent = `${item.querySelector('span').textContent} · ${target.ariaLabel}`;
+  // Leave a changed check mark visible for a beat before closing, as native menus do.
+  setTimeout(() => menu.hidePopover(), checkable ? 250 : 0);
+});
+// Tab (or any focus leaving the menu) closes it, like a native menu.
+menu.addEventListener('focusout', e => { if (!menu.contains(e.relatedTarget)) menu.hidePopover(); });
+menu.addEventListener('toggle', e => { if (e.newState === 'closed') target?.classList.remove('is-target'); });
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Right-click "Ridgeline at dawn" so the menu sits over the busiest part of the wall.
+requestAnimationFrame(() => {
+  const photo = document.querySelectorAll('.photo')[1];
+  const r = photo.getBoundingClientRect();
+  photo.dispatchEvent(new MouseEvent('contextmenu', {
+    bubbles: true, cancelable: true, button: 2,
+    clientX: r.left + r.width * 0.62, clientY: r.top + r.height * 0.55,
+  }));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="480" data-hint="Right-click a photo. Shift+F10 opens it from a focused photo."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Panel</th><td>A translucent tint over a blurred, saturated copy of whatever is behind it. Squircle corners, 6px inner padding. Values are our own, inspired by Apple’s Liquid Glass menus in macOS and iOS 26; they are not Apple’s specs.</td></tr>
+        <tr><th>Lit edge</th><td>Three hairlines in one shadow token: a bright 1px line on the top edge, a faint 1px rim all round, and a 0.5px dark outline that separates the panel from light content.</td></tr>
+        <tr><th>Sheen</th><td>A white gloss that fades out over the top 64px, so the panel reads as lit from above.</td></tr>
+        <tr><th>Item</th><td>Compact 24px rows: 16px icon slot, label, then a shortcut or chevron at the end. The slot is kept even when empty so labels align.</td></tr>
+        <tr><th>Highlight</th><td>Accent fill with white label, icon and shortcut. Corners 14px, concentric with the 20px panel.</td></tr>
+        <tr><th>Checkable item</th><td>Check mark in the icon slot when on, empty slot when off.</td></tr>
+        <tr><th>Submenu chevron</th><td>Shown on Share as a visual only; this page builds no submenu. See <a href="cascading-submenus.html">Cascading Submenus</a>.</td></tr>
+        <tr><th>Disabled item</th><td>Dimmed and skipped by arrow keys.</td></tr>
+        <tr><th>Destructive item</th><td>Last, after a separator. Red label and icon; red fill when highlighted.</td></tr>
+        <tr><th>Separator</th><td>1px, inset to the item padding, between groups of related commands.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>Right-click, Control-click on macOS, long-press on touch, <kbd>Shift</kbd>+<kbd>F10</kbd> or the Menu key on a focused photo.</td></tr>
+        <tr><th>Placement</th><td>Top-left corner at the pointer; flips to the other side of the pointer on whichever axis runs out of room.</td></tr>
+        <tr><th>Motion</th><td>Fades in and grows from 96% out of the corner nearest the pointer, 140ms. Fades out in 180ms. No motion with reduced motion set.</td></tr>
+        <tr><th>Contrast on glass</th><td>The tint is 80% opaque in light and 84% in dark, and the shortcut and destructive colors are darker (light) or lighter (dark) than usual. Together they keep every label, shortcut and destructive label at 4.5:1 or more over the darkest (light theme) and brightest (dark theme) spot of this photo wall, measured through the blur. At 74% the dark shortcuts fell to 3.1:1. Lower the opacity only if your content is known to be calmer.</td></tr>
+        <tr><th>Reduce transparency</th><td>With the system setting on, the panel switches to an opaque fill and drops the blur (<code>prefers-reduced-transparency</code>).</td></tr>
+        <tr><th>Pointer</th><td>The highlight follows the pointer and takes keyboard focus with it, so arrow keys continue from there. A click runs the command and closes the menu.</td></tr>
+        <tr><th>Checkable item</th><td>Toggles, stays open for 250ms so the new state is visible, then closes.</td></tr>
+        <tr><th>Not built</th><td>macOS flashes the chosen item once before closing, and Liquid Glass refracts the content at its edges. Both are left out to keep the code small.</td></tr>
+        <tr><th>Dismiss</th><td><kbd>Esc</kbd>, a click or right-click elsewhere (which reopens at the new spot), <kbd>Tab</kbd>, or focus leaving the window.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Shift</kbd>+<kbd>F10</kbd></th><td>Open the menu for the focused photo, with focus on the first item.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items (native <code>focusgroup</code>). From a pointer open, the first press enters the menu.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the command, or toggle Favorite.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close and return focus to the photo.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close the menu and move on.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> infers <code>role="menu"</code> and <code>menuitem</code>. Favorite sets <code>menuitemcheckbox</code> and <code>aria-checked</code>. Separators are <code>&lt;hr&gt;</code>.</li>
+          <li>Contrast is measured on the glass, not on a plain background (see Behavior). Worst case, light / dark: labels 10.3:1 / 7.8:1, shortcuts 5.1:1 / 4.8:1, destructive labels 4.8:1 / 4.6:1.</li>
+          <li>The highlight fill is darker than system blue (#007AFF gives white text only 4.0:1); white on it is 5.4:1 light and 6.4:1 dark.</li>
+          <li>Keyboard focus and hover share one highlight. On dark glass the blue fill is close to the glass in lightness, so the white label carries the change; as on macOS, the item is marked by hue and by its label inverting.</li>
+          <li>Shortcut text is <code>aria-hidden</code>; add <code>aria-keyshortcuts</code> where the shortcuts really work. When Share gets a real submenu, add <code>aria-haspopup="menu"</code> and <code>aria-expanded</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.apple.com/newsroom/2025/06/apple-introduces-a-delightful-and-elegant-new-software-design/">Apple introduces a delightful and elegant new software design</a>, Apple Newsroom: Liquid Glass as a translucent material that reflects and refracts what is behind it.</li>
+        <li><a href="https://developer.apple.com/design/human-interface-guidelines/materials">Materials</a>, Apple HIG: Liquid Glass and vibrancy, and keeping text legible on translucent surfaces.</li>
+        <li><a href="https://developer.apple.com/design/human-interface-guidelines/menus">Menus</a>, Apple HIG: shortcuts, check marks, destructive items and grouping.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter">backdrop-filter</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/corner-shape">corner-shape</a>, MDN: the blur and the squircle corners.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-transparency">prefers-reduced-transparency</a>, MDN: the opaque fallback.</li>
+        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a dropdown menu</a>, Chrome: the zero-size anchor and <code>showPopover({ source })</code> for menus with no trigger.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cascading Submenus</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/cascading-submenus">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- A document editor. File sits at the left edge, More (⋯) at the right edge. -->
+<div class="doc">
+  <header class="doc-bar">
+    <button class="doc-btn" id="file-btn" type="button" aria-haspopup="menu" aria-expanded="false"
+      commandfor="file-menu" command="toggle-popover"><span>File</span><svg class="icon" aria-hidden="true"><use href="#i-chevron-down"/></svg></button>
+
+    <!-- Root menu, right after its button. The popover is the shell; the focusgroup inside is the menu. -->
+    <div class="cs cs-menu" id="file-menu" popover>
+      <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="file-btn">
+        <button type="button"><svg class="icon"><use href="#i-file-plus"/></svg><span>New document</span><kbd aria-hidden="true">⌘N</kbd></button>
+        <button type="button"><svg class="icon"><use href="#i-copy"/></svg><span>Make a copy</span></button>
+        <button type="button"><svg class="icon"><use href="#i-pencil"/></svg><span>Rename</span></button>
+        <hr>
+        <!-- Submenu trigger: commandfor opens on click, Enter and Space; interestfor on hover and focus. -->
+        <button type="button" id="share-btn" aria-haspopup="menu" aria-expanded="false"
+          commandfor="share-menu" command="toggle-popover" interestfor="share-menu"><svg class="icon"><use href="#i-share"/></svg><span>Share</span><svg class="icon cs-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+        <!-- Submenu: a popover nested right after its trigger, inside the parent's focusgroup. -->
+        <div class="cs cs-sub" id="share-menu" popover>
+          <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="share-btn">
+            <button type="button"><svg class="icon"><use href="#i-users"/></svg><span>Invite people…</span></button>
+            <button type="button"><svg class="icon"><use href="#i-link"/></svg><span>Copy link</span></button>
+            <button type="button"><svg class="icon"><use href="#i-mail"/></svg><span>Send as email</span></button>
+          </div>
+        </div>
+        <button type="button" id="move-btn" aria-haspopup="menu" aria-expanded="false"
+          commandfor="move-menu" command="toggle-popover" interestfor="move-menu"><svg class="icon"><use href="#i-folder-input"/></svg><span>Move to</span><svg class="icon cs-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+        <div class="cs cs-sub" id="move-menu" popover>
+          <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="move-btn">
+            <button type="button" disabled><svg class="icon"><use href="#i-folder"/></svg><span>Marketing</span><span class="cs-hint">Current</span></button>
+            <button type="button"><svg class="icon"><use href="#i-folder"/></svg><span>Product</span></button>
+            <button type="button"><svg class="icon"><use href="#i-folder"/></svg><span>Research</span></button>
+            <hr>
+            <button type="button"><svg class="icon"><use href="#i-folder-plus"/></svg><span>New folder…</span></button>
+          </div>
+        </div>
+        <button type="button" id="export-btn" aria-haspopup="menu" aria-expanded="false"
+          commandfor="export-menu" command="toggle-popover" interestfor="export-menu"><svg class="icon"><use href="#i-download"/></svg><span>Export</span><svg class="icon cs-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+        <div class="cs cs-sub" id="export-menu" popover>
+          <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="export-btn">
+            <button type="button" id="image-btn" aria-haspopup="menu" aria-expanded="false"
+              commandfor="image-menu" command="toggle-popover" interestfor="image-menu"><svg class="icon"><use href="#i-image"/></svg><span>Image</span><svg class="icon cs-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+            <!-- Third level: same markup, one more step in. -->
+            <div class="cs cs-sub" id="image-menu" popover>
+              <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="image-btn">
+                <button type="button"><span>PNG</span></button>
+                <button type="button"><span>JPEG</span></button>
+                <button type="button"><span>WebP</span></button>
+              </div>
+            </div>
+            <button type="button"><svg class="icon"><use href="#i-file-text"/></svg><span>PDF</span></button>
+            <button type="button"><svg class="icon"><use href="#i-file"/></svg><span>Markdown</span></button>
+          </div>
+        </div>
+        <hr>
+        <button type="button" class="cs-danger"><svg class="icon"><use href="#i-trash-2"/></svg><span>Move to trash</span><kbd aria-hidden="true">⌘⌫</kbd></button>
+      </div>
+    </div>
+
+    <span class="doc-title">Launch brief</span>
+
+    <button class="doc-btn" id="more-btn" type="button" aria-label="More" aria-haspopup="menu" aria-expanded="false"
+      commandfor="more-menu" command="toggle-popover"><svg class="icon" aria-hidden="true"><use href="#i-ellipsis"/></svg></button>
+
+    <!-- At the right edge: the root menu aligns to the button's right edge and its submenu flips left. -->
+    <div class="cs cs-menu" id="more-menu" popover>
+      <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="more-btn">
+        <button type="button"><svg class="icon"><use href="#i-history"/></svg><span>Version history</span></button>
+        <button type="button"><svg class="icon"><use href="#i-sliders-horizontal"/></svg><span>Page setup…</span></button>
+        <button type="button" id="size-btn" aria-haspopup="menu" aria-expanded="false"
+          commandfor="size-menu" command="toggle-popover" interestfor="size-menu"><svg class="icon"><use href="#i-type"/></svg><span>Text size</span><svg class="icon cs-chevron" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+        <div class="cs cs-sub" id="size-menu" popover>
+          <div class="cs-panel" focusgroup="menu nomemory" aria-labelledby="size-btn">
+            <div role="group" aria-label="Text size">
+              <button type="button" role="menuitemradio" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Small</span></button>
+              <button type="button" role="menuitemradio" aria-checked="true"><svg class="icon"><use href="#i-check"/></svg><span>Default</span></button>
+              <button type="button" role="menuitemradio" aria-checked="false"><svg class="icon"><use href="#i-check"/></svg><span>Large</span></button>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <button type="button"><svg class="icon"><use href="#i-printer"/></svg><span>Print…</span><kbd aria-hidden="true">⌘P</kbd></button>
+      </div>
+    </div>
+  </header>
+
+  <article class="doc-page">
+    <h1>Launch brief</h1>
+    <p>Northwind ships to the first 40 teams on March 3. Support, sales and the docs team need the final pricing by Friday.</p>
+    <p>Open questions: the annual discount, and whether the import tool is in the first release or follows two weeks later.</p>
+  </article>
+
+  <footer class="doc-foot">
+    <output class="doc-status">Saved</output>
+    <label class="doc-toggle"><input type="checkbox" id="show-safe"> Show safe area</label>
+  </footer>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match every level ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --cs-bg: light-dark(#ffffff, #2b2c31);                                  /* Surface, same at every level */
+  --cs-border: light-dark(rgb(16 20 32 / 0.1), rgb(255 255 255 / 0.1));   /* Hairline border, 1px */
+  --cs-radius: 8px;                                                       /* Corner radius */
+  --cs-pad: 4px;                                                          /* Inner padding, all sides */
+  --cs-min-w: 140px;                                                      /* Minimum width; each level grows to fit its labels */
+  --cs-shadow: 0 1px 3px light-dark(rgb(16 20 32 / 0.08), rgb(0 0 0 / 0.32)),
+               0 12px 32px -8px light-dark(rgb(16 20 32 / 0.24), rgb(0 0 0 / 0.6));   /* Elevation, two layers; deeper levels stack in the top layer */
+
+  /* @group Item */
+  --cs-item-h: 28px;                                   /* Row height */
+  --cs-item-px: 8px;                                   /* Horizontal padding */
+  --cs-item-radius: 5px;                               /* Highlight corner radius */
+  --cs-gap: 8px;                                       /* Icon to label gap */
+  --cs-icon: 16px;                                     /* Leading icon and check mark; a level with none drops the slot */
+  --cs-font-size: 13px;                                /* Label size, line height 18px, weight 450 */
+  --cs-trail-gap: 20px;                                /* Minimum space before a shortcut, hint or chevron */
+  --cs-fg: light-dark(#1d1f24, #e9eaee);               /* Label */
+  --cs-icon-fg: light-dark(#60646c, #a3a7b0);          /* Leading icon */
+  --cs-hint-fg: light-dark(#6b6f77, #9396a0);          /* Shortcut, hint and chevron */
+  --cs-disabled: light-dark(#b5b8be, #5d6068);         /* Disabled label, icon and hint */
+
+  /* @group Highlight */
+  --cs-active-bg: light-dark(#4053d6, #4a5fe6);        /* Row under the pointer or keyboard focus */
+  --cs-active-fg: #ffffff;                              /* Label, icon and hint on that row */
+  --cs-path-bg: light-dark(#e8ebfc, #363a56);          /* Trigger row while its submenu is open (the open path) */
+
+  /* @group Destructive item */
+  --cs-danger: light-dark(#d1242f, #ff7b72);           /* Label and icon */
+  --cs-danger-active-bg: light-dark(#d1242f, #da3633); /* Highlight; label turns white */
+
+  /* @group Structure */
+  --cs-sep: light-dark(#e8e9ec, #3a3c42);              /* Separator, 1px */
+  --cs-sep-space: 4px;                                 /* Space above and below a separator */
+  --cs-chevron: 14px;                                  /* Submenu chevron; always points to the inline end */
+
+  /* @group Placement */
+  --cs-offset: 4px;                                    /* Root menu below its button */
+  --cs-sub-offset: 2px;                                /* Submenu from its trigger row; overlaps the parent’s padding */
+  --cs-below-indent: 16px;                             /* Indent when neither side fits and a submenu drops below its trigger */
+
+  /* @group Hover intent */
+  --cs-open-delay: 150ms;                              /* Hover or focus before a submenu opens (`interest-delay-start`) */
+  --cs-close-delay: 300ms;                             /* Submenu stays this long after pointer and focus leave (`interest-delay-end`) */
+
+  /* @group Safe triangle */
+  --cs-safe-rest: 300ms;                               /* Triangle drops once the pointer rests this long */
+  --cs-safe-slack: 5px;                                /* Apex padding around where the pointer left the trigger */
+
+  /* @group Motion */
+  --cs-in: 120ms;                                      /* Open duration, each level */
+  --cs-out: 80ms;                                      /* Close duration */
+  --cs-ease: cubic-bezier(0.2, 0.8, 0.2, 1);           /* Easing (ease-out) */
+  --cs-shift: 4px;                                     /* Slide distance, away from the trigger */
+  --cs-check-hold: 250ms;                              /* Menu stays open this long after a check mark moves */
+}
+
+/* ---- Popover shell: placement only ---- */
+.cs {
+  /* Reset the UA popover box; the panel draws the menu. overflow stays visible for the safe triangle. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+  min-inline-size: var(--cs-min-w);
+
+  /* Lets the panel ask which fallback won, so it slides in from the trigger's side. */
+  container-type: anchored;
+
+  /* Stay rendered in the top layer while the close transition runs. */
+  transition: display var(--cs-out) allow-discrete, overlay var(--cs-out) allow-discrete;
+}
+
+/* Root menu: under its button, left edges aligned. Flips up, or to the button's right edge. */
+.cs-menu {
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  margin-block-start: var(--cs-offset);
+}
+
+/* Submenu: beside its trigger row with its first item level with it. Flips to the other side,
+   grows upward near the bottom, and drops below the trigger when neither side fits. */
+.cs-sub {
+  position-area: inline-end span-block-end;
+  position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline, --cs-below;
+  margin-inline-start: var(--cs-sub-offset);
+  margin-block-start: calc(-1 * (var(--cs-pad) + 1px));
+}
+@position-try --cs-below {
+  position-area: block-end span-inline-end;
+  margin-block: 0;
+  margin-inline: var(--cs-below-indent) 0;
+  /* Shrink to the space left, or this fallback is skipped and the submenu covers its trigger. */
+  min-inline-size: 0;
+  max-inline-size: calc(100% - var(--cs-below-indent));
+}
+
+/* ---- The menu, at every level ---- */
+.cs-panel {
+  position: relative;                    /* paints above the safe triangle */
+  padding: var(--cs-pad);
+  background: var(--cs-bg);
+  border: 1px solid var(--cs-border);
+  border-radius: var(--cs-radius);
+  box-shadow: var(--cs-shadow);
+  color: var(--cs-fg);
+  font-size: var(--cs-font-size);
+  line-height: 18px;
+  user-select: none;
+
+  opacity: 0;
+  translate: var(--cs-from);
+  transition: opacity var(--cs-out) var(--cs-ease), translate var(--cs-out) var(--cs-ease);
+}
+.cs:popover-open > .cs-panel {
+  opacity: 1;
+  translate: 0 0;
+  transition-duration: var(--cs-in);
+  @starting-style { opacity: 0; translate: var(--cs-from); }
+}
+
+/* Slide in from the trigger: down for a root menu, sideways for a submenu, mirrored after a flip. */
+.cs-menu > .cs-panel { --cs-from: 0 calc(-1 * var(--cs-shift)); }
+.cs-sub > .cs-panel  { --cs-from: calc(-1 * var(--cs-shift)) 0; }
+@container anchored(fallback: flip-block) or anchored(fallback: flip-block flip-inline) {
+  .cs-menu > .cs-panel { --cs-from: 0 var(--cs-shift); }
+}
+@container anchored(fallback: flip-inline) or anchored(fallback: flip-block flip-inline) {
+  .cs-sub > .cs-panel { --cs-from: var(--cs-shift) 0; }
+}
+@container anchored(fallback: --cs-below) {
+  .cs-sub > .cs-panel { --cs-from: 0 calc(-1 * var(--cs-shift)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs, .cs-panel { transition: none; }
+}
+
+/* Item: [icon slot] [label] [shortcut, hint or chevron] */
+.cs-panel button {
+  display: grid;
+  grid-template-columns: var(--cs-icon) 1fr auto;
+  align-items: center;
+  column-gap: var(--cs-gap);
+  width: 100%;
+  height: var(--cs-item-h);
+  padding: 0 var(--cs-item-px);
+  border: 0;
+  border-radius: var(--cs-item-radius);
+  background: none;
+  font-weight: 450;
+  text-align: start;
+  white-space: nowrap;
+  cursor: default;
+  outline: none;                         /* the filled highlight is the focus indicator */
+}
+/* A level with no leading icons (the image formats) drops the slot. */
+.cs-panel:not(:has(> button > .icon:first-child)) > button { grid-template-columns: 1fr auto; }
+.cs-panel button > .icon:first-child { width: var(--cs-icon); height: var(--cs-icon); color: var(--cs-icon-fg); }
+.cs-panel :is(kbd, .cs-hint) { margin-inline-start: var(--cs-trail-gap); font: inherit; color: var(--cs-hint-fg); }
+.cs-chevron {
+  justify-self: end;
+  width: var(--cs-chevron); height: var(--cs-chevron);
+  margin-inline-start: var(--cs-trail-gap);
+  color: var(--cs-hint-fg);
+}
+
+/* Hover intent is native: interest shows after the open delay and is lost after the close delay. */
+.cs-panel [interestfor] {
+  interest-delay-start: var(--cs-open-delay);
+  interest-delay-end: var(--cs-close-delay);
+}
+
+/* States. The open path stays tinted; the row under the pointer or focus is filled. */
+.cs-panel [aria-expanded="true"] { background: var(--cs-path-bg); }
+.cs-panel [aria-expanded="true"] > .cs-chevron { color: var(--cs-fg); }
+.cs-panel button:enabled:is(:hover, :focus-visible) { background: var(--cs-active-bg); color: var(--cs-active-fg); }
+.cs-panel button:enabled:is(:hover, :focus-visible) > :is(.icon, kbd, .cs-hint) { color: inherit; }
+.cs-panel button:disabled, .cs-panel button:disabled > * { color: var(--cs-disabled); }
+
+/* Radio items: the check mark lives in the icon slot. */
+.cs-panel [aria-checked] > .icon:first-child { color: var(--cs-fg); }
+.cs-panel [aria-checked="false"] > .icon:first-child { visibility: hidden; }
+
+/* Destructive */
+.cs-panel .cs-danger, .cs-panel .cs-danger > .icon:first-child { color: var(--cs-danger); }
+.cs-panel button.cs-danger:enabled:is(:hover, :focus-visible) { background: var(--cs-danger-active-bg); color: var(--cs-active-fg); }
+
+.cs-panel hr {
+  height: 1px;
+  margin: var(--cs-sep-space) var(--cs-item-px);
+  border: 0;
+  background: var(--cs-sep);
+}
+
+/* ---- Safe triangle ----
+   While the pointer travels from a trigger to its open submenu, the submenu grows a ::before
+   clipped to a triangle: from where the pointer left the trigger to the submenu's near edge.
+   It sits over the sibling rows on that path, so they get no hover, and hovering it counts as
+   hovering the submenu, so interest holds. Script sets --pointer-x/-y (relative to the
+   submenu's box) and data-bridge; CSS works out the side and the edge. */
+.cs-sub[data-bridge]::before {
+  content: "";
+  position: absolute;
+  inset: -100vh -100vw;                  /* room to draw; the submenu spans 100vw → 100% − 100vw here */
+  --cs-side: sign(var(--pointer-x));     /* −1: pointer left of the submenu, 1: right of it */
+  --cs-edge: calc(50% + var(--cs-side) * (50% - 100vw));
+  --cs-apex: calc(100vw + var(--pointer-x) + var(--cs-side) * var(--cs-safe-slack));
+  clip-path: polygon(
+    var(--cs-apex) calc(100vh + var(--pointer-y) - var(--cs-safe-slack)),
+    var(--cs-edge) 100vh,
+    var(--cs-edge) calc(100% - 100vh),
+    var(--cs-apex) calc(100vh + var(--pointer-y) + var(--cs-safe-slack))
+  );
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#ffffff, #18191c); color: light-dark(#1d1f24, #e9eaee); }
+.doc { height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+.doc-bar {
+  display: flex; align-items: center; gap: 4px; padding: 8px 10px;
+  background: light-dark(#f6f7f9, #1f2024);
+  border-bottom: 1px solid light-dark(#e4e6ea, #2a2c31);
+}
+.doc-btn {
+  display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 8px;
+  border: 0; border-radius: 6px; background: none; font-size: 13px; font-weight: 500; cursor: default;
+}
+.doc-btn .icon { width: 14px; height: 14px; color: light-dark(#6b6f77, #9396a0); }
+.doc-btn[aria-label] { width: 28px; padding: 0; justify-content: center; }
+.doc-btn[aria-label] .icon { width: 16px; height: 16px; }
+.doc-btn:hover, .doc-btn[aria-expanded="true"] { background: light-dark(#e6e8ec, #2c2e33); }
+.doc-btn:focus-visible { outline: 2px solid light-dark(#4053d6, #8b9bff); outline-offset: 1px; }
+.doc-title { margin-inline-end: auto; padding-inline-start: 8px; font-size: 13px; color: light-dark(#6b6f77, #9396a0); }
+.doc-page { overflow: hidden; padding: 28px 32px; }
+.doc-page h1 { margin: 0 0 10px; font-size: 22px; font-weight: 650; letter-spacing: -0.01em; }
+.doc-page p { margin: 0 0 10px; max-width: 54ch; color: light-dark(#454850, #b4b7bf); }
+.doc-foot {
+  display: flex; align-items: center; justify-content: space-between; padding: 8px 14px;
+  font-size: 12px; color: light-dark(#6b6f77, #9396a0);
+  border-top: 1px solid light-dark(#e4e6ea, #2a2c31);
+}
+.doc-toggle { display: inline-flex; align-items: center; gap: 6px; }
+.doc-toggle input { margin: 0; accent-color: light-dark(#4053d6, #8b9bff); }
+/* "Show safe area" tints the triangle so the zone is visible while the pointer moves. */
+:root:has(#show-safe:checked) .cs-sub[data-bridge]::before { background: light-dark(rgb(64 83 214 / 0.2), rgb(139 155 255 / 0.26)); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Cascading menus. The platform does most of the work:
+//   commandfor   a click opens each menu; nesting the popovers makes one light-dismiss stack
+//   interestfor  hover or focus opens a submenu after a delay and closes it after one (CSS tokens)
+//   focusgroup   ↑ ↓ Home End within one level
+//   anchor positioning places and flips every level
+// Script adds what crosses levels (→ ← Esc Tab), the safe triangle, and closing after a command.
+const status = document.querySelector('.doc-status');
+const token = name => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+const trigger = menu => menu.previousElementSibling;        // every menu sits right after its trigger
+const first = menu => menu.querySelector('button:enabled');  // a level's own rows precede its submenus
+const label = el => el.querySelector('span')?.textContent ?? el.ariaLabel;
+let returned = null;                                         // trigger that ← or Esc just sent focus back to
+
+// aria-expanded follows every open and close, hover previews included; the open path is styled from it.
+for (const menu of document.querySelectorAll('.cs')) {
+  menu.addEventListener('toggle', e => { trigger(menu).ariaExpanded = e.newState === 'open'; });
+}
+
+document.addEventListener('keydown', e => {
+  const item = e.target, level = item.closest('.cs');
+  const menu = item.matches('[aria-haspopup]') && item.nextElementSibling;   // what this item opens
+  if (menu && ['Enter', ' ', level ? 'ArrowRight' : 'ArrowDown'].includes(e.key)) {
+    // Keyboard opens enter the menu. preventDefault skips the click, so commandfor can't
+    // toggle shut a menu that is already open or previewed.
+    e.preventDefault();
+    if (!menu.matches(':popover-open')) menu.showPopover({ source: item });
+    first(menu).focus();
+  } else if (level?.matches('.cs-sub') && ['ArrowLeft', 'Escape'].includes(e.key)) {
+    // ← Esc in a submenu close one level. preventDefault keeps Esc from closing every ancestor;
+    // focus goes back by hand because the browser restores it only for the root popover.
+    e.preventDefault();
+    returned = trigger(level);
+    returned.focus();
+    level.hidePopover();
+  } else if (e.key === 'Tab' && level) {
+    // Tab leaves: closing returns focus to the menu button, and Tab moves on from there.
+    item.closest('.cs-menu').hidePopover();
+  }
+});
+
+// A click on a submenu trigger only opens; it never closes a submenu that hover already opened.
+document.addEventListener('command', e => { if (e.target.matches('.cs-sub:popover-open')) e.preventDefault(); }, true);
+
+// Focus that ← or Esc returns to a trigger would count as fresh interest and preview the submenu
+// it just closed. Cancel that one; any pointer move or focus change ends the exception.
+document.addEventListener('interest', e => { if (e.source === returned) e.preventDefault(); }, true);
+
+// Hover follows focus, so the keyboard picks up where the pointer is. The move that leaves a
+// trigger was hit-tested before its safe triangle existed, so check what is really under it.
+document.addEventListener('pointermove', e => {
+  returned = null;
+  const item = e.target.closest('.cs-panel button:enabled');
+  if (item !== document.activeElement && item?.contains(document.elementFromPoint(e.clientX, e.clientY))) item.focus({ focusVisible: false });
+});
+
+// A submenu opened by a key or a click holds no interest, so nothing would close it when focus
+// moves to a sibling row. Close it here; interest-opened ones close on their own after the delay.
+document.addEventListener('focusin', e => {
+  if (e.target !== returned) returned = null;
+  for (const sub of e.target.closest('.cs-panel')?.querySelectorAll(':scope > .cs-sub:popover-open') ?? []) {
+    if (trigger(sub) !== e.target && !trigger(sub).matches(':interest-source')) sub.hidePopover();
+  }
+});
+
+// Command rows: report the path, then close every level and return focus to the menu button.
+document.addEventListener('click', e => {
+  const item = e.target.closest('.cs-panel button:not([aria-haspopup])');
+  if (!item) return;
+  if (item.role === 'menuitemradio') for (const r of item.parentElement.children) r.ariaChecked = r === item;
+  const path = [];
+  for (let el = item; el; el = el.closest('.cs')?.previousElementSibling) path.unshift(label(el));
+  status.textContent = path.join(' › ');
+  const root = item.closest('.cs-menu');
+  // A radio holds for a beat so the moved check mark is seen. The ring returns only after a key press.
+  setTimeout(() => {
+    trigger(root).focus({ focusVisible: e.detail === 0, preventScroll: true });
+    root.hidePopover();
+  }, item.role ? token('--cs-check-hold') : 0);
+});
+
+// Safe triangle: CSS draws it, script only places it. It starts where the pointer leaves an open
+// submenu's trigger, lives while the pointer keeps heading for the submenu, and drops when the
+// pointer rests, turns back, reaches the submenu's rows, or the submenu closes.
+const canHover = matchMedia('(hover: hover)');
+for (const row of document.querySelectorAll('.cs-panel [aria-haspopup]')) {
+  row.addEventListener('pointerleave', e => bridge(row.nextElementSibling, e));
+}
+
+function bridge(sub, e) {
+  sub.stopBridge?.();                                       // one triangle per submenu at a time
+  const box = sub.getBoundingClientRect(), fromLeft = e.clientX < box.left;
+  // Not for touch, closed submenus, or one that dropped below its trigger (no side edge to aim at).
+  if (!canHover.matches || !sub.matches(':popover-open') || (!fromLeft && e.clientX <= box.right)) return;
+  sub.style.setProperty('--pointer-x', `${e.clientX - box.left}px`);
+  sub.style.setProperty('--pointer-y', `${e.clientY - box.top}px`);
+  sub.dataset.bridge = '';
+  let lastX = e.clientX, timer;
+  const done = new AbortController();
+  const stop = sub.stopBridge = () => { clearTimeout(timer); done.abort(); delete sub.dataset.bridge; };
+  const rest = () => { clearTimeout(timer); timer = setTimeout(stop, token('--cs-safe-rest')); };
+  // Moves over the triangle target the submenu itself; any other target means it reached a row.
+  sub.addEventListener('pointermove', m => {
+    if (m.target !== sub || (fromLeft ? m.clientX < lastX : m.clientX > lastX)) return stop();
+    lastX = m.clientX;
+    rest();
+  }, { signal: done.signal });
+  sub.addEventListener('toggle', stop, { signal: done.signal });
+  rest();
+}
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Open File › Export › Image by clicking each trigger, as a pointer user would.
+for (const id of ['file-btn', 'export-btn', 'image-btn']) document.getElementById(id).click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Hover through File › Export › Image, or use the arrow keys. More (⋯) at the right edge shows the flipped side."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Menu button</th><td>Opens the root menu. Its own Tab stop, with a pressed state while its menu is open.</td></tr>
+        <tr><th>Level</th><td>Every menu, root or nested, is the same surface: hairline border, two-layer shadow, 4px inner padding. Deeper levels stack above in the top layer.</td></tr>
+        <tr><th>Item</th><td>Three columns: a 16px icon slot, the label, and a shortcut, hint or chevron at the end. A level with no icons drops the slot.</td></tr>
+        <tr><th>Submenu trigger</th><td>An item with a chevron. It only opens its submenu and never runs a command; put a default action inside the submenu instead.</td></tr>
+        <tr><th>Chevron</th><td>14px, hint color, hidden from screen readers. Points to the inline end even when the submenu flips, as on macOS and Windows.</td></tr>
+        <tr><th>Open path</th><td>Each trigger whose submenu is open keeps a tinted row, so the route from the root stays visible. Only the row under the pointer or keyboard focus is filled.</td></tr>
+        <tr><th>Safe triangle</th><td>An invisible area from where the pointer left a trigger to the near edge of its submenu. Turn on “Show safe area” to see it while moving.</td></tr>
+        <tr><th>Hint</th><td>Secondary text in the trailing column, such as “Current” on the folder the document is already in. Read by screen readers, unlike shortcuts.</td></tr>
+        <tr><th>Radio item</th><td>Check mark in the icon slot; the group shares the submenu’s name.</td></tr>
+        <tr><th>Disabled and destructive</th><td>Disabled rows dim and are skipped by arrow keys. The destructive row is last, after a separator, red with a red fill on highlight.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>Root menu: click, <kbd>Enter</kbd>, <kbd>Space</kbd> or <kbd>↓</kbd> on the menu button. Submenu: hover or keyboard focus on its trigger for 150ms, or <kbd>→</kbd>, <kbd>Enter</kbd>, <kbd>Space</kbd> or a click on it.</td></tr>
+        <tr><th>Placement</th><td>Root menu 4px under its button, left edges aligned; near the right edge it aligns to the button’s right edge instead. Submenus sit beside their trigger with the first item level with it, overlapping the parent’s padding by 3px.</td></tr>
+        <tr><th>Flipping</th><td>A submenu with no room on the inline end opens on the other side; near the bottom it grows upward from the trigger row. When neither side fits, as on a phone, it drops below the trigger, indented 16px so the trigger stays visible. Each level decides on its own.</td></tr>
+        <tr><th>Hover intent</th><td>A submenu opens after the pointer or focus rests 150ms on its trigger, so passing over a row on the way elsewhere opens nothing. It closes 300ms after pointer and focus leave both trigger and submenu. Resting on a sibling trigger swaps submenus immediately.</td></tr>
+        <tr><th>Safe triangle</th><td>Starts when the pointer leaves an open submenu’s trigger. Rows under it get no hover, so a diagonal path keeps the submenu open. It drops when the pointer rests for 300ms, turns back, reaches a submenu row, or the submenu closes. Mouse and trackpad only.</td></tr>
+        <tr><th>Focus and hover</th><td>Hover moves focus without a ring, so the keyboard continues from the pointer. Keyboard focus on a trigger previews its submenu without entering it.</td></tr>
+        <tr><th>Motion</th><td>Each level fades in and slides 4px away from its trigger: down for the root, sideways for a submenu, mirrored after a flip. 120ms in, 80ms out, ease-out. None with reduced motion.</td></tr>
+        <tr><th>Commands</th><td>A click or <kbd>Enter</kbd> runs the command, closes every level, and returns focus to the menu button. A radio holds for 250ms first so the moved check mark is seen.</td></tr>
+        <tr><th>Dismiss</th><td><kbd>Esc</kbd> or <kbd>←</kbd> closes one level. <kbd>Esc</kbd> in the root menu, <kbd>Tab</kbd>, a click outside, or a command closes all of them.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items of one level, wrapping (native <code>focusgroup</code>). <kbd>↓</kbd> on the menu button opens the menu and enters it.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last enabled item of the level (native).</td></tr>
+          <tr><th><kbd>→</kbd></th><td>On a submenu trigger: open the submenu and focus its first item.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>On a submenu trigger: same as <kbd>→</kbd>. On a command: run it and close all levels. On a radio: check it, then close.</td></tr>
+          <tr><th><kbd>←</kbd></th><td>In a submenu: close it and return focus to its trigger.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close the current level and return focus to its trigger. In the root menu, close it and return to the menu button.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close every level and move on. Focus is never trapped.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu nomemory"</code> sits on a div inside each popover, not on the popover. It infers <code>role="menu"</code> and <code>menuitem</code>, and each level is its own group, so arrow keys never leak into a submenu.</li>
+          <li>Triggers carry <code>aria-haspopup="menu"</code> and an <code>aria-expanded</code> that script keeps in sync on every <code>toggle</code>, including hover previews. Each menu is named by its trigger through <code>aria-labelledby</code>.</li>
+          <li>Each popover is the next sibling of its trigger, so the browser adds no implicit <code>aria-details</code>, and is nested inside its parent menu, so opening a level keeps its ancestors open.</li>
+          <li>Keyboard focus on a trigger shows the submenu as a preview; focus stays on the trigger until <kbd>→</kbd>, so screen reader users hear the trigger first, then can enter.</li>
+          <li>Chevrons and shortcuts are <code>aria-hidden</code>. Radio items set <code>role="menuitemradio"</code> and <code>aria-checked</code> inside a labelled <code>role="group"</code>.</li>
+          <li>Not built here: typeahead. Add it when a level runs past about ten items.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a menu</a>, Chrome: nested popovers inside <code>focusgroup</code>, submenu placement with <code>position-try-fallbacks</code> and the below fallback, the focus rules, and the <code>clip-path</code> safe triangle with its pointer-tracking script.</li>
+        <li><a href="https://ics.media/en/entry/260803/">Using a CSS safe triangle to prevent accidental submenu switching</a>, ICS MEDIA: <code>clip-path: polygon()</code> as the hit area, and <code>interestfor</code> beside a click invoker on the same popover for hover plus click.</li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers">Using interest invokers</a>, MDN: <code>interestfor</code> and the <code>interest-delay-start</code> / <code>interest-delay-end</code> properties used for hover intent.</li>
+        <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/menubar/">Menu and menubar pattern</a>, WAI-ARIA APG: submenu keys (<kbd>→</kbd> opens and enters, <kbd>←</kbd> and <kbd>Esc</kbd> close one level).</li>
+        <li><a href="https://bjk5.com/post/44698559168/breaking-down-amazons-mega-dropdown">Breaking down Amazon’s mega dropdown</a>, Ben Kamens: why a direction-aware safe zone beats a fixed open delay.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

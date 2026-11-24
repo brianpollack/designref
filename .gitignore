@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Claude Code: per-machine settings stay local (launch.json is shared)
+.claude/settings.local.json
+
+# Impeccable: per-machine state (review/ and mocks/ ignore themselves)
+.impeccable/hook.cache.json
+.impeccable/config.local.json

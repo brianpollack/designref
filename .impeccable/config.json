@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "roboto flex",
+        "createdAt": "2026-11-24T22:08:39.636Z",
+        "reason": "Claude: Roboto Flex is Material 3's own typeface inside the M3 Expressive demo; DESIGN.md states demo worlds are per-concept, not the site type system"
+      }
+    ]
+  }
+}

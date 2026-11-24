@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Context Menus</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+</head>
+<!-- Category page. Title, summary and the concept list come from assets/catalog.js. -->
+<body data-page="components/context-menus">
+  <main>
+    <div class="page">
+      <header class="page-header" data-auto></header>
+
+      <section data-concepts></section>
+
+      <section class="ruled">
+        <h2>Choosing one</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>When the user is…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><th>Working on a desktop surface: files, canvas, table rows</th><td><a href="right-click-menu.html">Right-Click Menu</a></td></tr>
+            <tr><th>On touch, or the actions need to be discoverable</th><td><a href="overflow-menu.html">Overflow Action Menu</a></td></tr>
+            <tr><th>Choosing among more than about ten commands</th><td><a href="cascading-submenus.html">Cascading Submenus</a></td></tr>
+            <tr><th>Inside an Android or Material product</th><td><a href="material-3-expressive.html">Material 3 Expressive Menu</a></td></tr>
+            <tr><th>In a media-rich or Apple-feeling interface</th><td><a href="glass-menu.html">Glass Menu</a></td></tr>
+            <tr><th>Switching tools on a canvas, by muscle memory</th><td><a href="radial-menu.html">Radial Menu</a></td></tr>
+            <tr><th>On a phone, acting on photos or messages</th><td><a href="long-press-preview.html">Long-Press Preview</a></td></tr>
+            <tr><th>A power user with dozens of commands</th><td><a href="filterable-menu.html">Filterable Command Menu</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled prose">
+        <h2>The modern stack</h2>
+        <p>Every concept here starts from the same four platform features. Together they replace what used to be a positioning library, a focus manager and a click-outside handler.</p>
+        <ul>
+          <li><strong>Popover</strong> puts the menu in the top layer, so no <code>z-index</code> or <code>overflow: hidden</code> ancestor can clip it, and gives light dismiss and <kbd>Esc</kbd> for free.</li>
+          <li><strong>Anchor positioning</strong> places the menu against its trigger, or against a zero-size anchor at the pointer, and <code>position-try-fallbacks</code> flips it at the viewport edge.</li>
+          <li><strong>Invoker commands</strong> (<code>commandfor</code>, <code>command</code>) open and close it from a button with no script.</li>
+          <li><strong><code>focusgroup="menu"</code></strong> gives arrow-key navigation and infers the <code>menu</code> / <code>menuitem</code> roles natively.</li>
+        </ul>
+        <p>What still needs script: reading the pointer position for a right-click, typeahead, hover-to-preview submenus, and anything that tracks pointer direction (safe triangles, radial picks).</p>
+      </section>
+
+      <section class="ruled prose">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a dropdown menu</a>, Chrome modern web guidance</li>
+          <li><a href="https://frontendmasters.com/blog/popover-context-menus-with-anchor-positioning/">Popover context menus with anchor positioning</a>, Frontend Masters</li>
+          <li><a href="https://ics.media/en/entry/260803/">Using a CSS safe triangle to prevent accidental submenu switching</a>, ICS Media</li>
+          <li><a href="https://m3.material.io/components/menus/specs">Menus</a>, Material Design 3</li>
+          <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/menubar/">Menu and menubar pattern</a>, WAI-ARIA Authoring Practices</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

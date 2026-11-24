@@ -1,0 +1,509 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-24T22:06:40.709Z",
+  "title": "Design System: Design Research",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "ground-dark": {
+        "role": "neutral",
+        "displayName": "Ground (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "shelf": {
+        "role": "neutral",
+        "displayName": "Shelf",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "shelf-dark": {
+        "role": "neutral",
+        "displayName": "Shelf (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "well": {
+        "role": "neutral",
+        "displayName": "Well",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "well-dark": {
+        "role": "neutral",
+        "displayName": "Well (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "ink-dark": {
+        "role": "neutral",
+        "displayName": "Ink (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "muted-ink-dark": {
+        "role": "neutral",
+        "displayName": "Muted Ink (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "faint": {
+        "role": "neutral",
+        "displayName": "Faint",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "faint-dark": {
+        "role": "neutral",
+        "displayName": "Faint (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "hairline-dark": {
+        "role": "neutral",
+        "displayName": "Hairline (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "ink-blue": {
+        "role": "primary",
+        "displayName": "Ink Blue",
+        "tonalRamp": [
+          "oklch(15% 0.095 268)",
+          "oklch(25% 0.095 268)",
+          "oklch(35% 0.190 268)",
+          "oklch(45% 0.190 268)",
+          "oklch(55% 0.190 268)",
+          "oklch(68% 0.190 268)",
+          "oklch(82% 0.190 268)",
+          "oklch(95% 0.095 268)"
+        ]
+      },
+      "ink-blue-dark": {
+        "role": "primary",
+        "displayName": "Ink Blue (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.095 268)",
+          "oklch(25% 0.095 268)",
+          "oklch(35% 0.190 268)",
+          "oklch(45% 0.190 268)",
+          "oklch(55% 0.190 268)",
+          "oklch(68% 0.190 268)",
+          "oklch(82% 0.190 268)",
+          "oklch(95% 0.095 268)"
+        ]
+      },
+      "code-comment": {
+        "role": "neutral",
+        "displayName": "Code Comment",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "code-comment-dark": {
+        "role": "neutral",
+        "displayName": "Code Comment (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.005 265)",
+          "oklch(25% 0.005 265)",
+          "oklch(35% 0.010 265)",
+          "oklch(45% 0.010 265)",
+          "oklch(55% 0.010 265)",
+          "oklch(68% 0.010 265)",
+          "oklch(82% 0.010 265)",
+          "oklch(95% 0.005 265)"
+        ]
+      },
+      "code-string": {
+        "role": "tertiary",
+        "displayName": "Code String",
+        "tonalRamp": [
+          "oklch(15% 0.060 162)",
+          "oklch(25% 0.060 162)",
+          "oklch(35% 0.120 162)",
+          "oklch(45% 0.120 162)",
+          "oklch(55% 0.120 162)",
+          "oklch(68% 0.120 162)",
+          "oklch(82% 0.120 162)",
+          "oklch(95% 0.060 162)"
+        ]
+      },
+      "code-string-dark": {
+        "role": "tertiary",
+        "displayName": "Code String (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.060 162)",
+          "oklch(25% 0.060 162)",
+          "oklch(35% 0.120 162)",
+          "oklch(45% 0.120 162)",
+          "oklch(55% 0.120 162)",
+          "oklch(68% 0.120 162)",
+          "oklch(82% 0.120 162)",
+          "oklch(95% 0.060 162)"
+        ]
+      },
+      "code-keyword": {
+        "role": "tertiary",
+        "displayName": "Code Keyword",
+        "tonalRamp": [
+          "oklch(15% 0.080 310)",
+          "oklch(25% 0.080 310)",
+          "oklch(35% 0.160 310)",
+          "oklch(45% 0.160 310)",
+          "oklch(55% 0.160 310)",
+          "oklch(68% 0.160 310)",
+          "oklch(82% 0.160 310)",
+          "oklch(95% 0.080 310)"
+        ]
+      },
+      "code-keyword-dark": {
+        "role": "tertiary",
+        "displayName": "Code Keyword (dark)",
+        "tonalRamp": [
+          "oklch(15% 0.080 310)",
+          "oklch(25% 0.080 310)",
+          "oklch(35% 0.160 310)",
+          "oklch(45% 0.160 310)",
+          "oklch(55% 0.160 310)",
+          "oklch(68% 0.160 310)",
+          "oklch(82% 0.160 310)",
+          "oklch(95% 0.080 310)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page title only, one per page."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Sub-headings and concept-row titles."
+      },
+      "summary": {
+        "displayName": "Summary",
+        "purpose": "One-line page summary in Muted Ink."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose at 68ch max."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Nav group heads, table heads, captions. Sentence case."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code, token names and measured values only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "frame-ring",
+        "value": "0 0 0 1px var(--line)",
+        "purpose": "Hairline ring around preview frames and thumbnails; the only shadow in the chrome."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-fade",
+        "value": "150ms ease",
+        "purpose": "Splitter highlight and chevron rotation."
+      },
+      {
+        "name": "toast",
+        "value": "180ms ease",
+        "purpose": "Copy toast fade and 6px rise."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack-nav",
+        "value": "760px",
+        "purpose": "Viewport: sidebar stacks above main, splitter removed."
+      },
+      {
+        "name": "stack-rows",
+        "value": "760px (container)",
+        "purpose": "Main: concept rows stack thumbnail over text."
+      },
+      {
+        "name": "stack-frames",
+        "value": "860px (container)",
+        "purpose": "Main: Light and Dark frames stack."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "ghost-button",
+      "description": "The only chrome button: toolbar actions, code tabs, copy, theme switch.",
+      "html": "<button class=\"ds-ghost\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg>Copy</button> <button class=\"ds-ghost\" aria-pressed=\"true\">CSS</button>",
+      "css": ".ds-ghost{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;background:none;border:0;border-radius:6px;color:var(--muted,#5d626b);font:13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;cursor:pointer;white-space:nowrap}.ds-ghost:hover,.ds-ghost[aria-pressed=\"true\"]{background:var(--bg-3,#eef0f3);color:var(--text,#17181b)}.ds-ghost:focus-visible{outline:2px solid var(--accent,#2f4fd6);outline-offset:2px}.ds-icon{width:16px;height:16px;flex:none}"
+    },
+    {
+      "name": "Nav Filter",
+      "kind": "input",
+      "refersTo": "nav-filter",
+      "description": "Borderless search field on the Well tone at the top of the sidebar.",
+      "html": "<input class=\"ds-filter\" type=\"search\" placeholder=\"Filter\">",
+      "css": ".ds-filter{width:220px;height:30px;padding:0 10px;border:0;border-radius:6px;background:var(--bg-3,#eef0f3);color:var(--text,#17181b);font:13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif}.ds-filter::placeholder{color:var(--muted,#5d626b)}.ds-filter:focus-visible{outline:2px solid var(--accent,#2f4fd6);outline-offset:0}"
+    },
+    {
+      "name": "Navigation Tree",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Sidebar groups on the Shelf layer; current page in Ink Blue on an 11% tint.",
+      "html": "<nav class=\"ds-nav\"><h2>Components</h2><ul><li><a href=\"#\">Context Menus <span class=\"ds-count\">8</span></a><ul><li><a href=\"#\" aria-current=\"page\">Right-Click Menu</a></li><li><a href=\"#\">Glass Menu</a></li></ul></li><li><a href=\"#\">Dialogs <span class=\"ds-count\">5</span></a></li></ul></nav>",
+      "css": ".ds-nav{width:244px;padding:6px 10px;background:var(--bg-2,#f4f5f7);font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif}.ds-nav h2{margin:0;font-size:12.5px;font-weight:600;color:var(--muted,#5d626b);padding:12px 8px 6px}.ds-nav ul{list-style:none;margin:0;padding:0}.ds-nav a{display:flex;align-items:baseline;gap:8px;padding:4px 8px;border-radius:6px;font-size:13.5px;line-height:1.45;text-decoration:none;color:var(--text,#17181b)}.ds-nav a:hover{background:var(--bg-3,#eef0f3)}.ds-nav a:focus-visible{outline:2px solid var(--accent,#2f4fd6);outline-offset:2px}.ds-nav ul ul{margin:2px 0 6px 10px}.ds-nav ul ul a{font-size:13px;color:var(--muted,#5d626b)}.ds-nav a[aria-current=\"page\"]{color:var(--accent,#2f4fd6);background:color-mix(in oklab,var(--accent,#2f4fd6) 11%,transparent)}.ds-count{margin-inline-start:auto;color:var(--muted,#5d626b);font-size:12px;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Splitter",
+      "kind": "custom",
+      "refersTo": "splitter",
+      "description": "1px hairline between nav and main; 2px Ink Blue while hovered or dragged.",
+      "html": "<div class=\"ds-split\"><div class=\"ds-split-nav\"></div><div class=\"ds-split-bar\" tabindex=\"0\" role=\"separator\" aria-label=\"Resize navigation\"></div><div></div></div>",
+      "css": ".ds-split{display:grid;grid-template-columns:120px 0 1fr;height:120px;background:var(--bg,#fcfcfd)}.ds-split-nav{background:var(--bg-2,#f4f5f7)}.ds-split-bar{position:relative;outline:none}.ds-split-bar::before{content:\"\";position:absolute;inset:0 -4px;cursor:col-resize}.ds-split-bar::after{content:\"\";position:absolute;inset:0 auto 0 -0.5px;width:1px;background:var(--line,#e5e7eb);transition:background .15s,width .15s}.ds-split-bar:hover::after,.ds-split-bar:focus-visible::after{background:var(--accent,#2f4fd6);width:2px;inset-inline-start:-1px}"
+    },
+    {
+      "name": "Preview Frames",
+      "kind": "card",
+      "refersTo": "preview-frame",
+      "description": "Signature: Light and Dark live frames side by side with captions.",
+      "html": "<div class=\"ds-preview\"><figure><figcaption>Light</figcaption><div class=\"ds-frame\"></div></figure><figure><figcaption>Dark</figcaption><div class=\"ds-frame ds-dark\"></div></figure></div>",
+      "css": ".ds-preview{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif}.ds-preview figure{margin:0}.ds-preview figcaption{font-size:12.5px;color:var(--muted,#5d626b);margin:0 0 6px 2px}.ds-frame{height:160px;border-radius:10px;background:#eef0f3;box-shadow:0 0 0 1px var(--line,#e5e7eb)}.ds-frame.ds-dark{background:#1e2025}"
+    },
+    {
+      "name": "Code Panel",
+      "kind": "card",
+      "refersTo": "code-panel",
+      "description": "Code on the Shelf tone with four syntax colors.",
+      "html": "<pre class=\"ds-code\"><span class=\"c\">/* Menu */</span>\n<span class=\"k\">.cm-panel</span> {\n  font-size: <span class=\"s\">13.5px</span>;\n}</pre>",
+      "css": ".ds-code{margin:0;padding:18px 20px;background:var(--bg-2,#f4f5f7);border-radius:10px;font:12.5px/1.65 ui-monospace,\"SF Mono\",Menlo,Consolas,monospace;color:var(--text,#17181b)}.ds-code .c{color:var(--code-comment,#8a8f98);font-style:italic}.ds-code .s{color:var(--code-string,#0b7a53)}.ds-code .k{color:var(--code-keyword,#8a3fb8)}"
+    },
+    {
+      "name": "Spec Table",
+      "kind": "custom",
+      "refersTo": "spec-table",
+      "description": "Token rows: description, mono token name, Light and Dark values with swatches.",
+      "html": "<table class=\"ds-spec\"><thead><tr><th>Token</th><th>Light</th><th>Dark</th></tr></thead><tbody><tr><td>Highlight<code>--cm-hover</code></td><td class=\"v\"><i style=\"background:#eef0f3\"></i>#eef0f3</td><td class=\"v\"><i style=\"background:#34363c\"></i>#34363c</td></tr></tbody></table>",
+      "css": ".ds-spec{width:100%;border-collapse:collapse;font:13.5px -apple-system,BlinkMacSystemFont,system-ui,sans-serif;color:var(--text,#17181b)}.ds-spec th,.ds-spec td{text-align:start;padding:9px 16px 9px 0;border-bottom:1px solid var(--line,#e5e7eb)}.ds-spec thead th{font-size:12.5px;font-weight:600;color:var(--muted,#5d626b)}.ds-spec code{display:block;margin-top:2px;font:12px ui-monospace,Menlo,monospace;color:var(--muted,#5d626b)}.ds-spec .v{font:12.5px ui-monospace,Menlo,monospace}.ds-spec .v i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-inline-end:8px;box-shadow:inset 0 0 0 1px rgb(0 0 0 / .18)}"
+    },
+    {
+      "name": "Toast",
+      "kind": "custom",
+      "refersTo": "toast",
+      "description": "Inverted confirmation after a copy action.",
+      "html": "<div class=\"ds-toast\">Copied CSS</div>",
+      "css": ".ds-toast{display:inline-block;padding:8px 14px;border-radius:8px;background:var(--text,#17181b);color:var(--bg,#fcfcfd);font:13px -apple-system,BlinkMacSystemFont,system-ui,sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Reference Shelf",
+    "overview": "The chrome is a shelf, not an exhibit. Near-white (or near-black) grounds, system type, hairline rules and one ink-blue accent hold every page still so the live component in its frame carries all the color and motion. Density is that of a well-set reference book: generous space above headings, tight space below, prose held to a readable measure.\n\nStructure comes from layers and lines, never from boxes. The sidebar sits on a second neutral layer, separated from the main column by a 1px draggable splitter; sections are divided by single hairlines; code and frames sit in soft tonal wells. Both themes are first-class: every color token is a `light-dark()` pair, and the viewer can pin light, dark or system from the sidebar foot.\n\nThe look is pinned by the user's brief: simple layouts, few borders, never borders inside borders, minimal copy, a resizable splitter between navigation and main. Demo worlds inside the preview frames are per-concept and documented on their pages; they are subject matter, not this system.",
+    "keyCharacteristics": [
+      "Near-monochrome chrome with one reserved accent.",
+      "Hairlines and tonal layers instead of cards or bordered panels.",
+      "System sans for all text; monospace only for code and measured values.",
+      "Left navigation on its own layer behind a resizable splitter.",
+      "Light and dark shown together, never one as an afterthought."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Ink Blue is the only chromatic color in the chrome, and it marks interaction or location only. Never use it for decoration, headings or fills larger than a nav row.",
+        "section": "colors"
+      },
+      {
+        "name": "The Loud Component Rule",
+        "body": "Color, shadow and motion belong to the demos. If the chrome starts competing with a frame, the chrome is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Weight-Not-Size Rule",
+        "body": "Separate levels with weight and ink, not with bigger type. Nothing in the chrome exceeds 30px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono-Means-Exact Rule",
+        "body": "Monospace appears only on code and measured values. Never on labels, nav or prose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tone-Not-Shadow Rule",
+        "body": "To lift a surface, move it one step along Ground to Shelf to Well. Do not add a shadow.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Rules-Divide Rule",
+        "body": "Hairlines run between rows and sections; they do not enclose. The only enclosing line is the frame ring around live content, and nothing bordered ever sits inside something bordered.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do take every color from the tokens; each is a `light-dark()` pair, and both themes must read.",
+      "Do reserve Ink Blue for links, focus, the current location and the active splitter.",
+      "Do separate sections with space first and a single Hairline second.",
+      "Do use the ghost button for every chrome action.",
+      "Do keep prose and summaries at or under 68ch.",
+      "Do use Lucide line icons at 16px in `currentColor`.",
+      "Do keep motion in the chrome to 150 to 180ms state fades."
+    ],
+    "donts": [
+      "Don't wrap content in cards or bordered panels, and never nest a border inside a border.",
+      "Don't add drop shadows to chrome surfaces; lift with a tonal step instead.",
+      "Don't introduce a second accent color or tint headings.",
+      "Don't set Faint as text color.",
+      "Don't use monospace for anything but code and measured values.",
+      "Don't let chrome color, motion or shadow compete with the live demos."
+    ]
+  }
+}

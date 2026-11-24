@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{TITLE}}</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="{{PAGE}}">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- A realistic surface around the component, then the component itself. -->
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --xx-bg: light-dark(#ffffff, #26272b);   /* Surface */
+}
+
+/* ---- Component ---- */
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Only what the platform can't do yet. Delete this block if nothing is needed.
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Put the demo in its "open at rest" state by simulating input.
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="440" data-hint="How to interact with the demo."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Part</th><td>What it is and the rule that governs it.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>…</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody><tr><th><kbd>Esc</kbd></th><td>…</td></tr></tbody>
+      </table>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul><li><a href="#">Title</a>: what it contributed.</li></ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>

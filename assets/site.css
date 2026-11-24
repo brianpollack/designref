@@ -1,0 +1,362 @@
+/* ==========================================================================
+   site.css — chrome for the Design Research library.
+
+   The chrome stays quiet so the components on each page carry the color:
+   near-neutral grounds, one ink-blue accent (links, focus, current page),
+   hairline rules between sections, no boxed panels.
+
+   Sections
+     1. Tokens            colors, type, spacing (light/dark via light-dark())
+     2. Base              element defaults, browser surfaces (selection, focus…)
+     3. Shell             sidebar | splitter | main grid
+     4. Sidebar           brand, filter, nav tree, theme switch
+     5. Page              headers, sections, prose, tables
+     6. Lists             home catalog and category concept rows
+     7. Concept           preview frames, toolbar, spec table, code viewer
+     8. Thumb mode        concept page rendered as a category thumbnail
+   ========================================================================== */
+
+/* 1. Tokens ---------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Grounds */
+  --bg:        light-dark(#fcfcfd, #121316);   /* Page */
+  --bg-2:      light-dark(#f4f5f7, #17181c);   /* Sidebar layer */
+  --bg-3:      light-dark(#eef0f3, #1e2025);   /* Code, hover, inline fills */
+
+  /* Ink */
+  --text:      light-dark(#17181b, #e7e8eb);
+  --muted:     light-dark(#5d626b, #a3a8b1);   /* ≥ 4.5:1 on --bg and --bg-2 */
+  --faint:     light-dark(#8d929b, #6b7079);   /* Decoration only (list markers), never text */
+  --line:      light-dark(#e5e7eb, #26282e);   /* Hairlines */
+
+  /* The one accent */
+  --accent:      light-dark(#2f4fd6, #91a5ff);
+  --accent-soft: color-mix(in oklab, var(--accent) 11%, transparent);
+
+  /* Code tokens */
+  --code-comment: light-dark(#8a8f98, #737985);
+  --code-string:  light-dark(#0b7a53, #7fd1a8);
+  --code-keyword: light-dark(#8a3fb8, #d3a6ff);
+  --code-tag:     light-dark(#2f4fd6, #91a5ff);
+
+  /* Type */
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Layout */
+  --nav-w: 264px;          /* Overridden by the splitter (persisted per viewer) */
+  --gutter: clamp(20px, 4vw, 56px);
+  --measure: 68ch;         /* Prose line length */
+  --radius: 10px;
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+/* 2. Base ------------------------------------------------------------------ */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); color: var(--text); }
+body {
+  margin: 0;
+  font: 15px/1.55 var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  caret-color: var(--accent);
+  scrollbar-color: var(--line) transparent;
+}
+
+::selection { background: color-mix(in oklab, var(--accent) 24%, transparent); }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+a:hover { text-decoration-color: currentColor; }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+h1 { font-size: 30px; line-height: 1.15; letter-spacing: -0.02em; }
+h2 { font-size: 17px; line-height: 1.3; letter-spacing: -0.01em; }
+h3 { font-size: 14px; line-height: 1.35; }
+
+p { margin: 0; text-wrap: pretty; }
+code, kbd, pre { font-family: var(--mono); font-size: 0.87em; }
+:not(pre) > code { background: var(--bg-3); padding: 0.1em 0.35em; border-radius: 4px; }
+kbd {
+  display: inline-block; min-width: 1.6em; padding: 0 0.4em; text-align: center;
+  background: var(--bg-3); border-radius: 4px; font-size: 0.82em; line-height: 1.7;
+}
+
+button { font: inherit; color: inherit; }
+.icon { width: 16px; height: 16px; flex: none; }
+
+/* Ghost button used across the chrome (toolbars, theme switch, copy). */
+.ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px;
+  background: none; border: 0; border-radius: 6px;
+  color: var(--muted); font-size: 13px; white-space: nowrap; cursor: pointer;
+}
+.ghost:hover { background: var(--bg-3); color: var(--text); }
+.ghost[aria-pressed="true"], .ghost[aria-selected="true"] { color: var(--text); background: var(--bg-3); }
+
+/* 3. Shell ----------------------------------------------------------------- */
+/* Main is pinned to column 3 so it never shifts when site.js inserts the nav. */
+body.shell {
+  display: grid;
+  grid-template-columns: var(--nav-w) 0 minmax(0, 1fr);
+  min-height: 100dvh;
+}
+body.shell > main { grid-column: 3; min-width: 0; container-type: inline-size; }
+
+.splitter {
+  grid-column: 2;
+  position: sticky; top: 0; height: 100dvh;
+  width: 0; z-index: 2;
+  outline: none;
+}
+/* 9px invisible hit area centred on a 1px rule that brightens while dragging. */
+.splitter::before {
+  content: ""; position: absolute; inset: 0 -4px;
+  cursor: col-resize;
+}
+.splitter::after {
+  content: ""; position: absolute; inset: 0 auto 0 -0.5px; width: 1px;
+  background: var(--line);
+  transition: background 0.15s, width 0.15s;
+}
+.splitter:hover::after, .splitter.dragging::after, .splitter:focus-visible::after {
+  background: var(--accent); width: 2px; inset-inline-start: -1px;
+}
+body.resizing { cursor: col-resize; user-select: none; }
+body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer moves. */
+
+/* 4. Sidebar --------------------------------------------------------------- */
+.sidebar {
+  grid-column: 1;
+  position: sticky; top: 0; height: 100dvh;
+  display: flex; flex-direction: column;
+  background: var(--bg-2);
+  min-width: 0;
+}
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; min-height: 30px; padding: 22px 18px 0; }
+.nav-toggle { display: none; }
+/* Everything but the brand. Folds behind the menu button on narrow screens. */
+.nav-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.nav-search { padding: 14px 18px 4px; }
+.brand { color: var(--text); text-decoration: none; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+
+.nav-filter {
+  width: 100%; height: 30px; padding: 0 10px;
+  border: 0; border-radius: 6px; background: var(--bg-3); color: var(--text);
+  font: inherit; font-size: 13px;
+}
+.nav-filter::placeholder { color: var(--muted); }
+.nav-filter:focus-visible { outline-offset: 0; }
+
+.nav-tree { flex: 1; overflow: auto; padding: 6px 10px 24px; scrollbar-width: thin; }
+.nav-tree h2 { font-size: 12.5px; color: var(--muted); font-weight: 600; padding: 18px 8px 6px; }
+.nav-tree ul { list-style: none; margin: 0; padding: 0; }
+.nav-tree a, .nav-tree .planned {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 4px 8px; border-radius: 6px;
+  font-size: 13.5px; line-height: 1.45; text-decoration: none; color: var(--text);
+}
+.nav-tree a:hover { background: var(--bg-3); }
+.nav-tree a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
+.nav-tree .planned { color: var(--muted); cursor: default; }
+.planned-group summary {
+  display: flex; align-items: baseline; gap: 8px; padding: 4px 8px; border-radius: 6px;
+  font-size: 13.5px; color: var(--muted); cursor: pointer; list-style: none;
+}
+.planned-group summary::-webkit-details-marker { display: none; }
+/* Drawn chevron marks the row as a fold, not a category; it turns down when open. */
+.planned-group .chev { width: 14px; height: 14px; margin-inline-start: -2px; align-self: center; transition: rotate .15s; }
+.planned-group[open] .chev { rotate: 90deg; }
+.planned-group summary:hover { background: var(--bg-3); color: var(--text); }
+.planned-group ul { margin: 2px 0 6px 10px; }
+.planned-group .planned { font-size: 13px; }
+.nav-tree .count { margin-inline-start: auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.nav-tree ul ul { margin: 2px 0 6px 10px; }
+.nav-tree ul ul a { font-size: 13px; color: var(--muted); }
+.nav-tree ul ul a:hover { color: var(--text); }
+.nav-tree ul ul a[aria-current="page"] { color: var(--accent); }
+.nav-tree [hidden] { display: none; }
+
+.sidebar-foot { display: flex; gap: 2px; padding: 10px 12px 14px; }
+
+/* 5. Page ------------------------------------------------------------------ */
+.page { padding: 44px var(--gutter) 96px; max-width: 1240px; }
+
+.page-header h1, .page-header .summary { max-width: var(--measure); }
+.page-header .summary { margin-top: 10px; font-size: 16.5px; color: var(--muted); }
+.page-header .meta {
+  margin-top: 14px; font-size: 13px; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 4px 16px;
+}
+.page-header .meta [data-js-lines] { color: var(--text); }
+.page-header .meta a { color: inherit; text-decoration-color: var(--line); }
+.page-header .meta a:hover { color: var(--accent); }
+
+/* Sections: generous space above a heading, tight below. Hairline separates. */
+.page > section { margin-top: 56px; }
+.page > section > h2 { margin-bottom: 14px; }
+.page > section.ruled { padding-top: 40px; border-top: 1px solid var(--line); }
+
+.prose { max-width: var(--measure); }
+.prose > * + * { margin-top: 12px; }
+.prose ul, .prose ol { padding-inline-start: 20px; }
+.prose li + li { margin-top: 6px; }
+.prose li::marker { color: var(--faint); }
+.muted { color: var(--muted); }
+
+/* Key/value tables (keyboard maps, anatomy). Rows divided by hairlines only. */
+.kv { border-collapse: collapse; width: 100%; max-width: var(--measure); font-size: 14px; }
+/* Shared by .kv and .spec tables: rows divided by hairlines, no boxes. */
+:is(.kv, .spec) :is(th, td) { text-align: start; vertical-align: top; padding: 9px 16px 9px 0; border-bottom: 1px solid var(--line); }
+:is(.kv, .spec) thead th { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.kv th { font-weight: 500; white-space: nowrap; width: 1%; }
+.kv tr:last-child > * { border-bottom: 0; }
+/* Sentence-length keys ("When the user is…") wrap; the answer column stays on one line. */
+.kv.long-keys th { white-space: normal; width: auto; }
+.kv.long-keys td { white-space: nowrap; }
+
+.pager { display: flex; justify-content: space-between; gap: 24px; margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 14px; }
+.pager a { text-decoration: none; display: grid; gap: 2px; }
+.pager a span { color: var(--muted); font-size: 12.5px; }
+.pager a:last-child { text-align: end; margin-inline-start: auto; }
+
+/* 6. Lists ----------------------------------------------------------------- */
+/* Home: each section is a heading plus a multi-column list of categories. */
+.catalog-section + .catalog-section { margin-top: 56px; }
+.catalog-section > h2 { margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; }
+.catalog-section > h2 .count { color: var(--muted); font-weight: 400; font-size: 13px; }
+
+.featured { list-style: none; padding: 0; margin: 0 0 24px; }
+.featured li { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.featured li:first-child { border-top: 1px solid var(--line); }
+.featured a { font-weight: 600; text-decoration: none; }
+.featured a:hover { text-decoration: underline; }
+.featured .count { color: var(--muted); font-size: 13px; margin-inline-start: 8px; }
+.featured p { color: var(--muted); font-size: 14px; margin-top: 3px; max-width: var(--measure); }
+
+.columns { list-style: none; padding: 0; margin: 0; columns: 3 200px; column-gap: 32px; font-size: 14px; }
+.columns li { break-inside: avoid; padding: 3px 0; color: var(--muted); }
+
+/* Category page: one row per concept, thumbnail beside text. No cards. */
+.concept-rows { list-style: none; margin: 0; padding: 0; }
+.concept-row {
+  display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 28px; align-items: start;
+  position: relative;   /* The title link's ::after covers the whole row */
+  padding: 28px 0; border-top: 1px solid var(--line);
+}
+.concept-row:last-child { border-bottom: 1px solid var(--line); }
+.concept-row h3 { font-size: 16px; }
+.concept-row h3 a { color: var(--text); text-decoration: none; }
+.concept-row h3 a::after { content: ""; position: absolute; inset: 0; }   /* Whole row is the link */
+.concept-row:hover h3 a { color: var(--accent); }
+.concept-row p { color: var(--muted); font-size: 14.5px; margin-top: 6px; max-width: 60ch; }
+.concept-row .meta { margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+
+.concept-thumb {
+  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
+  border-radius: 8px; background: var(--bg-3);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.concept-thumb iframe {
+  position: absolute; top: 0; left: 0; border: 0;
+  width: 800px; height: 500px;
+  transform-origin: 0 0; scale: 0.4;          /* 800×500 → 320×200 */
+  pointer-events: none;
+}
+
+@container (width < 760px) {
+  .concept-row { grid-template-columns: 1fr; gap: 14px; }
+  .concept-thumb { max-width: 400px; }
+  .concept-thumb iframe { scale: 0.5; }
+}
+
+/* 7. Concept --------------------------------------------------------------- */
+.preview-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin-bottom: 10px; }
+.preview-bar .hint { flex: 1 1 280px; color: var(--muted); font-size: 13px; }
+
+.preview { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.preview figure { margin: 0; min-width: 0; }
+.preview figcaption { font-size: 12.5px; color: var(--muted); margin: 0 0 6px 2px; }
+.preview iframe {
+  display: block; width: 100%; height: var(--frame-h, 440px);
+  border: 0; border-radius: var(--radius);
+  box-shadow: 0 0 0 1px var(--line);
+  background: var(--bg-3);
+}
+@container (width < 860px) { .preview { grid-template-columns: 1fr; } }
+@container (width < 560px) { .preview-bar .ghost:first-of-type { margin-inline-start: -10px; } }
+
+/* Spec table: description first (human), token name second (code). */
+.spec { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.spec .group th { padding-top: 26px; font-size: 13px; font-weight: 600; color: var(--text); border-bottom-color: var(--text); }
+.spec .tk-desc { color: var(--text); }
+.spec .tk-name { display: block; margin-top: 2px; padding: 0; background: none; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.spec td.val { font-family: var(--mono); font-size: 12.5px; width: 30%; }
+.spec .val .raw { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; word-break: break-word; }
+.spec .swatch {
+  display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-inline-end: 8px;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--text) 18%, transparent);
+  /* Transparency checker under translucent colors, drawn from palette tones. */
+  background-image: conic-gradient(var(--line) 25%, var(--bg) 0 50%, var(--line) 0 75%, var(--bg) 0); background-size: 8px 8px;
+  position: relative; overflow: hidden;
+}
+.spec .swatch > i { position: absolute; inset: 0; }
+.spec .layer + .layer { margin-top: 3px; }
+.spec-note { margin-top: 12px; font-size: 13px; color: var(--muted); max-width: var(--measure); }
+
+/* Code viewer: tab row + one panel. */
+.code-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin-bottom: 8px; }
+.code-bar [role="tablist"] { display: flex; gap: 2px; margin-inline-end: auto; }
+.code-panel {
+  margin: 0; padding: 18px 20px; max-height: 560px; overflow: auto;
+  background: var(--bg-2); border-radius: var(--radius);
+  font: 12.5px/1.65 var(--mono); tab-size: 2; scrollbar-width: thin;
+}
+.code-panel .c { color: var(--code-comment); font-style: italic; }
+.code-panel .s { color: var(--code-string); }
+.code-panel .k { color: var(--code-keyword); }
+.code-panel .t { color: var(--code-tag); }
+.code-note { margin-top: 10px; font-size: 13px; color: var(--muted); }
+details.base { margin-top: 14px; font-size: 13px; }
+details.base summary { cursor: pointer; color: var(--muted); }
+details.base pre { margin-top: 10px; }
+
+/* Toast used by copy buttons. */
+.copied { position: fixed; inset: auto 24px 24px auto; padding: 8px 14px; border-radius: 8px;
+  background: var(--text); color: var(--bg); font-size: 13px; opacity: 0; translate: 0 6px;
+  transition: opacity .18s, translate .18s; pointer-events: none; z-index: 10; }
+.copied.show { opacity: 1; translate: 0 0; }
+
+/* 8. Thumb mode ------------------------------------------------------------- */
+/* concept.html#thumb (or #thumb-dark): one frame, full viewport, no chrome. */
+html.thumb, html.thumb body { height: 100%; overflow: hidden; background: transparent; }
+html.thumb body > :not(main), html.thumb main > :not(.page),
+html.thumb .page > :not([data-preview]), html.thumb .preview-bar, html.thumb figcaption { display: none !important; }
+html.thumb .page { padding: 0; max-width: none; height: 100%; }
+/* Every box from <main> down needs a definite height, or the frame falls back to 150px. */
+html.thumb main, html.thumb [data-preview], html.thumb .preview, html.thumb figure { margin: 0; height: 100%; }
+html.thumb .preview { display: block; }
+html.thumb .preview iframe { height: 100%; border-radius: 0; box-shadow: none; }
+
+/* Narrow screens: nav stacks above main, splitter hidden. */
+@media (width < 760px) {
+  body.shell { display: block; }
+  .sidebar { position: sticky; top: 0; z-index: 5; height: auto; }
+  .sidebar-head { padding: 10px 8px 10px 18px; }
+  .nav-toggle { display: inline-flex; }
+  .sidebar:not(.open) .nav-body { display: none; }
+  .sidebar.open .nav-body { max-height: calc(100dvh - 50px); overflow: auto; border-bottom: 1px solid var(--line); }
+  .splitter { display: none; }
+}

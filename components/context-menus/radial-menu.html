@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radial Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/radial-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- The surface: a drawing canvas. It handles its own keys, so it is an application region. -->
+<div class="board" tabindex="0" role="application" aria-label="Canvas" aria-describedby="board-hint">
+  <svg class="art" viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <text class="art-note" x="72" y="66">Moodboard</text>
+    <rect class="art-a" x="72" y="84" width="168" height="118" rx="18"/>
+    <circle class="art-b" cx="452" cy="152" r="64"/>
+    <path class="art-c" d="M110 338c62-58 128 52 196-6s112-66 178 4"/>
+    <rect class="art-d" x="372" y="300" width="96" height="96" rx="48" transform="rotate(12 420 348)"/>
+  </svg>
+  <div class="tool"><svg class="icon"><use href="#i-brush"/></svg><span>Brush</span></div>
+  <p class="hint" id="board-hint">Right-click or hold for tools <kbd>⇧F10</kbd></p>
+</div>
+
+<!-- The ring. The popover is a transparent hit layer over the whole frame, so the
+     pointer's direction can be read anywhere. The ring inside sits at the pointer. -->
+<div class="rm" popover tabindex="-1">
+  <div class="rm-ring">
+    <div class="rm-hub" aria-hidden="true"></div>
+    <!-- Items in clockwise order from 12 o'clock. Opposite directions hold opposite tools. -->
+    <div class="rm-items" focusgroup="menu inline block wrap nomemory" tabindex="-1" aria-label="Tools">
+      <button type="button" role="menuitemradio" aria-checked="true"  aria-keyshortcuts="1"><svg class="icon"><use href="#i-brush"/></svg><span class="rm-label">Brush</span><kbd aria-hidden="true">1</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="2"><svg class="icon"><use href="#i-square"/></svg><span class="rm-label">Rectangle</span><kbd aria-hidden="true">2</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="3"><svg class="icon"><use href="#i-circle"/></svg><span class="rm-label">Ellipse</span><kbd aria-hidden="true">3</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="4"><svg class="icon"><use href="#i-type"/></svg><span class="rm-label">Text</span><kbd aria-hidden="true">4</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="5"><svg class="icon"><use href="#i-eraser"/></svg><span class="rm-label">Eraser</span><kbd aria-hidden="true">5</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="6"><svg class="icon"><use href="#i-pipette"/></svg><span class="rm-label">Eyedropper</span><kbd aria-hidden="true">6</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="7"><svg class="icon"><use href="#i-hand"/></svg><span class="rm-label">Pan</span><kbd aria-hidden="true">7</kbd></button>
+      <button type="button" role="menuitemradio" aria-checked="false" aria-keyshortcuts="8"><svg class="icon"><use href="#i-mouse-pointer-2"/></svg><span class="rm-label">Select</span><kbd aria-hidden="true">8</kbd></button>
+    </div>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: everything a designer needs to match the ring ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Ring */
+  --rm-radius: 84px;                                                       /* Center to each item’s center */
+  --rm-pad: 8px;                                                           /* Plate beyond the items, inside and outside */
+  --rm-edge: 12px;                                                         /* Minimum gap between the plate and the frame edge */
+  --rm-plate: light-dark(#ffffff, #26272c);                                /* Plate surface */
+  --rm-line: light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.08));      /* Hairline on both plate edges and the hub, 1px */
+  --rm-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3)),
+               0 14px 34px -10px light-dark(rgb(0 0 0 / 0.22), rgb(0 0 0 / 0.6));   /* Plate and hub elevation, two layers */
+
+  /* @group Item */
+  --rm-item: 44px;                                                         /* Hit target, circle */
+  --rm-icon: 20px;                                                         /* Icon */
+  --rm-fg: light-dark(#40444b, #c8cbd2);                                   /* Icon */
+  --rm-sector: light-dark(rgb(79 70 229 / 0.11), rgb(165 180 252 / 0.15));  /* Highlighted sector, a 45° wedge of the plate */
+  --rm-sector-inset: 4px;                                                  /* Wedge inset from the plate edges */
+  --rm-hot-fg: light-dark(#4338ca, #b4c0ff);                               /* Highlighted icon */
+  --rm-current: light-dark(#4f46e5, #a5b4fc);                              /* Current tool dot */
+  --rm-dot: 4px;                                                           /* Current tool dot size, 5px under the icon */
+  --rm-key-fg: light-dark(#80848c, #8a8e96);                               /* Number hint, 10px, weight 600, keyboard use only */
+  --rm-focus: light-dark(#4f46e5, #a5b4fc);                                /* Keyboard focus ring, 2px, 2px offset */
+
+  /* @group Hub */
+  --rm-hub: 64px;                                                          /* Diameter */
+  --rm-hub-bg: light-dark(#ffffff, #2f3036);                               /* Surface */
+  --rm-dead: 32px;                                                         /* Dead zone radius: release or click inside it cancels. Matches the hub */
+  --rm-label-size: 11.5px;                                                 /* Tool name, line height 14px, weight 600 */
+  --rm-label-fg: light-dark(#1c1d21, #ececef);                             /* Highlighted tool name */
+  --rm-label-idle: light-dark(#80848c, #8a8e96);                           /* Current tool name, shown while nothing is highlighted */
+  --rm-arc: light-dark(#4f46e5, #a5b4fc);                                  /* Direction arc */
+  --rm-arc-width: 3px;                                                     /* Direction arc thickness, on the hub edge */
+  --rm-arc-sweep: 64deg;                                                   /* Direction arc length */
+
+  /* @group Input */
+  --rm-hold: 300ms;                                                        /* Press-and-hold to open with the primary button, pen or touch */
+  --rm-slop: 6px;                                                          /* Movement that cancels a hold (a drag), or makes a release pick */
+
+  /* @group Motion */
+  --rm-in: 240ms;                                                          /* Item fly-out */
+  --rm-stagger: 15ms;                                                      /* Added per item, clockwise from 12 o’clock */
+  --rm-ease: cubic-bezier(0.3, 1.45, 0.55, 1);                             /* Fly-out easing, slight overshoot */
+  --rm-out: 110ms;                                                         /* Close, all items together */
+  --rm-from: 0.6;                                                          /* Plate and hub scale they grow from */
+
+  /* Derived, not tokens: plate outer and inner radius. */
+  --rm-outer: calc(var(--rm-radius) + var(--rm-item) / 2 + var(--rm-pad));
+  --rm-inner: calc(var(--rm-radius) - var(--rm-item) / 2 - var(--rm-pad));
+}
+
+/* Polar → cartesian. Angles run clockwise from 12 o’clock, the way people read a dial. */
+@function --polar-x(--a <angle>, --r <length>) returns <length> {
+  result: calc(sin(var(--a)) * var(--r));
+}
+@function --polar-y(--a <angle>, --r <length>) returns <length> {
+  result: calc(cos(var(--a)) * var(--r) * -1);
+}
+
+/* Registered so they compute once on the item, inherit to its pseudo-elements,
+   and (for --rm-r) animate: items fly out by growing their radius from 0. */
+@property --rm-step { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --rm-a    { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --rm-r    { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --rm-dir  { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+
+/* ---- Hit layer: the popover covers the frame and draws nothing ---- */
+.rm {
+  inset: 0; width: auto; height: auto;
+  margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  /* Stay in the top layer while the close transition runs. */
+  transition: display var(--rm-out) allow-discrete, overlay var(--rm-out) allow-discrete;
+}
+.rm:not(:popover-open) { pointer-events: none; }   /* While closing, clicks reach the canvas */
+
+/* ---- Ring: a zero-size point at the pointer, clamped so the plate fits ---- */
+.rm-ring {
+  position: absolute;
+  left: clamp(var(--rm-outer) + var(--rm-edge), var(--x, 50%), 100% - var(--rm-outer) - var(--rm-edge));
+  top:  clamp(var(--rm-outer) + var(--rm-edge), var(--y, 50%), 100% - var(--rm-outer) - var(--rm-edge));
+  isolation: isolate;                 /* Plate (-2) < sector (-1) < hub and items */
+}
+
+/* Plate: a thick round border is a donut whose hole lets the canvas show through. */
+.rm-ring::before {
+  content: "";
+  position: absolute;
+  z-index: -2;
+  width: calc(var(--rm-outer) * 2);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border: calc(var(--rm-outer) - var(--rm-inner)) solid var(--rm-plate);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--rm-line), inset 0 0 0 1px var(--rm-line), var(--rm-shadow);
+}
+
+/* Hub: the dead zone, made visible. Each item’s label is anchored here. */
+.rm-hub {
+  position: absolute;
+  width: var(--rm-hub);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--rm-hub-bg);
+  box-shadow: 0 0 0 1px var(--rm-line), var(--rm-shadow);
+  anchor-name: --rm-hub;
+}
+/* Direction arc on the hub edge, pointing at the pointer (or the highlighted item). */
+.rm-hub::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from calc(var(--rm-dir) - var(--rm-arc-sweep) / 2), var(--rm-arc) var(--rm-arc-sweep), transparent 0);
+  mask: radial-gradient(closest-side, transparent calc(100% - var(--rm-arc-width)), #000 calc(100% - var(--rm-arc-width) + 0.5px));
+  opacity: 0;
+}
+.rm-ring:has([data-highlight]) .rm-hub::before { opacity: 1; }
+
+.rm-ring::before, .rm-hub {
+  opacity: 0;
+  scale: var(--rm-from);
+  transition: opacity var(--rm-out) ease-in, scale var(--rm-out) ease-in;
+}
+.rm:popover-open .rm-ring::before,
+.rm:popover-open .rm-hub {
+  opacity: 1;
+  scale: 1;
+  transition: opacity var(--rm-in) ease-out, scale var(--rm-in) var(--rm-ease);
+  @starting-style { opacity: 0; scale: var(--rm-from); }
+}
+
+.rm-items { outline: none; }
+
+/* ---- Item: placed by angle from its index, flown out by animating its radius ---- */
+.rm-items button {
+  --rm-step: calc(1turn / sibling-count());
+  --rm-a: calc((sibling-index() - 1) * var(--rm-step));
+  --rm-r: calc(var(--rm-radius) * 0.5);
+  --rm-delay: 0ms;
+
+  position: absolute;                 /* Not transformed: a transform would trap the label below */
+  left: --polar-x(var(--rm-a), var(--rm-r));
+  top: --polar-y(var(--rm-a), var(--rm-r));
+  width: var(--rm-item);
+  height: var(--rm-item);
+  margin: calc(var(--rm-item) / -2);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--rm-fg);
+  cursor: default;
+  opacity: 0;
+  transition:
+    --rm-r var(--rm-out) ease-in var(--rm-delay),
+    opacity var(--rm-out) ease-in var(--rm-delay),
+    color 80ms;
+}
+.rm:popover-open .rm-items button {
+  --rm-r: var(--rm-radius);
+  --rm-delay: calc((sibling-index() - 1) * var(--rm-stagger));
+  opacity: 1;
+  transition-duration: var(--rm-in), var(--rm-in), 80ms;
+  transition-timing-function: var(--rm-ease), ease-out, ease;
+  @starting-style { --rm-r: 0px; opacity: 0; }
+}
+.rm-items .icon { width: var(--rm-icon); height: var(--rm-icon); }
+
+/* Sector: a 45° wedge of the plate behind the highlighted item, centered on the ring. */
+.rm-items button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: calc(50% - --polar-x(var(--rm-a), var(--rm-r)));
+  top: calc(50% - --polar-y(var(--rm-a), var(--rm-r)));
+  width: calc((var(--rm-outer) - var(--rm-sector-inset)) * 2);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: conic-gradient(from calc(var(--rm-a) - var(--rm-step) / 2), var(--rm-sector) var(--rm-step), transparent 0);
+  mask: radial-gradient(closest-side, transparent calc(var(--rm-inner) + var(--rm-sector-inset)), #000 calc(var(--rm-inner) + var(--rm-sector-inset) + 0.5px));
+  opacity: 0;
+  transition: opacity 80ms;
+}
+.rm-items [data-highlight] { color: var(--rm-hot-fg); }
+.rm-items [data-highlight]::before { opacity: 1; }
+.rm-items button:focus-visible { outline: 2px solid var(--rm-focus); outline-offset: 2px; }
+
+/* Current tool: a dot under the icon. */
+.rm-items [aria-checked="true"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 5px;
+  margin-inline: auto;
+  width: var(--rm-dot);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--rm-current);
+}
+
+/* Label: lives in its button (so it names it) but is drawn in the hub. position: fixed
+   escapes the button; anchor positioning centers it on the hub. */
+.rm-label {
+  position: fixed;
+  position-anchor: --rm-hub;
+  left: anchor(center);
+  top: anchor(center);
+  translate: -50% -50%;
+  font-size: var(--rm-label-size);
+  font-weight: 600;
+  line-height: 14px;
+  white-space: nowrap;
+  color: var(--rm-label-fg);
+  opacity: 0;
+  transition: opacity 80ms;
+  pointer-events: none;
+}
+.rm-items [data-highlight] .rm-label { opacity: 1; }
+.rm-items:not(:has([data-highlight])) [aria-checked="true"] .rm-label { opacity: 1; color: var(--rm-label-idle); }
+
+/* Number hints: only while the keyboard is in use. */
+.rm-items kbd {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rm-key-fg);
+  opacity: 0;
+}
+.rm-items:has(:focus-visible) kbd { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rm, .rm *, .rm-ring::before, .rm-items button::before { transition: none !important; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: light-dark(#f6f5f2, #161619); color: light-dark(#1c1d21, #ececef); }
+.board {
+  position: fixed; inset: 0; overflow: hidden; outline: none;
+  touch-action: none; user-select: none; -webkit-touch-callout: none;
+  background-image: radial-gradient(light-dark(rgb(0 0 0 / 0.13), rgb(255 255 255 / 0.1)) 1px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+.board:focus-visible { box-shadow: inset 0 0 0 2px light-dark(#4f46e5, #a5b4fc); }
+.art { position: absolute; inset: 0; width: 100%; height: 100%; }
+.art-note { font: 600 13px system-ui, sans-serif; fill: light-dark(#8a8d93, #74777e); }
+.art-a { fill: light-dark(#cfe0ff, #22324f); }
+.art-b { fill: light-dark(#ffd6b8, #4a2f1f); }
+.art-c { fill: none; stroke: light-dark(#8b5cf6, #a78bfa); stroke-width: 14; stroke-linecap: round; }
+.art-d { fill: none; stroke: light-dark(#14b8a6, #2dd4bf); stroke-width: 3; stroke-dasharray: 2 8; stroke-linecap: round; }
+.tool {
+  position: absolute; top: 14px; left: 14px;
+  display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px 0 10px;
+  border-radius: 16px; font-size: 13px; font-weight: 550;
+  background: light-dark(#ffffff, #26272c);
+  box-shadow: 0 0 0 1px light-dark(rgb(0 0 0 / 0.07), rgb(255 255 255 / 0.08)), 0 1px 3px light-dark(rgb(0 0 0 / 0.06), rgb(0 0 0 / 0.3));
+}
+.tool .icon { color: light-dark(#4f46e5, #a5b4fc); }
+.hint { position: absolute; bottom: 12px; left: 16px; margin: 0; font-size: 12px; color: light-dark(#7b7f87, #8a8e96); }
+.hint kbd { font: inherit; margin-inline-start: 6px; padding: 1px 5px; border-radius: 4px; background: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.07)); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// CSS places, clamps and animates the ring. Script reads the pointer's direction,
+// which CSS can't, and runs the open/pick/cancel flow of a marking menu.
+const board = document.querySelector('.board');
+const shell = document.querySelector('.rm');
+const ring = shell.querySelector('.rm-ring');
+const hub = shell.querySelector('.rm-hub');
+const menu = shell.querySelector('.rm-items');
+const items = [...menu.children];
+const tool = document.querySelector('.tool');
+const token = name => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+const HOLD = token('--rm-hold'), SLOP = token('--rm-slop'), DEAD = token('--rm-dead');
+
+let center;          // ring center in client px, read back after CSS clamps it
+let press = null;    // the press that opened the ring, until its button comes up: { x, y, moved }
+let hold = null;     // a pending press-and-hold
+const current = () => items.find(i => i.ariaChecked === 'true');
+
+/** Open centered at (x, y). With a pointerId the button is still down: release picks. */
+function open(x, y, pointerId) {
+  clearTimeout(hold?.timer); hold = null;
+  ring.style.setProperty('--x', `${x}px`);
+  ring.style.setProperty('--y', `${y}px`);
+  highlight(null);
+  board.focus({ preventScroll: true, focusVisible: false });   // so closing returns focus to the canvas
+  shell.showPopover({ source: board });
+  const r = hub.getBoundingClientRect();
+  center = { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+  if (pointerId === undefined) return current().focus({ preventScroll: true });   // keyboard: start on the current tool
+  press = { x, y, moved: false };
+  shell.setPointerCapture(pointerId);                // keep getting moves, even past the frame
+  menu.focus({ preventScroll: true, focusVisible: false });
+  aim({ clientX: x, clientY: y });                   // near an edge the clamped center is off the pointer
+}
+
+/** Mark one item (or none) as highlighted; deg points the hub's direction arc. */
+function highlight(item, deg = items.indexOf(item) * 360 / items.length) {
+  for (const i of items) i.toggleAttribute('data-highlight', i === item);
+  if (item) ring.style.setProperty('--rm-dir', `${deg}deg`);
+}
+
+/** Highlight the item in the pointer's direction, at any distance. Null inside the dead zone. */
+function aim(e) {
+  const dx = e.clientX - center.x, dy = e.clientY - center.y;
+  if (Math.hypot(dx, dy) < DEAD) { highlight(null); menu.focus({ preventScroll: true, focusVisible: false }); return null; }
+  const deg = (Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360;   // clockwise from 12 o'clock, like the CSS
+  const item = items[Math.round(deg / (360 / items.length)) % items.length];
+  if (item !== document.activeElement) item.focus({ preventScroll: true, focusVisible: false });
+  highlight(item, deg);
+  return item;
+}
+
+function pick(item) {
+  for (const i of items) i.ariaChecked = String(i === item);
+  tool.querySelector('use').setAttribute('href', item.querySelector('use').getAttribute('href'));
+  tool.querySelector('span').textContent = item.querySelector('.rm-label').textContent;
+  shell.hidePopover();
+}
+
+// Right button opens at once (drag to pick); preventDefault stops the press from focusing
+// the canvas after the ring took focus. Primary button, pen or touch open after a still hold.
+board.addEventListener('pointerdown', e => {
+  if (e.button === 2) { e.preventDefault(); return open(e.clientX, e.clientY, e.pointerId); }
+  if (e.button === 0) hold = { x: e.clientX, y: e.clientY, timer: setTimeout(() => open(e.clientX, e.clientY, e.pointerId), HOLD) };
+});
+board.addEventListener('pointermove', e => {
+  if (hold && Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > SLOP) { clearTimeout(hold.timer); hold = null; }
+});
+for (const type of ['pointerup', 'pointercancel']) board.addEventListener(type, () => { clearTimeout(hold?.timer); hold = null; });
+
+// The browser menu never shows. Keyboard/AT requests (pointerType "") and Control-click
+// (primary button down) open here; a right button was already handled on pointerdown.
+board.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  if (shell.matches(':popover-open')) return;
+  if (e.pointerType === '') openFromKeys();
+  else if (e.buttons & 1) open(e.clientX, e.clientY, e.pointerId);
+});
+shell.addEventListener('contextmenu', e => e.preventDefault());
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+board.addEventListener('keydown', e => {
+  if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
+  e.preventDefault();
+  openFromKeys();
+});
+function openFromKeys() {
+  const r = board.getBoundingClientRect();
+  open(r.x + r.width / 2, r.y + r.height / 2);
+}
+
+shell.addEventListener('pointermove', e => {
+  aim(e);
+  if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > SLOP) press.moved = true;
+});
+shell.addEventListener('pointerup', e => {
+  const item = aim(e);
+  const still = press && !press.moved;   // released where it was pressed: a plain right-click or hold
+  press = null;
+  if (still) return;                     // stay open and wait for a click
+  if (item) pick(item); else shell.hidePopover();   // in the hub: cancel
+});
+
+// Pointer picks happen on pointerup. Enter, Space and assistive tech click with detail 0.
+menu.addEventListener('click', e => { if (e.detail === 0) pick(e.target.closest('button')); });
+menu.addEventListener('focusin', e => { if (e.target !== menu && !e.target.hasAttribute('data-highlight')) highlight(e.target); });
+menu.addEventListener('keydown', e => {
+  const n = Number(e.key);
+  if (n >= 1 && n <= items.length) return pick(items[n - 1]);
+  // From the menu itself (after a pointer open) the first arrow lands on the current tool.
+  if (e.target === menu && e.key.startsWith('Arrow')) { e.preventDefault(); current().focus({ preventScroll: true }); }
+});
+// Tab, or focus leaving the frame, closes the ring like any menu.
+shell.addEventListener('focusout', e => {
+  if (!shell.contains(e.relatedTarget) && shell.matches(':popover-open')) shell.hidePopover();
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Right-click left of center, release without moving (the ring stays open), then lean up-right.
+requestAnimationFrame(() => {
+  const board = document.querySelector('.board');
+  const shell = document.querySelector('.rm');
+  const r = board.getBoundingClientRect();
+  const at = { bubbles: true, pointerId: 1, clientX: r.x + r.width * 0.44, clientY: r.y + r.height * 0.5 };
+  board.dispatchEvent(new PointerEvent('pointerdown', { ...at, button: 2, buttons: 2 }));
+  shell.dispatchEvent(new PointerEvent('pointerup', { ...at, button: 2 }));
+  shell.dispatchEvent(new PointerEvent('pointermove', { ...at, clientX: at.clientX + 54, clientY: at.clientY - 46 }));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Right-click and flick toward a tool, or right-click then click. Hold the primary button to open. Shift+F10 on the focused canvas."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Hit layer</th><td>A transparent popover over the whole surface. It captures the pointer, so a direction counts anywhere on screen, and it keeps clicks off the canvas while the ring is open.</td></tr>
+          <tr><th>Plate</th><td>A ring-shaped surface behind the items with a hairline on both edges. The hole between plate and hub lets the artwork show through.</td></tr>
+          <tr><th>Item</th><td>44px round target, icon only. Item <var>i</var> of <var>n</var> sits at angle (<var>i</var> − 1) × 360° / <var>n</var>, clockwise from 12 o’clock, at x = sin(a)·r, y = −cos(a)·r. Eight items at most: the four compass points and the diagonals stay easy to hit by feel.</td></tr>
+          <tr><th>Sector</th><td>The 45° wedge of the plate that owns the highlighted item, inset 4px from the plate edges. It shows that picking is by direction, not by hitting the circle.</td></tr>
+          <tr><th>Hub</th><td>The dead zone, drawn. Shows the highlighted tool’s name, or the current tool’s name dimmed while nothing is highlighted. An arc on its edge points at the pointer.</td></tr>
+          <tr><th>Current marker</th><td>A 4px dot under the current tool’s icon.</td></tr>
+          <tr><th>Number hint</th><td>The item’s digit at its top-right, shown only while the keyboard is in use.</td></tr>
+          <tr><th>Layout rule</th><td>Opposite directions hold opposite tools: Brush up, Eraser down; Ellipse right, Pan left. Keep each tool in the same direction forever so the flick becomes muscle memory.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv">
+        <tbody>
+          <tr><th>Opens on</th><td>Right button down; a 300ms still hold with the primary button, pen or touch (moving more than 6px first makes it a drag); Control-click on macOS; <kbd>Shift</kbd>+<kbd>F10</kbd> or the Menu key on the focused canvas.</td></tr>
+          <tr><th>Placement</th><td>Centered on the pointer. Near an edge the center moves inward (<code>clamp()</code> in CSS) so the plate stays 12px inside the surface. Keyboard opens center on the canvas.</td></tr>
+          <tr><th>Highlight</th><td>The item whose 45° sector contains the pointer’s angle from the center, at any distance, even far past the ring. Inside the hub nothing is highlighted.</td></tr>
+          <tr><th>Press, drag, release</th><td>With the button still down, move more than 6px toward a tool and let go: it is picked. Let go inside the hub: nothing changes.</td></tr>
+          <tr><th>Click</th><td>Let go without moving (a plain right-click or hold): the ring stays open. Then click in any direction to pick, or in the hub to cancel.</td></tr>
+          <tr><th>Motion</th><td>Plate and hub grow from 60%. Items fly out from the center along their radius, 240ms with a slight overshoot, each starting 15ms after the one before it, clockwise. Closing takes 110ms, all at once. No motion with reduced-motion set.</td></tr>
+          <tr><th>Dismiss</th><td><kbd>Esc</kbd>, a release or click in the hub, <kbd>Tab</kbd>, or focus leaving the window. The tool stays as it was.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Shift</kbd>+<kbd>F10</kbd> <kbd>Menu</kbd></th><td>On the focused canvas: open the ring with focus on the current tool.</td></tr>
+          <tr><th><kbd>→</kbd> <kbd>↓</kbd></th><td>Next tool clockwise. Wraps from Select to Brush (native <code>focusgroup</code>).</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>↑</kbd></th><td>Previous tool, counter-clockwise.</td></tr>
+          <tr><th><kbd>1</kbd>–<kbd>8</kbd></th><td>Pick a tool by position, clockwise from 12 o’clock.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Pick the focused tool and close.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close without changing the tool. Focus returns to the canvas (native popover behavior).</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close and move on. Focus is never trapped.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Roles: <code>menu</code> (inferred by <code>focusgroup="menu"</code>) with <code>menuitemradio</code> items and <code>aria-checked</code> on the current tool. A menu, because it is transient and closes on a pick; radio items, because exactly one tool is active. A <code>radiogroup</code> was rejected: its arrows change the value at once, which would switch tools on every key press.</li>
+          <li><code>focusgroup="menu inline block wrap"</code>: <code>menu</code> alone answers only <kbd>↑</kbd>/<kbd>↓</kbd> in Chrome; naming both axes adds <kbd>←</kbd>/<kbd>→</kbd>.</li>
+          <li>Each tool’s name is real text inside its button, so it is the accessible name. CSS only draws it in the hub. Digits are exposed as <code>aria-keyshortcuts</code>; the visible hint is <code>aria-hidden</code>.</li>
+          <li>The canvas is <code>role="application"</code> with a label and a description that names the shortcut. Plate, sector, arc and dot are decorative.</li>
+          <li>Highlight comes from a <code>data-highlight</code> attribute, not <code>:focus</code>, so the pointer’s highlight shows even when the window does not have focus. Keyboard focus adds a 2px ring.</li>
+          <li>Not built here: Blender’s hotkey model (hold a key, flick, release the key to pick) and nested rings. Both reuse <code>open()</code> and <code>pick()</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose">
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://una.im/radial-menu">Building a no-JS radial menu with CSS trigonometry, popover, and anchor positioning</a>, Una Kravets: polar placement with <code>sin()</code>/<code>cos()</code> and a flipped y axis, per-item delays, and popover for <kbd>Esc</kbd> and light dismiss.</li>
+        <li><a href="https://web.dev/articles/css-trig-functions">Trigonometric functions in CSS</a>, web.dev: placing items on a circle and <code>atan2()</code> for the angle toward the pointer.</li>
+        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/css/dynamic-sibling-styling">Styling siblings based on count and index</a>, Chrome: angle from <code>sibling-index()</code> / <code>sibling-count()</code>, so adding an item re-spaces the ring with no edits.</li>
+        <li><a href="https://docs.blender.org/manual/en/latest/interface/controls/buttons/menus.html#pie-menus">Pie menus</a>, Blender manual: press, move, release to pick; releasing without moving keeps it open; the center disc shows direction and is the dead zone; number keys.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+</body>
+</html>
