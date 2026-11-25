@@ -1,11 +1,13 @@
 /**
- * site.js — builds the shared chrome around every page from window.CATALOG.
+ * site.js — builds the shared chrome around every page from window.CATALOG and
+ * window.SOURCES.
  *
- * Include it in <head> (classic, not deferred) after catalog.js and icons.js:
+ * Include it in <head> (classic, not deferred) after catalog.js, sources.js and icons.js:
  * the theme is applied before first paint, the shell is built on DOMContentLoaded.
  *
  * A page declares where it lives with <body data-page="…">:
  *   ""                                        home (index.html)
+ *   "sources"                                 sources.html
  *   "components/context-menus"                category page
  *   "components/context-menus/right-click-menu"  concept page
  *
@@ -17,6 +19,9 @@
  *   - [data-catalog]  home listing of every section and category.
  *   - [data-concepts] category listing with live thumbnails.
  *   - Prev/next pager at the end of concept pages.
+ *   - [data-sources]  a page's citations, from its catalog `refs`.
+ *   - [data-core]     category: each core library's page for the component, and what we built to it.
+ *   - [data-sources-page]  sources.html: core libraries with foundations, then every cited site.
  *
  * Exposes window.Site for concept.js: { ROOT, url, here, store, copy, toast }.
  */
@@ -24,6 +29,7 @@
   'use strict';
 
   const C = window.CATALOG;
+  const S = window.SOURCES;
   const ROOT = new URL('..', document.currentScript.src);   // assets/ lives one level below root
   const html = document.documentElement;
 
@@ -55,6 +61,15 @@
   const conceptUrl = (s, c, k) => url(s.id, c.id, `${k.id}.html`);
   const isResearched = c => (c.concepts?.length ?? 0) > 0;
   const esc = s => String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+
+  /* Sources helpers (data in assets/sources.js) */
+  const sourcesUrl = id => url('sources.html') + (id ? `#${id}` : '');
+  const siteLabel = id => S.sites[id].short ?? S.sites[id].name;
+  const systemIds = () => Object.keys(S.systems);          // display order
+  /** Short host for a source column: no www., and raw GitHub files read as github.com. */
+  const host = u => new URL(u).hostname.replace(/^www\./, '').replace('raw.githubusercontent.com', 'github.com');
+  /** "a", "a and b", "a, b and c" */
+  const andList = items => items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`;
 
   /** Resolve a data-page id into its section / category / concept objects. */
   function locate(pageId = '') {
@@ -136,6 +151,16 @@
           <ul>${planned.map(t => `<li><span class="planned">${esc(t)}</span></li>`).join('')}</ul>
         </details>` : '';
       if (items || plannedHtml) out += `<h2>${esc(section.title)}</h2>${items ? `<ul>${items}</ul>` : ''}${plannedHtml}`;
+    }
+
+    // Reference: the sources page, with its sections listed while it is open.
+    const onSources = here.id === 'sources';
+    const anchors = [['core-libraries', 'Core libraries'], ...systemIds().map(id => [id, siteLabel(id)]),
+      ...Object.entries(S.KINDS)];
+    const shown = anchors.filter(([, label]) => match(label));
+    if (match('Sources') || shown.length) {
+      const sub = onSources || q ? `<ul>${shown.map(([id, label]) => `<li><a href="${sourcesUrl(id)}">${esc(label)}</a></li>`).join('')}</ul>` : '';
+      out += `<h2>Reference</h2><ul><li><a href="${sourcesUrl()}"${onSources ? ' aria-current="page"' : ''}>Sources<span class="count">${Object.keys(S.pages).length}</span></a>${sub}</li></ul>`;
     }
     container.innerHTML = out || '<p class="muted" style="padding:12px 8px;font-size:13px">No matches</p>';
   }
@@ -255,12 +280,17 @@
     .map(k => C.FEATURES[k] ? `<a href="${C.FEATURES[k].url}" target="_blank" rel="noopener">${esc(C.FEATURES[k].name)}</a>` : '')
     .join('');
 
+  /** "Built to Material 3" / "Inspired by Apple HIG", linked to the library on sources.html. */
+  const systemLine = k => k.system
+    ? `<span class="built-to">${k.inspired ? 'Inspired by' : 'Built to'} <a href="${sourcesUrl(k.system)}">${esc(siteLabel(k.system))}</a></span>`
+    : '';
+
   function renderHeader(header) {
     const { category, concept } = here;
     const item = concept ?? category;
     if (!item) return;
     let meta = '';
-    if (concept) meta = featureLinks(concept.features) + '<span data-js-lines></span>';
+    if (concept) meta = systemLine(concept) + featureLinks(concept.features) + '<span data-js-lines></span>';
     else meta = `<span>${category.concepts?.length ?? 0} concepts</span>`;
     header.innerHTML = `
       <h1>${esc(item.title)}</h1>
@@ -280,7 +310,11 @@
       return `<section class="catalog-section">
         <h2>${esc(section.title)} <span class="count">${done.length} of ${section.categories.length} researched</span></h2>
         ${featured}${rest}</section>`;
-    }).join('');
+    }).join('') + `<section class="catalog-section">
+      <h2>Reference</h2>
+      <ul class="featured"><li><a href="${sourcesUrl()}">Sources</a><span class="count">${Object.keys(S.sites).length} sites</span>
+        <p>Every page we learned from, and the core libraries concepts are built to: ${esc(andList(systemIds().map(siteLabel)))}.</p></li></ul>
+    </section>`;
   }
 
   /** Category: one row per concept with a live, scaled-down thumbnail. */
@@ -310,6 +344,135 @@
     });
   }
 
+  /* ---- Sources ------------------------------------------------------------ */
+
+  /**
+   * One citation: [pageId | pageId[], note] → "Title and Title, Site: note".
+   * The site is omitted when it would repeat the title (e.g. a library named after itself).
+   */
+  function citation([ids, note]) {
+    const pages = [].concat(ids).map(id => S.pages[id]);
+    const first = pages[0];
+    const titles = andList(pages.map(p => `<a href="${p.url}">${esc(p.title)}</a>`));
+    const site = first.title === S.sites[first.site].name ? ''
+      : `, <a class="site" href="${sourcesUrl(first.site)}">${esc(siteLabel(first.site))}</a>`;
+    return `<li>${titles}${site}${note ? `: ${note}` : ''}</li>`;
+  }
+
+  /** A concept's or category's Sources section, from its catalog refs. */
+  function renderRefs(root) {
+    const refs = (here.concept ?? here.category)?.refs ?? [];
+    root.insertAdjacentHTML('beforeend', `<ul>${refs.map(citation).join('')}</ul>`);
+  }
+
+  /** Concepts in a category that follow one core library, linked; "Not yet" when none. */
+  function builtCell(section, category, systemId) {
+    const list = (category.concepts ?? []).filter(k => k.system === systemId);
+    if (!list.length) return '<span class="muted">Not yet</span>';
+    return list.map(k => `<a href="${conceptUrl(section, category, k)}">${esc(k.title)}</a>${k.inspired ? ' <span class="muted">· inspired</span>' : ''}`).join('<br>');
+  }
+
+  /** Category: each core library's own page for this component, and what we built to it. */
+  function renderCore(root) {
+    const { section, category } = here;
+    const specs = category?.specs ?? {};
+    const rows = systemIds().map(id => {
+      const page = S.pages[specs[id]];
+      return `<tr><th><a href="${sourcesUrl(id)}">${esc(siteLabel(id))}</a></th>
+        <td>${page ? `<a href="${page.url}">${esc(page.title)}</a>` : '<span class="muted">Not covered</span>'}</td>
+        <td>${builtCell(section, category, id)}</td></tr>`;
+    }).join('');
+    root.insertAdjacentHTML('beforeend', `
+      <table class="kv">
+        <thead><tr><th>Library</th><th>Their page</th><th>Built here</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`);
+  }
+
+  /** pageId → [{ title, href }] of every concept and category that cites it. */
+  function citationIndex() {
+    const index = {};
+    const add = (id, title, href) => {
+      const list = (index[id] ??= []);
+      if (!list.some(x => x.href === href)) list.push({ title, href });
+    };
+    for (const section of C.sections) {
+      for (const cat of section.categories.filter(isResearched)) {
+        const catHref = categoryUrl(section, cat);
+        for (const [ids] of cat.refs ?? []) [].concat(ids).forEach(id => add(id, cat.title, catHref));
+        for (const id of Object.values(cat.specs ?? {})) add(id, cat.title, catHref);
+        for (const k of cat.concepts) {
+          for (const [ids] of k.refs ?? []) [].concat(ids).forEach(id => add(id, k.title, conceptUrl(section, cat, k)));
+        }
+      }
+    }
+    return index;
+  }
+
+  /** Rows of cited pages for the given sites, grouped under a row per site. */
+  function pagesTable(siteIds, cited) {
+    const body = siteIds.map(siteId => {
+      const site = S.sites[siteId];
+      const pages = Object.entries(S.pages).filter(([, p]) => p.site === siteId).map(([id, p]) => ({ ...p, id }));
+      const head = `<tr class="group" id="${siteId}"><th colspan="2"><a href="${site.url}">${esc(site.name)}</a><span class="host">${host(site.url)}</span>
+        ${site.note ? `<span class="site-note">${esc(site.note)}</span>` : ''}</th></tr>`;
+      return head + pages.map(p => `<tr><th><a href="${p.url}">${esc(p.title)}</a></th>
+        <td>${(cited[p.id] ?? []).map(c => `<a href="${c.href}">${esc(c.title)}</a>`).join(', ')}</td></tr>`).join('');
+    }).join('');
+    return `<table class="spec cited"><thead><tr><th>Page</th><th>Cited by</th></tr></thead><tbody>${body}</tbody></table>`;
+  }
+
+  /** One core library: what it is, where its values live, its foundations, what cites it. */
+  function systemSection(id, cited) {
+    const site = S.sites[id], sys = S.systems[id];
+    let group = '';
+    const rows = sys.foundations.map(([g, label, value, src]) => {
+      const head = g !== group ? `<tr class="group"><th colspan="3">${esc(g)}</th></tr>` : '';
+      group = g;
+      return `${head}<tr><th>${esc(label)}</th><td>${esc(value)}</td><td class="src"><a href="${src}">${host(src)}</a></td></tr>`;
+    }).join('');
+    const notes = (sys.notes ?? []).map(([text, src]) => `<li>${esc(text)}${src ? ` <a href="${src}">${host(src)}</a>` : ''}</li>`).join('');
+    return `
+      <section class="ruled system" id="${id}">
+        <h2>${esc(site.name)}<span class="count">${esc(sys.owner)}</span></h2>
+        <p class="system-summary">${esc(sys.summary)}</p>
+        <div class="meta">
+          <span>${esc(sys.version)}</span><span>${esc(sys.platforms)}</span>
+          <a href="${site.url}">Guidelines</a><a href="${sys.components}">Components</a><a href="${sys.tokens.url}">${esc(sys.tokens.label)}</a>
+        </div>
+        <table class="spec foundations"><tbody>${rows}</tbody></table>
+        ${notes ? `<ul class="system-notes">${notes}</ul>` : ''}
+        <h3>Cited here</h3>
+        ${pagesTable([id], cited)}
+      </section>`;
+  }
+
+  /** sources.html: coverage of core libraries by category, each library, then every other site by kind. */
+  function renderSourcesPage(root) {
+    const cited = citationIndex();
+    const ids = systemIds();
+    const coverage = C.sections.flatMap(section => section.categories.filter(c => c.specs).map(cat => `
+      <tr><th><a href="${categoryUrl(section, cat)}">${esc(cat.title)}</a></th>
+        ${ids.map(id => `<td>${builtCell(section, cat, id)}</td>`).join('')}</tr>`)).join('');
+    const kinds = Object.entries(S.KINDS).map(([kind, title]) => {
+      const sites = Object.keys(S.sites).filter(id => S.sites[id].kind === kind);
+      return sites.length ? `<section class="ruled" id="${kind}"><h2>${esc(title)}</h2>${pagesTable(sites, cited)}</section>` : '';
+    }).join('');
+
+    // Replace the placeholder so each section is a direct child of .page (section spacing rules).
+    root.outerHTML = `
+      <section class="ruled" id="core-libraries">
+        <h2>Core libraries</h2>
+        <p class="prose">Design systems common enough that a designer may be asked to match one exactly. A concept <em>built to</em> a library takes every value from that library’s own source; <em>inspired</em> means its look and guidance, with our own values.</p>
+        <table class="kv coverage">
+          <thead><tr><th>Category</th>${ids.map(id => `<th>${esc(siteLabel(id))}</th>`).join('')}</tr></thead>
+          <tbody>${coverage}</tbody>
+        </table>
+      </section>
+      ${ids.map(id => systemSection(id, cited)).join('')}
+      ${kinds}`;
+  }
+
   /** "No JavaScript" or "JS · 24 lines" (shared wording for page + rows). */
   const jsLabel = n => (n ? `JS · ${n} lines` : 'No JavaScript');
 
@@ -329,7 +492,7 @@
   /* ---- Boot ---------------------------------------------------------------- */
 
   function boot() {
-    here = locate(document.body.dataset.page);
+    here = { ...locate(document.body.dataset.page), id: document.body.dataset.page };
     if (html.classList.contains('thumb')) return;   // concept.js renders thumb mode alone
     const { category, concept } = here;
     if (concept) document.title = `${concept.title} · ${category.title}`;
@@ -344,6 +507,12 @@
     if (catalog) renderCatalog(catalog);
     const rows = document.querySelector('[data-concepts]');
     if (rows) renderConceptRows(rows);
+    const refs = document.querySelector('[data-sources]');
+    if (refs) renderRefs(refs);
+    const core = document.querySelector('[data-core]');
+    if (core) renderCore(core);
+    const sourcesPage = document.querySelector('[data-sources-page]');
+    if (sourcesPage) renderSourcesPage(sourcesPage);
     const page = document.querySelector('.page');
     if (concept && page) renderPager(page);
   }

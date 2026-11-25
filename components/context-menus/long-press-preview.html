@@ -6,6 +6,7 @@
   <title>Long-Press Preview</title>
   <link rel="stylesheet" href="../../assets/site.css">
   <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
@@ -583,13 +584,8 @@ requestAnimationFrame(() => {
       </div>
     </section>
 
-    <section class="ruled prose">
+    <section class="ruled prose" data-sources>
       <h2>Sources</h2>
-      <ul>
-        <li><a href="https://developer.apple.com/design/human-interface-guidelines/context-menus">Context menus</a>, Apple Human Interface Guidelines: a short list of relevant items, about three groups at most, destructive items last in red, a preview that emerges from the content while the screen dims, and every item also available in the main interface.</li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy">HTMLDialogElement: closedBy</a>, MDN: <code>any</code> adds light dismiss to the close request (<kbd>Esc</kbd>) a modal dialog gets by default.</li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/Try_options_hiding">Fallback options and conditional hiding</a>, MDN: <code>position-try-fallbacks</code> with <code>flip-block</code> and <code>flip-inline</code>, which also swap the margins used here as screen-edge insets.</li>
-      </ul>
     </section>
   </div>
 </main>

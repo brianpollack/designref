@@ -13,7 +13,8 @@
      5. Page              headers, sections, prose, tables
      6. Lists             home catalog and category concept rows
      7. Concept           preview frames, toolbar, spec table, code viewer
-     8. Thumb mode        concept page rendered as a category thumbnail
+     8. Sources           citations, core-library tables, sources.html
+     9. Thumb mode        concept page rendered as a category thumbnail
    ========================================================================== */
 
 /* 1. Tokens ---------------------------------------------------------------- */
@@ -196,13 +197,14 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 
 .page-header h1, .page-header .summary { max-width: var(--measure); }
 .page-header .summary { margin-top: 10px; font-size: 16.5px; color: var(--muted); }
-.page-header .meta {
+/* Facts line under a title: page headers, and each core library on sources.html. */
+:is(.page-header, .system) .meta {
   margin-top: 14px; font-size: 13px; color: var(--muted);
   display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
-.page-header .meta [data-js-lines] { color: var(--text); }
-.page-header .meta a { color: inherit; text-decoration-color: var(--line); }
-.page-header .meta a:hover { color: var(--accent); }
+.page-header .meta :is([data-js-lines], .built-to) { color: var(--text); }
+:is(.page-header, .system) .meta a { color: inherit; text-decoration-color: var(--line); }
+:is(.page-header, .system) .meta a:hover { color: var(--accent); }
 
 /* Sections: generous space above a heading, tight below. Hairline separates. */
 .page > section { margin-top: 56px; }
@@ -235,8 +237,8 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 /* 6. Lists ----------------------------------------------------------------- */
 /* Home: each section is a heading plus a multi-column list of categories. */
 .catalog-section + .catalog-section { margin-top: 56px; }
-.catalog-section > h2 { margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; }
-.catalog-section > h2 .count { color: var(--muted); font-weight: 400; font-size: 13px; }
+:is(.catalog-section, .system) > h2 { margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; }
+:is(.catalog-section, .system) > h2 .count { color: var(--muted); font-weight: 400; font-size: 13px; }
 
 .featured { list-style: none; padding: 0; margin: 0 0 24px; }
 .featured li { padding: 14px 0; border-bottom: 1px solid var(--line); }
@@ -339,7 +341,53 @@ details.base pre { margin-top: 10px; }
   transition: opacity .18s, translate .18s; pointer-events: none; z-index: 10; }
 .copied.show { opacity: 1; translate: 0 0; }
 
-/* 8. Thumb mode ------------------------------------------------------------- */
+/* 8. Sources ---------------------------------------------------------------- */
+/* In a citation the site name is a quiet link to its entry on sources.html. */
+a.site { color: inherit; text-decoration-color: var(--line); }
+a.site:hover { color: var(--accent); }
+
+/* Anchored libraries and site rows land clear of the top edge. */
+[id] { scroll-margin-top: 24px; }
+
+/* One core library: summary, facts line, foundations, notes, then the pages cited. */
+.system > h2 { margin-bottom: 6px; }
+.system-summary { max-width: var(--measure); color: var(--muted); }
+.system .meta { margin: 10px 0 6px; }
+.system h3 { margin: 36px 0 2px; }
+.foundations th { font-weight: 500; width: 22%; }
+.foundations td { font-variant-numeric: tabular-nums; }
+.foundations td.src { width: 1%; white-space: nowrap; }
+:is(.foundations td.src, .system-notes) a { font-size: 12px; color: var(--muted); text-decoration-color: var(--line); }
+:is(.foundations td.src, .system-notes) a:hover { color: var(--accent); }
+.system-notes { max-width: var(--measure); margin: 16px 0 0; padding-inline-start: 20px; font-size: 13.5px; color: var(--muted); }
+.system-notes li + li { margin-top: 6px; }
+.system-notes li::marker { color: var(--faint); }
+
+/* Narrow: each foundation row stacks (label and source, then the value) so long token
+   names wrap instead of widening the page. */
+@container (width < 560px) {
+  .foundations tr:not(.group) { display: grid; grid-template-columns: 1fr auto; border-bottom: 1px solid var(--line); }
+  .foundations tr:not(.group) > * { border: 0; }
+  .foundations tr:not(.group) > th { width: auto; padding-bottom: 2px; }
+  .foundations tr:not(.group) > td.src { grid-row: 1; grid-column: 2; padding: 9px 0 2px; }
+  .foundations tr:not(.group) > td:not(.src) { grid-column: 1 / -1; padding-top: 0; overflow-wrap: anywhere; }
+}
+
+/* Coverage: categories down, core libraries across, equal columns at full width. */
+.kv.coverage { max-width: none; table-layout: fixed; }
+.kv.coverage th { width: auto; white-space: normal; }
+
+/* Cited pages, grouped under a row per site. */
+.cited th { font-weight: 400; }
+.cited td { color: var(--muted); }
+.cited td a { color: inherit; text-decoration-color: var(--line); }   /* Backlinks stay quieter than the cited page */
+.cited td a:hover { color: var(--accent); }
+.cited .group th a { color: var(--text); text-decoration: none; }
+.cited .group th a:hover { color: var(--accent); }
+.cited .host { margin-inline-start: 10px; color: var(--muted); font-weight: 400; font-size: 12px; }
+.cited .site-note { display: block; margin-top: 2px; color: var(--muted); font-weight: 400; font-size: 12.5px; }
+
+/* 9. Thumb mode ------------------------------------------------------------- */
 /* concept.html#thumb (or #thumb-dark): one frame, full viewport, no chrome. */
 html.thumb, html.thumb body { height: 100%; overflow: hidden; background: transparent; }
 html.thumb body > :not(main), html.thumb main > :not(.page),
@@ -359,4 +407,5 @@ html.thumb .preview iframe { height: 100%; border-radius: 0; box-shadow: none; }
   .sidebar:not(.open) .nav-body { display: none; }
   .sidebar.open .nav-body { max-height: calc(100dvh - 50px); overflow: auto; border-bottom: 1px solid var(--line); }
   .splitter { display: none; }
+  [id] { scroll-margin-top: 64px; }   /* Clear the sticky nav bar */
 }

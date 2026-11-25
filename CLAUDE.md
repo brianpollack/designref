@@ -17,7 +17,9 @@ accessibility. Product context: `PRODUCT.md`. How research is done: `RESEARCH_PL
 
 ```
 index.html                     Home: renders the catalog
+sources.html                   Core libraries (foundations, coverage) and every cited site
 assets/catalog.js              Single source of truth: sections, categories, concepts, FEATURES glossary
+assets/sources.js              Sites, cited pages, and core-library foundations (cited by id from the catalog)
 assets/site.js / site.css      Chrome: sidebar, splitter, theme, headers, lists, pager
 assets/concept.js              Demo harness: light/dark frames, code tabs, spec table, thumbnails
 assets/icons.js                Lucide icon set; demos reference icons as #i-<name>
@@ -25,20 +27,32 @@ components/<category>/index.html         Category page
 components/<category>/<concept>.html     Concept page
 templates/<category>/…                   Page Templates section (same layout)
 _scaffold/                     Copy-from templates for new pages
-scripts/                       new-category.sh, new-concept.sh, check.mjs, open.sh, serve.sh
+scripts/                       new-category.sh, new-concept.sh, check.mjs, check-links.mjs, open.sh, serve.sh
 ```
 
 ## Adding things
 
 - **Category:** add it to `assets/catalog.js` (with `summary` and `concepts: []`), then
   `scripts/new-category.sh components my-category`. Fill the "Choosing one" table and the
-  "modern stack" notes once its concepts exist.
+  "modern stack" notes once its concepts exist. Give it `specs` (each core library's own
+  page for this component) and `refs`.
 - **Concept:** add it to the category's `concepts` in `catalog.js` (`id`, `title`,
-  `summary`, `features` keys from `FEATURES`), then
-  `scripts/new-concept.sh components/context-menus my-concept`. Fill the demo blocks and
-  the authored sections.
-- Run `node scripts/check.mjs` after any change: it cross-checks catalog, files, icons
-  and feature keys.
+  `summary`, `features` keys from `FEATURES`, `refs`, and `system` when it follows a core
+  library), then `scripts/new-concept.sh components/context-menus my-concept`. Fill the
+  demo blocks and the authored sections.
+- **Sources:** every page we learn from goes in `assets/sources.js` → `pages` once (new
+  site → `sites`), then is cited by id: `refs: [['chrome-menu', 'what it contributed.']]`.
+  Never write a Sources list by hand; `data-sources` renders it, and sources.html lists
+  each page with what cites it.
+- **Core libraries** (Material 3, Apple HIG, Fluent 2, Carbon) are the design systems a
+  designer may be asked to match exactly. Every category gets at least one concept built
+  to a core library (Material 3 first), with `system: 'material-3'` and every value taken
+  from that library's own token source. Our own values in a library's style are
+  `inspired: true`. Their foundations live in `sources.js` → `systems`; every row cites the
+  page it was read from, and nothing unverified goes in.
+- Run `node scripts/check.mjs` after any change: it cross-checks catalog, files, icons,
+  feature keys and every source id. `node scripts/check-links.mjs` fetches every cited URL
+  and reports dead or moved ones (run it before committing new sources).
 
 ## Concept page contract (read `components/context-menus/right-click-menu.html` first)
 
@@ -72,7 +86,8 @@ Rules:
 
 Authored sections, in this order: Anatomy (`.kv` table), Specs (`data-spec`, auto),
 Behavior (`.kv` table), Code (`data-code`, auto), Accessibility (key table + short list),
-Sources (links with one line on what each contributed).
+Sources (`data-sources`, auto from the concept's `refs`). Category pages add Core libraries
+(`data-core`, auto from `specs`) before The modern stack.
 
 ## Platform notes (verified in Chrome 156 while building Context Menus)
 

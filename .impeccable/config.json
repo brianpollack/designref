@@ -8,6 +8,11 @@
         "value": "roboto flex",
         "createdAt": "2026-11-24T22:08:39.636Z",
         "reason": "Claude: Roboto Flex is Material 3's own typeface inside the M3 Expressive demo; DESIGN.md states demo worlds are per-concept, not the site type system"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "ibm plex sans",
+        "createdAt": "2026-11-25T13:51:34.795Z"
       }
     ]
   }

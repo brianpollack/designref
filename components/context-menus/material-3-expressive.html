@@ -6,6 +6,7 @@
   <title>Material 3 Expressive Menu</title>
   <link rel="stylesheet" href="../../assets/site.css">
   <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
@@ -566,16 +567,8 @@ requestAnimationFrame(() => {
       </div>
     </section>
 
-    <section class="ruled prose">
+    <section class="ruled prose" data-sources>
       <h2>Sources</h2>
-      <ul>
-        <li><a href="https://m3.material.io/components/menus/specs">Menus: specs</a>, Material Design 3: anatomy, the vertical menu layouts and both color styles.</li>
-        <li><a href="https://9to5google.com/2025/11/22/material-3-expressive-menus/">Material 3 Expressive menus</a>, 9to5Google: the gap guidance (one or two per menu), Vibrant “should be used sparingly”, inset selection and submenu shape morphing.</li>
-        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/SegmentedMenuTokens.kt">SegmentedMenuTokens.kt</a>, with <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/StandardMenuTokens.kt">StandardMenuTokens.kt</a> and <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/VibrantMenuTokens.kt">VibrantMenuTokens.kt</a>, Jetpack Compose: every size, shape and color role on this page.</li>
-        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/MenuDefaults.kt">MenuDefaults.kt</a> and <a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/Menu.kt">Menu.kt</a>, Jetpack Compose: group and item corners by position, the 80% open scale and which springs drive it.</li>
-        <li><a href="https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ExpressiveMotionTokens.kt">ExpressiveMotionTokens.kt</a>, Jetpack Compose: spring stiffness and damping behind the <code>linear()</code> curves.</li>
-        <li><a href="https://github.com/material-components/material-web/blob/main/tokens/_md-comp-focus-ring.scss">Focus ring tokens</a>, Material Web: 3px width, 2px outer offset, 8px grow width, 600ms. Its menu items use the inward ring.</li>
-      </ul>
     </section>
   </div>
 </main>

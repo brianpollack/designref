@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluent 2 Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/fluent-2-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- A OneDrive-style file list: a command bar with a More button, then the files. -->
+<div class="app">
+  <div class="command-bar">
+    <button class="cmd primary" type="button"><svg class="icon"><use href="#i-plus"/></svg>New</button>
+    <button class="cmd" type="button"><svg class="icon"><use href="#i-share"/></svg>Share</button>
+    <!-- The trigger. Invoker command: opens the menu and anchors it here, no script. -->
+    <button class="cmd" type="button" aria-label="More options" aria-haspopup="menu"
+            commandfor="file-menu" command="toggle-popover"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+    <span class="selection">1 selected</span>
+  </div>
+
+  <ul class="files">
+    <li class="file"><svg class="icon"><use href="#i-folder"/></svg><span>Planning</span><time>Yesterday</time></li>
+    <li class="file selected"><svg class="icon"><use href="#i-file-text"/></svg><span>Q3 roadmap.docx</span><time>9:41 AM</time></li>
+    <li class="file"><svg class="icon"><use href="#i-file-image"/></svg><span>Launch banner.png</span><time>Nov 18</time></li>
+    <li class="file"><svg class="icon"><use href="#i-file"/></svg><span>Budget.xlsx</span><time>Nov 12</time></li>
+    <li class="file"><svg class="icon"><use href="#i-file-text"/></svg><span>Meeting notes.docx</span><time>Nov 3</time></li>
+  </ul>
+</div>
+
+<!-- The menu. The popover is the surface; the focusgroup inside is the list.
+     A list with radio or checkbox items gets a checkmark column on every row (:has()). -->
+<div class="fl-menu" id="file-menu" popover>
+  <div class="fl-menu-list" focusgroup="menu nomemory" tabindex="-1" aria-label="More options">
+    <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
+      <svg class="icon"><use href="#i-download"/></svg><span class="fl-menu-content">Download</span>
+    </button>
+    <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
+      <svg class="icon"><use href="#i-link"/></svg><span class="fl-menu-content">Copy link</span><kbd aria-hidden="true">Ctrl+L</kbd>
+    </button>
+    <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
+      <svg class="icon"><use href="#i-pencil"/></svg><span class="fl-menu-content">Rename</span><kbd aria-hidden="true">F2</kbd>
+    </button>
+    <!-- Fluent keeps disabled items focusable (aria-disabled), so arrow keys still reach them. -->
+    <button type="button" class="fl-menu-item" aria-disabled="true">
+      <svg class="icon"><use href="#i-clipboard-paste"/></svg><span class="fl-menu-content">Paste</span><kbd aria-hidden="true">Ctrl+V</kbd>
+    </button>
+
+    <hr class="fl-menu-divider">
+
+    <div class="fl-menu-group" role="group" aria-labelledby="sort-header">
+      <div class="fl-menu-group-header" id="sort-header" aria-hidden="true">Sort by</div>
+      <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="true">
+        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">Name</span>
+      </button>
+      <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="false">
+        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">Modified</span>
+      </button>
+      <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="false">
+        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">File size</span>
+      </button>
+    </div>
+
+    <hr class="fl-menu-divider">
+
+    <!-- Checkbox items keep the menu open, as in Fluent (persistOnClick). -->
+    <button type="button" class="fl-menu-item" role="menuitemcheckbox" aria-checked="true">
+      <svg class="icon fl-menu-check"><use href="#i-check"/></svg>
+      <svg class="icon"><use href="#i-info"/></svg><span class="fl-menu-content">Details pane</span>
+    </button>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ----
+   Fluent UI React v9 has no menu component tokens: its styles use alias tokens
+   (the names FluentProvider emits as CSS variables) and literal sizes. Colors are
+   webLightTheme and webDarkTheme with the web brand ramp. */
+:root {
+  color-scheme: light dark;
+
+  /* @group Surface */
+  --colorNeutralBackground1: light-dark(#ffffff, #292929);   /* Surface fill, and item fill at rest */
+  --colorNeutralForeground1: light-dark(#242424, #ffffff);   /* Surface text color */
+  --colorTransparentStroke: transparent;                     /* 1px surface border; becomes visible in forced colors */
+  --shadow16: 0 0 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.24)), 0 8px 16px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.28));   /* Surface shadow: ambient + key */
+  --borderRadiusMedium: 4px;                                 /* Surface, item and focus outline corners */
+  --fl-menu-padding: 4px;                                    /* Surface padding */
+  --fl-menu-min-width: 138px;                                /* Surface minimum width */
+  --fl-menu-max-width: 300px;                                /* Surface maximum width; items cap at 290px */
+  --fl-menu-gap: 2px;                                        /* Gap between items */
+
+  /* @group Item */
+  --fl-menu-item-min-height: 32px;                           /* Minimum height: 20px line + 6px top and bottom */
+  --spacingVerticalSNudge: 6px;                              /* Item padding on all four sides */
+  --fl-menu-item-gap: 4px;                                   /* Between checkmark, icon, content and secondary content */
+  --fl-menu-content-padding: 2px;                            /* Inline padding of content and secondary content */
+  --fl-menu-icon-size: 20px;                                 /* Icon and submenu indicator */
+  --fl-menu-checkmark-size: 16px;                            /* Checkmark slot, reserved on every row when any item is selectable */
+
+  /* @group Type */
+  --fontFamilyBase: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;   /* Typeface */
+  --fontSizeBase300: 14px;                                   /* Label · body1: line height 20px, weight 400 */
+  --fontSizeBase200: 12px;                                   /* Secondary content (caption1, line height 20px here) and group header (weight 600) */
+
+  /* @group Item colors */
+  --colorNeutralForeground2: light-dark(#424242, #d6d6d6);              /* Label and icon at rest */
+  --colorNeutralForeground2Hover: light-dark(#242424, #ffffff);         /* Label on hover */
+  --colorNeutralForeground2Pressed: light-dark(#242424, #ffffff);       /* Label while pressed */
+  --colorNeutralForeground2BrandSelected: light-dark(#0f6cbd, #479ef5); /* Icon on hover · brand 80 light, 100 dark */
+  --colorNeutralBackground1Hover: light-dark(#f5f5f5, #3d3d3d);         /* Item fill on hover */
+  --colorNeutralBackground1Pressed: light-dark(#e0e0e0, #1f1f1f);       /* Item fill while pressed */
+  --colorNeutralForeground3: light-dark(#616161, #adadad);              /* Secondary content and group header */
+  --colorNeutralForeground3Hover: light-dark(#424242, #d6d6d6);         /* Secondary content on hover */
+  --colorNeutralForegroundDisabled: light-dark(#bdbdbd, #5c5c5c);       /* Disabled label, icon and secondary content */
+
+  /* @group Divider and focus */
+  --colorNeutralStroke2: light-dark(#e0e0e0, #525252);       /* Divider, 1px, edge to edge of the surface */
+  --fl-menu-divider-margin: 4px;                             /* Space above and below a divider */
+  --fl-menu-group-header-height: 32px;                       /* Group header height, 8px side padding */
+  --colorStrokeFocus2: light-dark(#000000, #ffffff);         /* Focus outline, 2px, just outside the item */
+
+  /* @group Motion */
+  --durationSlower: 400ms;                                   /* Enter fade and slide; there is no exit animation */
+  --curveDecelerateMid: cubic-bezier(0, 0, 0, 1);            /* Enter easing */
+  --fl-menu-slide: 10px;                                     /* Slide distance, from the trigger’s side */
+}
+
+/* ---- Popover shell: placement only ---- */
+.fl-menu {
+  /* Reset the UA popover box; the list draws the surface. */
+  inset: auto; margin: 0; padding: 0; border: 0; background: none; overflow: visible;
+
+  /* below-start: under the trigger, left edges aligned, no offset. Flips above when needed. */
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block;
+  container-type: anchored;   /* lets the list ask whether it flipped */
+}
+
+/* ---- Surface: the list ---- */
+.fl-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--fl-menu-gap);
+  box-sizing: border-box;
+  width: max-content;
+  min-width: var(--fl-menu-min-width);
+  max-width: var(--fl-menu-max-width);
+  padding: var(--fl-menu-padding);
+  border: 1px solid var(--colorTransparentStroke);
+  border-radius: var(--borderRadiusMedium);
+  background: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground1);
+  box-shadow: var(--shadow16);
+  font: 400 var(--fontSizeBase300)/20px var(--fontFamilyBase);
+  outline: none;
+  user-select: none;
+
+  /* Enter only: fade in and slide 10px away from the trigger. Closing is instant. */
+  --_slide: calc(var(--fl-menu-slide) * -1);
+}
+.fl-menu:popover-open .fl-menu-list {
+  animation: fl-menu-enter var(--durationSlower) var(--curveDecelerateMid);
+}
+/* Flipped above the trigger: slide up instead of down. */
+@container anchored(fallback: flip-block) { .fl-menu-list { --_slide: var(--fl-menu-slide); } }
+@keyframes fl-menu-enter {
+  from { opacity: 0; translate: 0 var(--_slide); }
+}
+.fl-menu-group { display: contents; }
+
+/* Item: [checkmark] [icon] [content] [secondary content].
+   Fluent reserves the checkmark and icon slots on every row once any item needs them,
+   so labels line up. The columns here do the same. */
+.fl-menu-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--fl-menu-icon-size) 1fr auto;
+  align-items: start;
+  gap: var(--fl-menu-item-gap);
+  box-sizing: border-box;
+  max-width: 290px;
+  min-height: var(--fl-menu-item-min-height);
+  padding: var(--spacingVerticalSNudge);
+  border: 0;
+  border-radius: var(--borderRadiusMedium);
+  background: var(--colorNeutralBackground1);
+  color: var(--colorNeutralForeground2);
+  font: inherit;
+  font-size: var(--fontSizeBase300);
+  text-align: start;
+  cursor: pointer;
+}
+.fl-menu-list:has([role="menuitemradio"], [role="menuitemcheckbox"]) .fl-menu-item {
+  grid-template-columns: var(--fl-menu-checkmark-size) var(--fl-menu-icon-size) 1fr auto;
+}
+.fl-menu-item > .icon {
+  width: var(--fl-menu-icon-size);
+  height: var(--fl-menu-icon-size);
+  stroke-width: 1.5;   /* closer to Fluent’s Regular weight than Lucide’s default 2 */
+}
+.fl-menu-content { grid-column: -3; padding-inline: var(--fl-menu-content-padding); }
+
+/* Checkmark: a 16px slot, hidden until checked. Rows without one keep the empty column. */
+.fl-menu-item > .fl-menu-check {
+  grid-column: 1;
+  width: var(--fl-menu-checkmark-size);
+  height: var(--fl-menu-checkmark-size);
+  margin-top: 2px;
+  stroke-width: 2.5;
+  visibility: hidden;
+}
+.fl-menu-item[aria-checked="true"] > .fl-menu-check { visibility: visible; }
+.fl-menu-item > .icon:not(.fl-menu-check) { grid-column: -4; }
+
+/* Secondary content: shortcuts, in caption1 on the label’s 20px line. */
+.fl-menu-item kbd {
+  grid-column: -2;
+  padding-inline: var(--fl-menu-content-padding);
+  font: 400 var(--fontSizeBase200)/20px var(--fontFamilyBase);
+  color: var(--colorNeutralForeground3);
+}
+
+/* Hover: lighter fill, darker label, brand icon. Fluent also swaps the Regular icon
+   for its Filled twin; Lucide has no filled set, so only the color changes here. */
+.fl-menu-item:hover {
+  background: var(--colorNeutralBackground1Hover);
+  color: var(--colorNeutralForeground2Hover);
+  & > .icon:not(.fl-menu-check) { color: var(--colorNeutralForeground2BrandSelected); }
+  & kbd { color: var(--colorNeutralForeground3Hover); }
+}
+.fl-menu-item:hover:active {
+  background: var(--colorNeutralBackground1Pressed);
+  color: var(--colorNeutralForeground2Pressed);
+}
+
+/* Focus: keyboard only, 2px outline just outside the item, 4px corners. */
+.fl-menu-item:focus { outline: none; }
+.fl-menu-item:focus-visible {
+  outline: 2px solid var(--colorStrokeFocus2);
+  outline-offset: 0;
+  z-index: 1;   /* draw over the neighbor across the 2px gap */
+}
+
+/* Disabled: stays focusable, ignores hover. */
+.fl-menu-item[aria-disabled="true"] {
+  &, &:hover, &:hover:active {
+    background: var(--colorNeutralBackground1);
+    color: var(--colorNeutralForegroundDisabled);
+    cursor: not-allowed;
+  }
+  & > .icon, & kbd, &:hover > .icon, &:hover kbd { color: var(--colorNeutralForegroundDisabled); }
+}
+
+/* Divider: reaches past the 4px padding to 1px from the surface edge. */
+.fl-menu-divider {
+  margin: var(--fl-menu-divider-margin) -5px;
+  border: 0;
+  border-bottom: 1px solid var(--colorNeutralStroke2);
+}
+
+/* Group header: small semibold label above a group. */
+.fl-menu-group-header {
+  display: flex;
+  align-items: center;
+  height: var(--fl-menu-group-header-height);
+  padding-inline: 8px;
+  font-size: var(--fontSizeBase200);
+  font-weight: 600;
+  color: var(--colorNeutralForeground3);
+}
+
+/* Windows high contrast: system colors, as Fluent does. */
+@media (forced-colors: active) {
+  .fl-menu-item:hover { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .fl-menu-item:hover > .icon, .fl-menu-item:hover kbd { color: HighlightText; }
+  .fl-menu-item[aria-disabled="true"] { color: GrayText; }
+  .fl-menu-item:focus-visible { outline-color: Highlight; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fl-menu:popover-open .fl-menu-list { animation: none; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body {
+  background: light-dark(#fafafa, #1f1f1f);
+  color: var(--colorNeutralForeground1);
+  font: 400 14px/20px var(--fontFamilyBase);
+}
+.app { height: 100%; display: flex; flex-direction: column; }
+.command-bar {
+  display: flex; align-items: center; gap: 4px; padding: 8px 16px;
+  border-bottom: 1px solid light-dark(#e0e0e0, #3d3d3d);
+}
+.cmd {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px;
+  border: 1px solid transparent; border-radius: 4px; background: transparent;
+  color: var(--colorNeutralForeground2); font: 600 14px/20px var(--fontFamilyBase); cursor: pointer;
+}
+.cmd .icon { width: 20px; height: 20px; stroke-width: 1.5; }
+.cmd:hover { background: light-dark(#f5f5f5, #383838); color: var(--colorNeutralForeground2Hover); }
+.cmd:focus-visible { outline: 2px solid var(--colorStrokeFocus2); outline-offset: 0; }
+.cmd.primary { background: light-dark(#0f6cbd, #115ea3); color: #ffffff; }
+.cmd.primary:hover { background: light-dark(#115ea3, #0f6cbd); }
+/* Trigger keeps its pressed fill while its menu is open. */
+body:has(#file-menu:popover-open) .cmd[commandfor="file-menu"] { background: light-dark(#e0e0e0, #2e2e2e); }
+.selection { margin-left: auto; color: var(--colorNeutralForeground3); font-size: 12px; }
+
+.files { list-style: none; margin: 0; padding: 8px 16px; }
+.file {
+  display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 12px;
+  height: 44px; padding: 0 12px; border-bottom: 1px solid light-dark(#f0f0f0, #2e2e2e);
+}
+.file .icon { width: 20px; height: 20px; stroke-width: 1.5; color: light-dark(#0f6cbd, #479ef5); }
+.file time { color: var(--colorNeutralForeground3); font-size: 12px; }
+.file.selected { background: light-dark(#ebf3fc, #0e4775); border-radius: 4px; border-color: transparent; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opening, placement, ↑/↓, Esc and click-outside are native. Script adds what Fluent's
+// Menu does on top: focus on open, ↓ on the trigger, hover moves focus, selectable items,
+// first-letter search, and closing on Tab.
+const menu = document.getElementById('file-menu');
+const list = menu.querySelector('.fl-menu-list');
+const trigger = document.querySelector('[commandfor="file-menu"]');
+const items = () => [...list.querySelectorAll('.fl-menu-item')];
+
+// Opening focuses the first item. The outline shows only for a keyboard open.
+menu.addEventListener('toggle', e => {
+  if (e.newState !== 'open') return;
+  const fromKeyboard = document.activeElement.matches(':focus-visible');
+  items()[0].focus({ preventScroll: true, focusVisible: fromKeyboard });
+});
+
+// ↓ on the closed trigger opens the menu, like Fluent's MenuTrigger.
+trigger.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' && !menu.matches(':popover-open')) {
+    e.preventDefault();
+    menu.showPopover({ source: trigger });
+  }
+});
+
+// Pointer movement focuses the item under it (Fluent's onMouseMove), so the keyboard
+// continues from where the pointer is.
+list.addEventListener('pointermove', e => {
+  const item = e.target.closest('.fl-menu-item');
+  if (item && item !== document.activeElement) item.focus({ focusVisible: false });
+});
+
+// Radio items check and close; checkbox items toggle and stay open (persistOnClick).
+list.addEventListener('click', e => {
+  const item = e.target.closest('.fl-menu-item');
+  if (!item || item.ariaDisabled === 'true') return;
+  if (item.role === 'menuitemradio') {
+    for (const radio of item.parentElement.querySelectorAll('[role="menuitemradio"]')) {
+      radio.ariaChecked = String(radio === item);
+    }
+    menu.hidePopover();
+  }
+  if (item.role === 'menuitemcheckbox') item.ariaChecked = String(item.ariaChecked !== 'true');
+});
+
+// Typing a letter moves to the next item whose label starts with it.
+list.addEventListener('keydown', e => {
+  if (e.key.length !== 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+  const all = items();
+  const start = all.indexOf(document.activeElement) + 1;
+  const next = [...all.slice(start), ...all.slice(0, start)]
+    .find(item => item.textContent.trim().toLowerCase().startsWith(e.key.toLowerCase()));
+  next?.focus();
+});
+
+// Tab (or any focus leaving the menu) closes it.
+menu.addEventListener('focusout', e => {
+  if (!menu.contains(e.relatedTarget)) menu.hidePopover();
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Click More so the page shows the menu at rest. A click focuses the button without
+// a focus outline; focusVisible: false reproduces that before the click.
+requestAnimationFrame(() => {
+  const trigger = document.querySelector('[commandfor="file-menu"]');
+  trigger.focus({ focusVisible: false, preventScroll: true });
+  trigger.click();
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="500" data-hint="Click ⋯ in the command bar, or Tab to it and press ↓. Hover moves focus; type a letter to jump."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Surface</th><td>One solid surface with 4px corners, 4px padding and the shadow16 elevation. 138px minimum width, 300px maximum, otherwise as wide as its longest item. A transparent 1px border shows up only in high contrast mode.</td></tr>
+        <tr><th>Item</th><td>32px minimum height: a 20px line with 6px padding on every side. Corners match the surface at 4px. Items sit 2px apart.</td></tr>
+        <tr><th>Slots</th><td>Checkmark (16px), icon (20px), content, then secondary content, 4px apart. Content and secondary content add 2px of inline padding. Once any item has a checkmark or icon, every row reserves that slot so labels line up.</td></tr>
+        <tr><th>Secondary content</th><td>Shortcut text in caption1 (12px) on the label’s 20px line, in Foreground3.</td></tr>
+        <tr><th>Group header</th><td>A 32px row in 12px semibold Foreground3 with 8px side padding. Labels a group of related items; here, the sort options.</td></tr>
+        <tr><th>Divider</th><td>1px in Stroke2 with 4px above and below. It reaches past the surface padding to 1px from the edge.</td></tr>
+        <tr><th>Selectable items</th><td>Radio and checkbox items show a 16px checkmark when checked and keep the empty slot when not. Fluent draws Checkmark16Filled.</td></tr>
+        <tr><th>Disabled item</th><td>Label, icon and shortcut in ForegroundDisabled. No hover fill. Still focusable, so screen reader users hear that it exists.</td></tr>
+        <tr><th>Destructive item</th><td>Fluent defines none. Use a plain item, a confirmation dialog, and, if the action needs emphasis, put it last after a divider.</td></tr>
+        <tr><th>Not built here</th><td>Submenus (a 20px chevron in the last slot), split items, and the subText second line in caption2.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>A click on the trigger, <kbd>Enter</kbd> or <kbd>Space</kbd>, or <kbd>↓</kbd>. <code>commandfor</code> and <code>command="toggle-popover"</code> handle the click with no script.</td></tr>
+        <tr><th>Placement</th><td>Below the trigger with left edges aligned (Fluent’s <code>below-start</code>), no offset. Flips above when there is no room below.</td></tr>
+        <tr><th>Motion</th><td>Enter only: a fade and a 10px slide away from the trigger over 400ms on decelerateMid. Closing is instant. No motion with reduced motion set.</td></tr>
+        <tr><th>States</th><td>Each state is its own color token, not an overlay. Hover lightens the fill, darkens the label and turns the icon brand blue. Pressed uses the darker Pressed fill. Disabled items ignore both.</td></tr>
+        <tr><th>Hover and focus</th><td>Moving the pointer over an item focuses it, so <kbd>↓</kbd> continues from the pointer. The outline appears only for keyboard focus.</td></tr>
+        <tr><th>Selection</th><td>A radio item checks and closes the menu. A checkbox item toggles and leaves the menu open.</td></tr>
+        <tr><th>Dismiss</th><td>Choosing a command, <kbd>Esc</kbd> (focus returns to the trigger), a click outside, or <kbd>Tab</kbd>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd> <kbd>↓</kbd> on ⋯</th><td>Open the menu with focus on the first item.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between items, wrapping at the ends, including disabled items.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item.</td></tr>
+          <tr><th>A letter</th><td>Next item whose label starts with it.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the command, choose a sort option, or toggle the details pane.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close and return focus to ⋯.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Close the menu and move on.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> infers <code>role="menu"</code> and <code>menuitem</code>. Sort options are <code>menuitemradio</code> in a <code>group</code> labelled by its header; the details pane is a <code>menuitemcheckbox</code>.</li>
+          <li>Disabled items use <code>aria-disabled</code> rather than <code>disabled</code>, matching Fluent: they stay in the arrow-key order and are announced as unavailable.</li>
+          <li>The trigger carries <code>aria-haspopup="menu"</code>; the browser reports <code>aria-expanded</code> from the popover state.</li>
+          <li>Focus outline: 2px colorStrokeFocus2, black on light (21:1) and white on dark (14.5:1).</li>
+          <li>Contrast: the Foreground2 label on the surface is 10:1 in both themes; Foreground3 shortcuts 6.2:1 light and 6.5:1 dark. Disabled text is intentionally below 3:1.</li>
+          <li>In forced colors, hover uses Highlight and HighlightText and disabled items use GrayText, as Fluent does.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

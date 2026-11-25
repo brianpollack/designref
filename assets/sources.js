@@ -1,0 +1,302 @@
+/**
+ * sources.js — where examples come from, and the core libraries concepts are built to.
+ *
+ * Three registries, all keyed by id so a URL or a spec value is written once:
+ *
+ *   sites     Every site we cite. kind:
+ *               'system'    a core library: a design system with published foundations.
+ *                           Its foundations live in `systems` under the same id.
+ *               'platform'  standards and browser documentation (MDN, Chrome, W3C)
+ *               'writing'   articles, technique write-ups and announcements
+ *               'product'   shipped products and open-source libraries we studied
+ *             Optional `note` is shown on the sources page (renames, caveats).
+ *
+ *   pages     Every page we cite: { site, title, url }. Concepts and categories cite pages
+ *             from catalog.js as `refs`, each with a note on what it contributed; categories
+ *             also point at each core library's own page for the component (`specs`).
+ *
+ *   systems   Core-library foundations, in display order. Each row of `foundations` is
+ *             [group, label, value, sourceUrl]; every value was read from that source.
+ *
+ * Rendered by assets/site.js: Sources sections on concept and category pages, the core
+ * library table on category pages, and the whole of sources.html.
+ *
+ * Loaded as a classic script (not JSON) because pages are opened from file://.
+ * Run `node scripts/check.mjs` after editing; `node scripts/check-links.mjs` checks URLs.
+ */
+window.SOURCES = {
+  /** Section headings for each kind, in display order (core libraries render separately). */
+  KINDS: {
+    platform: 'Standards and browser docs',
+    writing:  'Articles and write-ups',
+    product:  'Products and libraries',
+  },
+
+  sites: {
+    // Core libraries
+    'material-3': { name: 'Material Design 3', short: 'Material 3', url: 'https://m3.material.io/', kind: 'system' },
+    'apple-hig':  { name: 'Apple Human Interface Guidelines', short: 'Apple HIG', url: 'https://developer.apple.com/design/human-interface-guidelines', kind: 'system' },
+    'fluent-2':   { name: 'Fluent 2', url: 'https://fluent2.microsoft.design/', kind: 'system' },
+    'carbon':     { name: 'Carbon', url: 'https://www.carbondesignsystem.com/', kind: 'system' },
+
+    // Standards and browser docs
+    'chrome':   { name: 'Chrome for Developers', url: 'https://developer.chrome.com/', kind: 'platform' },
+    'mdn':      { name: 'MDN', url: 'https://developer.mozilla.org/en-US/', kind: 'platform' },
+    'web-dev':  { name: 'web.dev', url: 'https://web.dev/', kind: 'platform' },
+    'apg':      { name: 'WAI-ARIA Authoring Practices', short: 'WAI-ARIA APG', url: 'https://www.w3.org/WAI/ARIA/apg/', kind: 'platform' },
+
+    // Articles and write-ups
+    'master-dev':     { name: 'Master.dev Blog', url: 'https://blog.master.dev/', kind: 'writing', note: 'Formerly the Frontend Masters blog; old frontendmasters.com/blog links redirect here.' },
+    'ics-media':      { name: 'ICS MEDIA', url: 'https://ics.media/en/', kind: 'writing' },
+    'una':            { name: 'Una Kravets', url: 'https://una.im/', kind: 'writing' },
+    'ben-kamens':     { name: 'Ben Kamens', url: 'https://bjk5.com/', kind: 'writing' },
+    '9to5google':     { name: '9to5Google', url: 'https://9to5google.com/', kind: 'writing' },
+    'apple-newsroom': { name: 'Apple Newsroom', url: 'https://www.apple.com/newsroom/', kind: 'writing' },
+
+    // Products and libraries
+    'blender': { name: 'Blender', url: 'https://docs.blender.org/manual/en/latest/', kind: 'product' },
+    'raycast': { name: 'Raycast', url: 'https://developers.raycast.com/', kind: 'product' },
+    'cmdk':    { name: 'cmdk', url: 'https://github.com/dip/cmdk', kind: 'product' },
+  },
+
+  pages: {
+    // Material Design 3 (official site, plus the Compose and Material Web token source)
+    'm3-menus':                      { site: 'material-3', title: 'Menus: specs', url: 'https://m3.material.io/components/menus/specs' },
+    'compose-segmented-menu-tokens': { site: 'material-3', title: 'SegmentedMenuTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/SegmentedMenuTokens.kt' },
+    'compose-standard-menu-tokens':  { site: 'material-3', title: 'StandardMenuTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/StandardMenuTokens.kt' },
+    'compose-vibrant-menu-tokens':   { site: 'material-3', title: 'VibrantMenuTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/VibrantMenuTokens.kt' },
+    'compose-menu-defaults':         { site: 'material-3', title: 'MenuDefaults.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/MenuDefaults.kt' },
+    'compose-menu':                  { site: 'material-3', title: 'Menu.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/Menu.kt' },
+    'compose-expressive-motion':     { site: 'material-3', title: 'ExpressiveMotionTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ExpressiveMotionTokens.kt' },
+    'mweb-focus-ring':               { site: 'material-3', title: 'Material Web focus ring tokens', url: 'https://github.com/material-components/material-web/blob/main/tokens/_md-comp-focus-ring.scss' },
+
+    // Apple Human Interface Guidelines
+    'hig-context-menus': { site: 'apple-hig', title: 'Context menus', url: 'https://developer.apple.com/design/human-interface-guidelines/context-menus' },
+    'hig-menus':         { site: 'apple-hig', title: 'Menus', url: 'https://developer.apple.com/design/human-interface-guidelines/menus' },
+    'hig-materials':     { site: 'apple-hig', title: 'Materials', url: 'https://developer.apple.com/design/human-interface-guidelines/materials' },
+
+    // Fluent 2
+    'fluent-menu': { site: 'fluent-2', title: 'Menu', url: 'https://fluent2.microsoft.design/components/web/react/core/menu/usage/' },
+    'fluent-menu-popover-styles': { site: 'fluent-2', title: 'useMenuPopoverStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuPopover/useMenuPopoverStyles.styles.ts' },
+    'fluent-menu-list-styles':    { site: 'fluent-2', title: 'useMenuListStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuList/useMenuListStyles.styles.ts' },
+    'fluent-menu-item-styles':    { site: 'fluent-2', title: 'useMenuItemStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuItem/useMenuItemStyles.styles.ts' },
+    'fluent-menu-divider-styles': { site: 'fluent-2', title: 'useMenuDividerStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuDivider/useMenuDividerStyles.styles.ts' },
+    'fluent-menu-group-header-styles': { site: 'fluent-2', title: 'useMenuGroupHeaderStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuGroupHeader/useMenuGroupHeaderStyles.styles.ts' },
+    'fluent-checkmark-styles':    { site: 'fluent-2', title: 'useCheckmarkStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/selectable/useCheckmarkStyles.styles.ts' },
+    'fluent-menu-motion':         { site: 'fluent-2', title: 'MenuSurfaceMotion.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/Menu/MenuSurfaceMotion.ts' },
+    'fluent-menu-hook':           { site: 'fluent-2', title: 'useMenu.tsx', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/Menu/useMenu.tsx' },
+    'fluent-focus-outline':       { site: 'fluent-2', title: 'createFocusOutlineStyle.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabster/src/focus/createFocusOutlineStyle.ts' },
+    'fluent-light-color':         { site: 'fluent-2', title: 'lightColor.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts' },
+    'fluent-dark-color':          { site: 'fluent-2', title: 'darkColor.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts' },
+    'fluent-brand-colors':        { site: 'fluent-2', title: 'brandColors.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts' },
+
+    // Carbon
+    'carbon-menu': { site: 'carbon', title: 'Menu', url: 'https://www.carbondesignsystem.com/building-blocks/core/components/menu/guidelines' },
+    'carbon-menu-scss':      { site: 'carbon', title: '_menu.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/components/menu/_menu.scss' },
+    'carbon-menu-tsx':       { site: 'carbon', title: 'Menu.tsx', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/react/src/components/Menu/Menu.tsx' },
+    'carbon-menu-item-tsx':  { site: 'carbon', title: 'MenuItem.tsx', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/react/src/components/Menu/MenuItem.tsx' },
+    'carbon-layer-sets':     { site: 'carbon', title: '_layer-sets.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/layer/_layer-sets.scss' },
+    'carbon-white-theme':    { site: 'carbon', title: 'White theme tokens', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/themes/tokens/themes/white/theme.tokens.json' },
+    'carbon-g100-theme':     { site: 'carbon', title: 'Gray 100 theme tokens', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/themes/tokens/themes/g100/theme.tokens.json' },
+    'carbon-focus-outline':  { site: 'carbon', title: '_focus-outline.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/utilities/_focus-outline.scss' },
+
+    // Chrome for Developers
+    'chrome-menu':            { site: 'chrome', title: 'Build a popup menu', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu' },
+    'chrome-sibling-styling': { site: 'chrome', title: 'Styling siblings based on count and index', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/css/dynamic-sibling-styling' },
+
+    // MDN
+    'mdn-try-hiding':             { site: 'mdn', title: 'Fallback options and conditional hiding', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Anchor_positioning/Try_options_hiding' },
+    'mdn-position-area':          { site: 'mdn', title: 'position-area', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position-area' },
+    'mdn-invoker-commands':       { site: 'mdn', title: 'Invoker Commands API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API' },
+    'mdn-interest-invokers':      { site: 'mdn', title: 'Using interest invokers', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers' },
+    'mdn-closedby':               { site: 'mdn', title: 'HTMLDialogElement: closedBy', url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy' },
+    'mdn-highlight-api':          { site: 'mdn', title: 'CSS Custom Highlight API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CSS_Custom_Highlight_API' },
+    'mdn-aria-active-descendant': { site: 'mdn', title: 'ariaActiveDescendantElement', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Element/ariaActiveDescendantElement' },
+    'mdn-backdrop-filter':        { site: 'mdn', title: 'backdrop-filter', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter' },
+    'mdn-corner-shape':           { site: 'mdn', title: 'corner-shape', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/corner-shape' },
+    'mdn-reduced-transparency':   { site: 'mdn', title: 'prefers-reduced-transparency', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-transparency' },
+
+    // web.dev
+    'webdev-trig': { site: 'web-dev', title: 'Trigonometric functions in CSS', url: 'https://web.dev/articles/css-trig-functions' },
+
+    // WAI-ARIA Authoring Practices
+    'apg-menu-button': { site: 'apg', title: 'Menu button pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/' },
+    'apg-menubar':     { site: 'apg', title: 'Menu and menubar pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menubar/' },
+    'apg-combobox':    { site: 'apg', title: 'Combobox pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/combobox/' },
+
+    // Articles and write-ups
+    'master-popover-context-menus': { site: 'master-dev', title: 'Popover context menus with anchor positioning', url: 'https://blog.master.dev/popover-context-menus-with-anchor-positioning/' },
+    'ics-safe-triangle':            { site: 'ics-media', title: 'Using a CSS safe triangle to prevent accidental submenu switching', url: 'https://ics.media/en/entry/260803/' },
+    'una-radial-menu':              { site: 'una', title: 'Building a no-JS radial menu with CSS trigonometry, popover, and anchor positioning', url: 'https://una.im/radial-menu' },
+    'kamens-mega-dropdown':         { site: 'ben-kamens', title: 'Breaking down Amazon’s mega dropdown', url: 'https://bjk5.com/post/44698559168/breaking-down-amazons-mega-dropdown' },
+    '9to5-m3e-menus':               { site: '9to5google', title: 'Material 3 Expressive menus', url: 'https://9to5google.com/2025/11/22/material-3-expressive-menus/' },
+    'apple-liquid-glass':           { site: 'apple-newsroom', title: 'Apple introduces a delightful and elegant new software design', url: 'https://www.apple.com/newsroom/2025/06/apple-introduces-a-delightful-and-elegant-new-software-design/' },
+
+    // Products and libraries
+    'blender-pie-menus':    { site: 'blender', title: 'Pie menus', url: 'https://docs.blender.org/manual/en/latest/interface/controls/buttons/menus.html#pie-menus' },
+    'raycast-action-panel': { site: 'raycast', title: 'Action Panel', url: 'https://developers.raycast.com/api-reference/user-interface/action-panel' },
+    'cmdk':                 { site: 'cmdk', title: 'cmdk', url: 'https://github.com/dip/cmdk' },
+  },
+
+  /*
+   * Core-library foundations. Filled from primary sources (official docs and token source);
+   * see each row's URL. Fields:
+   *   owner, version, platforms   Who publishes it, the current version, where it applies.
+   *   summary                     One sentence: what it is and when a designer is asked to match it.
+   *   tokens                      { label, url } where exact machine-readable values live.
+   *   components                  The system's component index.
+   *   foundations[]               [group, label, value, sourceUrl]
+   *   notes[]                     [text, sourceUrl] things a designer should know.
+   */
+  systems: {
+    'material-3': {
+      owner: 'Google',
+      version: 'Material 3 Expressive with the I/O 2026 update; Compose Material3 1.5.0 (November 2026)',
+      platforms: 'Android (Jetpack Compose), Flutter; Material Web is in maintenance mode',
+      summary: 'Google’s open-source system for Android, Flutter and the web. Match it for Android apps, Google-ecosystem products, or any brief that says “Material” or “Material You”.',
+      tokens: { label: 'Jetpack Compose token source', url: 'https://github.com/androidx/androidx/tree/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens' },
+      components: 'https://m3.material.io/components',
+      foundations: [
+        ['Layout', 'Base unit', '8dp (space100), with 2, 4, 6 and 10dp for small gaps. 1dp = 1 CSS px on the web.', 'https://m3.material.io/styles/spacing/tokens'],
+        ['Layout', 'Spacing scale', 'space0 0 · 25 2 · 50 4 · 75 6 · 100 8 · 125 10 · 150 12 · 175 14 · 200 16 · 250 20 · 300 24 · 400 32 · 450 36 · 500 40 · 600 48 · 700 56 · 800 64 · 900 72dp.', 'https://m3.material.io/styles/spacing/tokens'],
+        ['Layout', 'Breakpoints', 'Compact < 600 · Medium 600–839 · Expanded 840–1199 · Large 1200–1599 · Extra-large ≥ 1600dp wide.', 'https://m3.material.io/foundations/layout/breakpoints/overview'],
+        ['Layout', 'Margins', 'Compact 16dp; Medium and wider 24dp. 24dp between panes; a fixed pane is 360dp (Expanded) or 412dp (Large and up).', 'https://m3.material.io/foundations/layout/breakpoints/compact'],
+        ['Targets', 'Minimum target', '48 × 48dp. The state layer is 40dp inside it; the visible element may be smaller.', 'https://m3.material.io/foundations/layout/grids-spacing/density'],
+        ['Shape', 'Corner scale', 'None 0 · Extra small 4 · Small 8 · Medium 12 · Large 16 · Large increased 20 · Extra large 28 · Extra large increased 32 · Extra extra large 48dp · Full (pill). One-sided variants: extra-small-top, large-top / start / end, extra-large-top.', 'https://m3.material.io/styles/shape/corner-radius-scale'],
+        ['Type', 'Typeface', 'Roboto for every role; Roboto Flex as an optional variable font. Fallback Roboto Flex → Roboto → Noto Sans.', 'https://m3.material.io/styles/typography/fonts'],
+        ['Type', 'Display', 'L 57/64 · M 45/52 · S 36/44sp, Regular 400 (emphasized 500). Tracking L −0.25, M and S 0.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/TypeScaleTokens.kt'],
+        ['Type', 'Headline', 'L 32/40 · M 28/36 · S 24/32sp, Regular 400 (emphasized 500). Tracking 0.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/TypeScaleTokens.kt'],
+        ['Type', 'Title', 'L 22/28 Regular · M 16/24 Medium 500 · S 14/20 Medium 500sp (emphasized L 500, M and S 700). Tracking L 0, M 0.15, S 0.1.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/TypeScaleTokens.kt'],
+        ['Type', 'Body', 'L 16/24 · M 14/20 · S 12/16sp, Regular 400 (emphasized 500). Tracking L 0.5, M 0.25, S 0.4.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/TypeScaleTokens.kt'],
+        ['Type', 'Label', 'L 14/20 · M 12/16 · S 11/16sp, Medium 500 (emphasized 700). Tracking L 0.1, M and S 0.5.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/TypeScaleTokens.kt'],
+        ['Color', 'Model', 'One source color gives five key colors, each a tonal palette (tones 0–100), mapped to 26 roles in light and dark at standard, medium and high contrast. Static (baseline or brand) or dynamic (from wallpaper or content).', 'https://m3.material.io/styles/color/system/how-the-system-works'],
+        ['Color', 'Baseline light', 'primary #6750A4 · on-primary #FFFFFF · surface #FEF7FF · on-surface #1D1B20 · outline #79747E · error #B3261E.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ColorLightTokens.kt'],
+        ['Color', 'Baseline dark', 'primary #D0BCFF · on-primary #381E72 · surface #141218 · on-surface #E6E0E9 · outline #938F99 · error #F2B8B5.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ColorDarkTokens.kt'],
+        ['Depth', 'Elevation', 'Level 0 0 · 1 1 · 2 3 · 3 6 · 4 8 · 5 12dp. Hover and focus usually raise one level. Surface tint is deprecated: use the surface-container roles.', 'https://m3.material.io/styles/elevation/tokens'],
+        ['States', 'State layers', 'An overlay of the content (on-) color: hover 8% · focus 10% · pressed 10% · dragged 16%. Disabled content 38%.', 'https://m3.material.io/foundations/interaction/states/state-layers'],
+        ['Focus', 'Focus ring', '3dp ring, 2dp outside the component, in the secondary color, following the component’s shape.', 'https://github.com/material-components/material-web/blob/main/tokens/_md-comp-focus-ring.scss'],
+        ['Motion', 'Motion', 'Springs, as stiffness / damping. Expressive spatial fast 800 / 0.6 · default 380 / 0.8 · slow 200 / 0.8; effects 3800 / 1 · 1600 / 1 · 800 / 1. Standard spatial 1400 / 0.9 · 700 / 0.9 · 300 / 0.9, same effects.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ExpressiveMotionTokens.kt'],
+        ['Icons', 'Icons', 'Material Symbols (Outlined, Rounded, Sharp; axes weight, fill, grade, optical size). 24dp default with a 20dp live area, 2dp stroke at weight 400; optical sizes 20, 24, 40, 48dp.', 'https://m3.material.io/styles/icons/designing-icons'],
+        ['Density', 'Density', 'Scale 0 (default), −1, −2, −3; raising density typically removes 4dp of vertical padding. Text size never changes and targets stay 48dp. Not for menus, snackbars or dialogs.', 'https://m3.material.io/foundations/layout/grids-spacing/density'],
+      ],
+      notes: [
+        ['“Material UI” (MUI, the React library) is built to Material Design 2, not 3; its Material 3 work is still an open issue. Ask which one a brief means.', 'https://mui.com/material-ui/getting-started/'],
+        ['The I/O 2026 update (May 2026) added spacing tokens, renamed window size classes to breakpoints, and brought expressive lists and vertical menus.', 'https://m3.material.io/blog/whats-new-at-io26'],
+        ['Compose is the reference implementation. Material Web is in maintenance mode without Expressive, so its token files lag (for example 12% focus and pressed layers instead of 10%).', 'https://m3.material.io/develop/web'],
+        ['Older motion tokens remain: emphasized and standard easing cubic-bezier(0.2, 0, 0, 1); durations short 50–200, medium 250–400, long 450–600, extra long 700–1000ms.', 'https://raw.githubusercontent.com/androidx/androidx/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/MotionTokens.kt'],
+        ['On the web: sp ÷ 16 = rem, and tracking ÷ font size = letter-spacing in em.', 'https://m3.material.io/styles/typography/type-scale-tokens'],
+      ],
+    },
+    'apple-hig': {
+      owner: 'Apple',
+      version: 'Liquid Glass, second generation (iOS and macOS 27 kits, September 2026)',
+      platforms: 'iOS, iPadOS, macOS, tvOS, visionOS, watchOS',
+      summary: 'Apple’s guidance for its own platforms. Match it when a product must feel native on iPhone, iPad or Mac, including web UI that imitates macOS menus, pointer behavior and controls. Apple publishes rules more often than numbers.',
+      tokens: { label: 'Apple Design Resources (Figma and Sketch kits)', url: 'https://developer.apple.com/design/resources/' },
+      components: 'https://developer.apple.com/design/human-interface-guidelines/components',
+      foundations: [
+        ['Layout', 'Base unit', 'Not defined. Values are in points; 1pt = 1 CSS px on the web (our reading of the @2x = 144 ppi basis).', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Layout', 'Spacing scale', 'Not published. Rules of thumb: about 12pt around bezeled elements, about 24pt around the visible edges of bezel-less ones; prefer the system’s standard spacing.', 'https://developer.apple.com/design/human-interface-guidelines/accessibility'],
+        ['Layout', 'Size classes', 'iOS and iPadOS: horizontal and vertical are each compact or regular, set by device, window and multitasking. Lay out by size class, not device. No numeric breakpoints.', 'https://developer.apple.com/design/human-interface-guidelines/layout'],
+        ['Layout', 'Margins', 'Not published as numbers: use the system layout margins, safe areas and the readable content guide (a text column sized to the current text size).', 'https://developer.apple.com/documentation/uikit/uiview/readablecontentguide'],
+        ['Targets', 'Minimum target', 'Default / minimum control size: iOS and iPadOS 44 × 44 / 28 × 28pt · macOS 28 × 28 / 20 × 20pt · visionOS 60 × 60 / 28 × 28pt · watchOS 44 × 44 / 28 × 28pt · tvOS 66 × 66 / 56 × 56pt.', 'https://developer.apple.com/design/human-interface-guidelines/accessibility'],
+        ['Shape', 'Corners', 'Continuous (squircle) curvature, not circular arcs. Shapes are fixed, capsule (radius = half the height) or concentric (parent radius minus padding), so nested shapes share a center. macOS mini to regular controls are rounded rectangles; large and extra large are capsules. No radii published.', 'https://developer.apple.com/videos/play/wwdc2025/356/'],
+        ['Type', 'Typeface', 'SF Pro everywhere but watchOS (SF Compact). New York serif, SF Mono and Rounded variants available. Variable font with automatic optical sizes; avoid Ultralight, Thin and Light.', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Type', 'iOS text styles', 'At the default (Large) size, pt: Large Title 34/41 · Title 1 28/34 · Title 2 22/28 · Title 3 20/25 · Headline 17/22 Semibold · Body 17/22 · Callout 16/21 · Subhead 15/20 · Footnote 13/18 · Caption 1 12/16 · Caption 2 11/13. Regular unless noted; body 17pt, minimum 11pt.', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Type', 'macOS text styles', 'pt: Large Title 26/32 · Title 1 22/26 · Title 2 17/22 · Title 3 15/20 · Headline 13/16 Bold · Body 13/16 · Callout 12/15 · Subheadline 11/14 · Footnote 10/13 · Caption 1 10/13 · Caption 2 10/13 Medium. Body 13pt, minimum 10pt; no Dynamic Type.', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Type', 'Tracking', 'Set per size by the system; match it in mockups. SF Pro: 10pt +0.12 · 11 +0.06 · 12 0 · 13 −0.08 · 15 −0.23 · 17 −0.43 · 20 −0.45 · 22 −0.26 · 28 +0.38 · 34 +0.40pt.', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Color', 'Model', 'Semantic colors named by purpose (label tiers, backgrounds, grouped backgrounds, separator, fills), plus 12 system hues and 6 grays. Each has light, dark and increased-contrast values that can change between releases.', 'https://developer.apple.com/design/human-interface-guidelines/color'],
+        ['Color', 'System colors light', 'systemBlue #0088FF · systemRed #FF383C · systemGreen #34C759 (increased contrast #1E6EF4, #E9152D, #008932). macOS, measured on macOS 27: label #000000 at 85% · secondary label #000000 at 50% · window #FFFFFF · separator #000000 at 10%.', 'https://developer.apple.com/design/human-interface-guidelines/color'],
+        ['Color', 'System colors dark', 'systemBlue #0091FF · systemRed #FF4245 · systemGreen #30D158 (increased contrast #5CB8FF, #FF6165, #4AD968). macOS, measured on macOS 27: label #FFFFFF at 85% · secondary label #FFFFFF at 55% · window #1E1E1E · separator #FFFFFF at 10%.', 'https://developer.apple.com/design/human-interface-guidelines/color'],
+        ['Color', 'Accent', 'The accent fills prominent buttons; use it on one or two controls per view and tint the glass, not the label. On macOS the user’s accent setting replaces the app’s unless it is Multicolor.', 'https://developer.apple.com/design/human-interface-guidelines/color'],
+        ['Depth', 'Materials', 'Liquid Glass is the layer for controls and navigation, never content. Regular glass (default) for most components, including popovers and sidebars; clear glass only over media, with a 35% dark dimming layer on bright content. Standard materials (ultra thin, thin, regular, thick) structure the content layer.', 'https://developer.apple.com/design/human-interface-guidelines/materials'],
+        ['States', 'States', 'Every custom button needs a pressed state; primary uses the accent, destructive uses system red. Unavailable menu items dim; context menus hide them. iPadOS pointer effects: highlight, lift, hover. No hover or pressed opacities published.', 'https://developer.apple.com/design/human-interface-guidelines/pointing-devices'],
+        ['Focus', 'Focus ring', 'macOS and iPadOS: a ring on text fields, an accent row highlight in focused lists (gray when unfocused). Width and offset not published; color measured on macOS 27 as the accent at about 50% (#0067F4 light, #1AA9FF dark).', 'https://developer.apple.com/design/human-interface-guidelines/focus-and-selection'],
+        ['Motion', 'Motion', 'No durations or curves published: brief, purposeful, cancelable, following the gesture, and absent from frequent interactions. Reduce Motion replaces movement with fades.', 'https://developer.apple.com/design/human-interface-guidelines/motion'],
+        ['Icons', 'Icons', 'SF Symbols: 9 weights matching SF Pro, 3 scales (small, medium, large) tied to text cap height, rendering modes monochrome, hierarchical, palette and multicolor. In a menu group, all items have icons or none.', 'https://developer.apple.com/design/human-interface-guidelines/sf-symbols'],
+        ['Density', 'Control sizes', 'macOS mini · small · regular · large · extra large. Heights not published; measured on macOS 27: 16 · 20 · 24 · 28 · 36pt with 9 · 11 · 13 · 13 · 13pt text. visionOS (published): 28 · 32 · 44 · 52 · 64pt.', 'https://developer.apple.com/documentation/appkit/nscontrol/controlsize-swift.enum'],
+      ],
+      notes: [
+        ['Values marked “measured” were read from AppKit on macOS 27 in both appearances. Apple does not publish them; treat them as the current system’s output.', 'https://developer.apple.com/documentation/appkit/nscolor'],
+        ['iOS semantic colors (label, background, separator) are published only in the iOS 27 UI kits, so they are not listed here.', 'https://developer.apple.com/design/resources/'],
+        ['macOS menu, menu bar and control text is 13pt; tooltips are 11pt (measured from the system menu and tooltip fonts).', 'https://developer.apple.com/design/human-interface-guidelines/typography'],
+        ['Context menus: the most relevant items only, about three groups at most, one submenu level, no shortcuts shown, destructive items last, and every item also reachable in the main interface.', 'https://developer.apple.com/design/human-interface-guidelines/context-menus'],
+        ['SF Symbols’ license limits where they may appear; this site uses Lucide icons in their place.', 'https://developer.apple.com/design/human-interface-guidelines/sf-symbols'],
+        ['The Buttons page asks for a 44 × 44pt hit region on any button, larger than the macOS minimum in the accessibility table.', 'https://developer.apple.com/design/human-interface-guidelines/buttons'],
+      ],
+    },
+    'fluent-2': {
+      owner: 'Microsoft',
+      version: 'Fluent UI React v9 (9.75.3, November 2026)',
+      platforms: 'Web (React v9, Web Components), Windows, iOS, Android, macOS',
+      summary: 'Microsoft’s cross-platform system behind Microsoft 365, Teams and Windows 11. Match it for Microsoft-native products, Microsoft 365 and Teams add-ins, or apps meant to feel at home on Windows.',
+      tokens: { label: '@fluentui/tokens source', url: 'https://github.com/microsoft/fluentui/tree/master/packages/tokens/src' },
+      components: 'https://fluent2.microsoft.design/components/web/react/',
+      foundations: [
+        ['Layout', 'Base unit', '4px. Steps of 2, 6 and 10px exist to line icons up on the 4px grid. Windows: multiples of 4 epx.', 'https://fluent2.microsoft.design/layout/'],
+        ['Layout', 'Spacing scale', 'Horizontal and vertical share one ramp: None 0 · XXS 2 · XS 4 · SNudge 6 · S 8 · MNudge 10 · M 12 · L 16 · XL 20 · XXL 24 · XXXL 32px (spacingHorizontal* = spacingVertical*).', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts'],
+        ['Layout', 'Breakpoints', 'Web: small 320–479 · medium 480–639 · large 640–1023 · x-large 1024–1365 · xx-large 1366–1919 · xxx-large ≥ 1920px. No breakpoint tokens in React v9. Windows: ≤ 640 · 641–1007 · ≥ 1008 epx.', 'https://fluent2.microsoft.design/layout/'],
+        ['Layout', 'Margins', 'Web: no number given; margins are fixed or percentage-based, gutters are multiples of 4, 12 columns is common. Windows: 16 epx surface edge to text, 12 between content areas and between control and label, 8 between buttons.', 'https://learn.microsoft.com/en-us/windows/apps/design/basics/content-basics'],
+        ['Targets', 'Minimum target', 'Web and iOS 44 × 44px, Android 48 × 48dp, Windows 40 × 40 epx. Default v9 controls are 32px tall (small 24px), below the web target.', 'https://fluent2.microsoft.design/layout/'],
+        ['Shape', 'Corner scale', 'borderRadius None 0 · Small 2 · Medium 4 · Large 6 · XLarge 8 · 2XLarge 12 · 3XLarge 16 · 4XLarge 24 · 5XLarge 32 · 6XLarge 40 · Circular. Use 4px by default, 2px under 32px tall, 8–12px for large surfaces.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/borderRadius.ts'],
+        ['Shape', 'Windows corners', '8px for windows, dialogs, flyouts and menus (OverlayCornerRadius); 4px for in-page controls, tooltips and bars (ControlCornerRadius); 0 where two straight edges meet or a flyout attaches to its trigger.', 'https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/geometry'],
+        ['Type', 'Typeface', 'Web: Segoe UI, then -apple-system, Roboto, Helvetica Neue. Mono: Consolas. Windows: Segoe UI Variable, Regular for text and Semibold for titles; smallest sizes 12px Regular and 14px Semibold.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts'],
+        ['Type', 'Type ramp', 'caption2 10/14 · caption1 12/16 · body1 14/20 · body2 16/22 at 400; subtitle2 16/22 · subtitle1 20/28 · title3 24/32 · title2 28/36 · title1 32/40 · largeTitle 40/52 · display 68/92 at 600. Strong (600) and Stronger (700) variants of caption and body.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/typographyStyles.ts'],
+        ['Color', 'Model', 'A 16-step brand ramp and a grey ramp map to alias tokens (colorNeutral*, colorBrand*, colorStatus*). Each interactive alias has Rest, Hover, Pressed and Selected values. createLightTheme(brand) and createDarkTheme(brand) build a theme from any ramp.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts'],
+        ['Color', 'Web light', 'Brand background #0f6cbd (hover #115ea3, pressed #0c3b5e) · foreground #242424 / #424242 / #616161 · background #ffffff / #fafafa / #f5f5f5 · stroke #d1d1d1 · danger #c50f1f.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts'],
+        ['Color', 'Web dark', 'Brand background #115ea3 (hover #0f6cbd, pressed #0c3b5e) · brand foreground #479ef5 · foreground #ffffff / #d6d6d6 / #adadad · background #292929 / #1f1f1f / #141414 · stroke #666666 · danger #c50f1f (text #dc626d).', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts'],
+        ['Depth', 'Shadows', 'Ambient + key pairs: shadow2 0 0 2 / 0 1 2 · shadow4 0 0 2 / 0 2 4 · shadow8 0 0 2 / 0 4 8 · shadow16 0 0 2 / 0 8 16 · shadow28 0 0 8 / 0 14 28 · shadow64 0 0 8 / 0 32 64px. Light ambient 12%, key 14% black; dark 24% and 28%.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts'],
+        ['Depth', 'Materials', 'Web: solid surfaces only; modal scrim rgba(0,0,0,.4) light, .5 dark. Windows: Mica (opaque, wallpaper-tinted base layer), Acrylic (translucent, for menus and flyouts), Smoke (scrim); all fall back to solid.', 'https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/materials'],
+        ['States', 'States', 'Every state is its own token, not an overlay. Neutral background 1, light: rest #ffffff → hover #f5f5f5 → pressed #e0e0e0 → selected #ebebeb; dark: #292929 → #3d3d3d → #1f1f1f → #383838. Disabled text #bdbdbd (dark #5c5c5c).', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts'],
+        ['Focus', 'Focus ring', 'Keyboard focus only. 2px solid ring in colorStrokeFocus2 (#000000 light, #ffffff dark) with 4px corners, just outside the box. Buttons draw it inside the edge; inputs use a 2px brand bottom bar.', 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabster/src/focus/createFocusOutlineStyle.ts'],
+        ['Motion', 'Motion', 'Durations 50 · 100 · 150 · 200 · 250 · 300 · 400 · 500ms (ultraFast → ultraSlow). Curves: easyEase (.33,0,.67,1), easyEaseMax (.8,0,.2,1), decelerateMid (0,0,0,1), decelerateMax (.1,.9,.2,1), accelerateMid (1,0,1,1), linear. Reduced motion sets durations to 0.01ms.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/curves.ts'],
+        ['Icons', 'Icons', 'Fluent System Icons, Regular by default and Filled for selected states. Sizes 10 · 12 · 16 · 20 · 24 · 28 · 32 · 48px; 12px is informational only. Button icons are 20px (24px on large).', 'https://github.com/microsoft/fluentui-system-icons/blob/main/packages/svg-icons/README.md'],
+        ['Density', 'Sizes', 'small / medium (default) / large controls are 24 / 32 / 40px tall, with caption1 / body1 / body2 text. React v9 has no density mode.', 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-input/library/src/components/Input/useInputStyles.styles.ts'],
+      ],
+      notes: [
+        ['Build from the token code, not the hex comments in lightColor.ts, which still show Fluent 1 blues (#0078d4). The real web brand is #0f6cbd.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts'],
+        ['Teams uses its own brand ramp (#5b5fc7); only webLightTheme and webDarkTheme use the web blue.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts'],
+        ['The Fluent 2 site and the shipping code disagree on some values (corner scale, subtitle1 line height, shadow opacities). The rows above use the code.', 'https://fluent2.microsoft.design/shapes/'],
+        ['Windows has its own type ramp (Segoe UI Variable): Caption 12/16 · Body 14/20 · Body Large 18/24 · Subtitle 20/28 · Title 28/36 · Title Large 40/52 · Display 68/92.', 'https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/typography'],
+        ['Windows shows elevation with shadow plus a 1px stroke: window and dialog 128, flyout 32, tooltip 16, card 8, control 2.', 'https://learn.microsoft.com/en-us/windows/apps/design/signature-experiences/layering'],
+        ['Stroke widths: thin 1 · thick 2 · thicker 3 · thickest 4px.', 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/strokeWidths.ts'],
+      ],
+    },
+    'carbon': {
+      owner: 'IBM',
+      version: 'v11 (release v11.121.0, November 2026); v12 is in alpha',
+      platforms: 'React, Web Components, Sass/CSS; Figma kits',
+      summary: 'IBM’s open-source system for product UI: square corners, IBM Plex, an 8px grid and four gray themes. Match it for IBM and partner software, and for dense enterprise or data tools built on it.',
+      tokens: { label: 'Token JSON in @carbon/layout, type, themes, motion', url: 'https://github.com/carbon-design-system/carbon/tree/main/packages' },
+      components: 'https://www.carbondesignsystem.com/building-blocks/core/components/overview/components',
+      foundations: [
+        ['Layout', 'Base unit', '8px mini unit (the 2x Grid). Tokens are published in rem on a 16px base.', 'https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview'],
+        ['Layout', 'Spacing scale', '$spacing-01 2 · 02 4 · 03 8 · 04 12 · 05 16 · 06 24 · 07 32 · 08 40 · 09 48 · 10 64 · 11 80 · 12 96 · 13 160px. Fluid: $fluid-spacing-02 2vw · 03 5vw · 04 10vw.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/layout/tokens/layout.tokens.json'],
+        ['Layout', 'Breakpoints', 'sm 320 (4 columns) · md 672 (8) · lg 1056 (16) · xlg 1312 (16) · max 1584px (16). Gutter 32px (16px padding per column); narrow 16px; condensed 1px.', 'https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview'],
+        ['Layout', 'Margins', 'Fixed per breakpoint: 0 · 16 · 16 · 16 · 24px (sm → max), with the 16px column padding inside, so content starts 16 · 32 · 32 · 32 · 40px from the edge.', 'https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/guidelines'],
+        ['Targets', 'Minimum target', 'No system-wide minimum. Interactive icons need a 44px touch target; the smallest controls are 24px (xs), described as the minimum for compact UI.', 'https://www.carbondesignsystem.com/building-blocks/foundations/icons/guidelines'],
+        ['Shape', 'Corners', 'Square by default: buttons, inputs, tiles, menus and modals are 0. Exceptions: tags are pills (16px), checkboxes 2px, toggle tracks round. Radius tokens (2 · 4 · 8 · 16 · 24px) only apply with the v12 flag.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/styles/scss/components/button/_vars.scss'],
+        ['Type', 'Typeface', 'IBM Plex Sans for UI, Plex Mono for code, Plex Serif for quotations. Weights Light 300, Regular 400, SemiBold 600 (SemiBold for headings, never long text).', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/type/src/fontFamily.ts'],
+        ['Type', 'Productive', 'Product UI, 14px base: label-01 12/16 · body-compact-01 14/18 · body-01 14/20 at 400, tracking 0.32px (12px) and 0.16px (14px) · heading-compact-01 14/18 · heading-01 14/20 at 600 · heading-03 20/28 · heading-04 28/36 · heading-05 32/40 at 400 · heading-06 42/50 · heading-07 54/64 at 300.', 'https://www.carbondesignsystem.com/building-blocks/foundations/typography/type-sets'],
+        ['Type', 'Expressive', 'Editorial, 16px base: label-02 14/18 · body-compact-02 16/22 · body-02 16/24 at 400 · heading-compact-02 16/22 · heading-02 16/24 at 600. Fluid headings and displays grow per breakpoint, e.g. fluid-heading-05 32px at sm to 60px at max.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/type/src/styles.ts'],
+        ['Type', 'Type scale', '12 · 14 · 16 · 18 · 20 · 24 · 28 · 32 · 36 · 42 · 48 · 54 · 60 · 68 · 76 · 84 · 92 … 156px, each step adding (⌊(n−2)/4⌋ + 1) × 2px.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/type/src/scale.ts'],
+        ['Color', 'Model', 'Role tokens keep their role across themes; only values change. Layers 01–03 nest, and contextual $layer, $field and $border-subtle resolve to the current nesting level.', 'https://www.carbondesignsystem.com/building-blocks/foundations/color/overview'],
+        ['Color', 'Themes', 'White (#ffffff, layer #f4f4f4) · Gray 10 (#f4f4f4, layer #ffffff) · Gray 90 (#262626, layers #393939, #525252) · Gray 100 (#161616, layers #262626, #393939).', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/themes/tokens/themes/white/theme.tokens.json'],
+        ['Color', 'White theme', 'background #ffffff · layer-01 #f4f4f4 · text #161616 / #525252 · interactive and button-primary #0f62fe (hover #0050e6, active #002d9c) · focus #0f62fe · border-subtle #e0e0e0 / #c6c6c6 · error #da1e28.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/themes/tokens/themes/white/theme.tokens.json'],
+        ['Color', 'Gray 100 theme', 'background #161616 · layer-01 #262626 · text #f4f4f4 / #c6c6c6 · interactive #4589ff · button-primary #0f62fe · focus #ffffff · border-subtle #393939 / #525252 · error #fa4d56.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/themes/tokens/themes/g100/theme.tokens.json'],
+        ['Depth', 'Elevation', 'No elevation scale; depth comes from layering. One shadow for menus and dropdowns: 0 2px 6px, black at 30% (light themes) or 80% (dark). Modal scrim black at 60%.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/styles/scss/utilities/_box-shadow.scss'],
+        ['States', 'States', 'Hover is half a palette step, active two full steps, selected one step. White theme layer-01: hover #e8e8e8, active #c6c6c6, selected #e0e0e0. Disabled is gray only, with no hover or focus.', 'https://www.carbondesignsystem.com/building-blocks/foundations/color/overview'],
+        ['Focus', 'Focus', '2px $focus ring inside the edge (outline offset −2px), plus an optional 1px $focus-inset between ring and element. #0f62fe in light themes, #ffffff in dark; must reach 3:1.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/styles/scss/utilities/_focus-outline.scss'],
+        ['Motion', 'Motion', 'Productive (subtle, everyday) vs expressive (significant moments). Standard easing (0.2, 0, 0.38, 0.9) / (0.4, 0.14, 0.3, 1); entrance (0, 0, 0.38, 0.9) / (0, 0, 0.3, 1); exit (0.2, 0, 1, 0.9) / (0.4, 0.14, 1, 1). Durations 70 · 110 · 150 · 240 · 400 · 700ms.', 'https://www.carbondesignsystem.com/building-blocks/foundations/motion/overview'],
+        ['Icons', 'Icons', 'Carbon icons at 16px by default, also 20 · 24 · 32px. Solid, one color, matching the paired text and centered on it. Pictograms are illustrations, 48px minimum.', 'https://www.carbondesignsystem.com/building-blocks/foundations/icons/guidelines'],
+        ['Density', 'Sizes', 'Control heights xs 24 · sm 32 · md 40 (default) · lg 48 · xl 64 · 2xl 80px. Menu items come in xs to lg. Inline padding 8px condensed, 16px normal.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/styles/scss/utilities/_layout.scss'],
+      ],
+      notes: [
+        ['v12 (alpha) rounds Carbon: 8px menus with 4px items, 4px inputs and tooltips, pill buttons outside toolbars, no popover caret. Stable v11 stays square.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/docs/migration/v12.md'],
+        ['button-primary stays #0f62fe in every theme, while $interactive and links switch to #4589ff and #78a9ff in the dark themes.', 'https://raw.githubusercontent.com/carbon-design-system/carbon/v11.121.0/packages/themes/tokens/themes/g100/button.tokens.json'],
+        ['A field uses the layer token one level above where it sits (a field on $layer-02 uses $field-03).', 'https://www.carbondesignsystem.com/building-blocks/foundations/color/guidelines'],
+        ['Contrast: text 4.5:1; large text (24px regular or 19px semibold) and interface parts 3:1.', 'https://www.carbondesignsystem.com/building-blocks/foundations/accessibility/color'],
+      ],
+    },
+  },
+};

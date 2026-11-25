@@ -28,8 +28,9 @@ The backlog is the catalog itself: categories without `concepts` show as planned
    Aim for this spread:
    - the platform baseline (the canonical form, built the modern way);
    - the zero- or lowest-JS variant;
-   - one or two design-system-faithful versions a designer may be asked to match
-     (Material 3, Apple HIG-inspired, Fluent 2, Carbon…) with their real token values;
+   - at least one concept built to a core library (Material 3 first; Apple HIG, Fluent 2
+     or Carbon where the component differs enough), every value from that library's
+     token source;
    - one or two expressive or unusual forms;
    - a touch or mobile form;
    - a power-user form (dense, keyboard-first) when it applies.
@@ -37,7 +38,7 @@ The backlog is the catalog itself: categories without `concepts` show as planned
    before designing around them.
 4. **Build** each concept page against the checklist below.
 5. **Write the category page**: summary in the catalog, a "Choosing one" table, the shared
-   modern stack, sources.
+   modern stack, `specs` (each core library's page for the component) and `refs`.
 6. **Verify** every page (see CLAUDE.md) and run `node scripts/check.mjs`.
 
 ## Selection criteria for a concept
@@ -61,9 +62,14 @@ The backlog is the catalog itself: categories without `concepts` show as planned
 - [ ] Viewport-edge behavior (flip, shrink, scroll) demonstrated.
 - [ ] Keyboard map and roles documented; focus return verified.
 - [ ] JavaScript only where the platform can't; every block commented.
-- [ ] Sources cited with what each contributed.
+- [ ] Sources cited by id in the catalog (`refs`) with what each contributed; new pages
+      added to `assets/sources.js`.
 
 ## Sources by tier
+
+Every cited page lives once in `assets/sources.js` and shows on `sources.html` with what
+cites it. Core-library foundations (grid, spacing, corners, type, color, depth, states,
+focus, motion, icons, sizes) are kept there too, each row linked to where it was read.
 
 1. **Platform guidance:** Chrome modern web guidance (developer.chrome.com/docs/modern-web-guidance),
    MDN, web.dev, Open UI explainers, WAI-ARIA APG.
@@ -93,3 +99,6 @@ Settings, Admin Dashboard, List & Detail, Sign In & Sign Up.
 - 2026-11-24 — Chrome-only, newest features, no fallbacks (Brian).
 - 2026-11-24 — Pages are shared as `file://` URLs from a network share; no hosting.
 - 2026-11-24 — Site chrome follows the zen-minimal brief in Brian's CLAUDE.md.
+- 2026-11-24 — One sources registry (`assets/sources.js`, `sources.html`). Core libraries:
+  Material 3, Apple HIG, Fluent 2, Carbon; each category gets a Material 3 concept built
+  to its published values (Brian).

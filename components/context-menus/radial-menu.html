@@ -6,6 +6,7 @@
   <title>Radial Menu</title>
   <link rel="stylesheet" href="../../assets/site.css">
   <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
@@ -528,14 +529,8 @@ requestAnimationFrame(() => {
       </div>
     </section>
 
-    <section class="ruled prose">
+    <section class="ruled prose" data-sources>
       <h2>Sources</h2>
-      <ul>
-        <li><a href="https://una.im/radial-menu">Building a no-JS radial menu with CSS trigonometry, popover, and anchor positioning</a>, Una Kravets: polar placement with <code>sin()</code>/<code>cos()</code> and a flipped y axis, per-item delays, and popover for <kbd>Esc</kbd> and light dismiss.</li>
-        <li><a href="https://web.dev/articles/css-trig-functions">Trigonometric functions in CSS</a>, web.dev: placing items on a circle and <code>atan2()</code> for the angle toward the pointer.</li>
-        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/css/dynamic-sibling-styling">Styling siblings based on count and index</a>, Chrome: angle from <code>sibling-index()</code> / <code>sibling-count()</code>, so adding an item re-spaces the ring with no edits.</li>
-        <li><a href="https://docs.blender.org/manual/en/latest/interface/controls/buttons/menus.html#pie-menus">Pie menus</a>, Blender manual: press, move, release to pick; releasing without moving keeps it open; the center disc shows direction and is the dead zone; number keys.</li>
-      </ul>
     </section>
   </div>
 </main>

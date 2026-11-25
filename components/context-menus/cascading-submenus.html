@@ -6,6 +6,7 @@
   <title>Cascading Submenus</title>
   <link rel="stylesheet" href="../../assets/site.css">
   <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
@@ -558,15 +559,8 @@ for (const id of ['file-btn', 'export-btn', 'image-btn']) document.getElementByI
       </div>
     </section>
 
-    <section class="ruled prose">
+    <section class="ruled prose" data-sources>
       <h2>Sources</h2>
-      <ul>
-        <li><a href="https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu">Build a menu</a>, Chrome: nested popovers inside <code>focusgroup</code>, submenu placement with <code>position-try-fallbacks</code> and the below fallback, the focus rules, and the <code>clip-path</code> safe triangle with its pointer-tracking script.</li>
-        <li><a href="https://ics.media/en/entry/260803/">Using a CSS safe triangle to prevent accidental submenu switching</a>, ICS MEDIA: <code>clip-path: polygon()</code> as the hit area, and <code>interestfor</code> beside a click invoker on the same popover for hover plus click.</li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers">Using interest invokers</a>, MDN: <code>interestfor</code> and the <code>interest-delay-start</code> / <code>interest-delay-end</code> properties used for hover intent.</li>
-        <li><a href="https://www.w3.org/WAI/ARIA/apg/patterns/menubar/">Menu and menubar pattern</a>, WAI-ARIA APG: submenu keys (<kbd>→</kbd> opens and enters, <kbd>←</kbd> and <kbd>Esc</kbd> close one level).</li>
-        <li><a href="https://bjk5.com/post/44698559168/breaking-down-amazons-mega-dropdown">Breaking down Amazon’s mega dropdown</a>, Ben Kamens: why a direction-aware safe zone beats a fixed open delay.</li>
-      </ul>
     </section>
   </div>
 </main>

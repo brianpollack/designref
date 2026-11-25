@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carbon Menu</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/context-menus/carbon-menu">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- An IBM Cloud-style data table. Right-click a row for its menu. -->
+<div class="app">
+  <div class="toolbar">
+    <h1>Deployments</h1>
+    <!-- Demo control, not part of the component: Carbon's four menu sizes. -->
+    <div class="size-switch" role="radiogroup" aria-label="Menu size">
+      <label><input type="radio" name="menu-size" value="xs">xs</label>
+      <label><input type="radio" name="menu-size" value="sm" checked>sm</label>
+      <label><input type="radio" name="menu-size" value="md">md</label>
+      <label><input type="radio" name="menu-size" value="lg">lg</label>
+    </div>
+  </div>
+  <table class="table">
+    <thead><tr><th>Name</th><th>Status</th><th>Region</th></tr></thead>
+    <tbody>
+      <tr tabindex="0" data-name="api-gateway"><td>api-gateway</td><td><i class="dot ok"></i>Running</td><td>us-south</td></tr>
+      <tr tabindex="0" data-name="auth-service"><td>auth-service</td><td><i class="dot ok"></i>Running</td><td>eu-de</td></tr>
+      <tr tabindex="0" data-name="billing-worker"><td>billing-worker</td><td><i class="dot off"></i>Stopped</td><td>us-east</td></tr>
+      <tr tabindex="0" data-name="search-indexer"><td>search-indexer</td><td><i class="dot ok"></i>Running</td><td>jp-tok</td></tr>
+      <tr tabindex="0" data-name="notifications"><td>notifications</td><td><i class="dot busy"></i>Deploying</td><td>eu-gb</td></tr>
+    </tbody>
+  </table>
+  <p class="status" aria-live="polite"></p>
+</div>
+
+<!-- Zero-size anchor. Script moves it to the pointer; the menu anchors to it. -->
+<div class="cds-anchor"></div>
+
+<!-- The menu. data-size sets the row height (xs, sm, md, lg; sm is Carbon's default).
+     A menu with icons and selectable items gets both 16px columns on every row (:has()). -->
+<div class="cds-menu" id="row-menu" popover data-size="sm">
+  <div class="cds-menu-list" focusgroup="menu nomemory" tabindex="-1" aria-label="Deployment actions">
+    <button type="button" class="cds-menu-item">
+      <svg class="icon"><use href="#i-copy"/></svg><span class="cds-menu-label">Copy ID</span><kbd aria-hidden="true">Ctrl+C</kbd>
+    </button>
+    <button type="button" class="cds-menu-item">
+      <svg class="icon"><use href="#i-pencil"/></svg><span class="cds-menu-label">Rename</span>
+    </button>
+    <button type="button" class="cds-menu-item">
+      <svg class="icon"><use href="#i-external-link"/></svg><span class="cds-menu-label">Open logs</span>
+    </button>
+    <hr class="cds-menu-divider">
+    <button type="button" class="cds-menu-item" role="menuitemcheckbox" aria-checked="true">
+      <svg class="icon cds-menu-check"><use href="#i-check"/></svg>
+      <svg class="icon"><use href="#i-pin"/></svg><span class="cds-menu-label">Pin to top</span>
+    </button>
+    <hr class="cds-menu-divider">
+    <button type="button" class="cds-menu-item" disabled>
+      <svg class="icon"><use href="#i-refresh-cw"/></svg><span class="cds-menu-label">Restart</span>
+    </button>
+    <hr class="cds-menu-divider">
+    <!-- Danger: red fill on hover and focus. The description tells screen readers why. -->
+    <button type="button" class="cds-menu-item danger" aria-describedby="danger-note">
+      <svg class="icon"><use href="#i-trash-2"/></svg><span class="cds-menu-label">Delete</span>
+      <span id="danger-note" hidden>Deletes the deployment. This cannot be undone.</span>
+    </button>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* IBM Plex Sans from Google Fonts; the stack below falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap");
+
+/* ---- Tokens ----
+   Carbon v11 tokens under the names Carbon emits (--cds-*), White theme in light and
+   Gray 100 in dark. A menu sits at layer level 1, so $layer is layer-01, $layer-hover is
+   layer-hover-01 and $border-subtle is border-subtle-00. Sizes are literals from _menu.scss. */
+:root {
+  color-scheme: light dark;
+
+  /* @group Menu */
+  --cds-layer: light-dark(#f4f4f4, #262626);                 /* Menu fill · layer-01: Gray 10 / Gray 90 */
+  --cds-shadow: light-dark(rgb(0 0 0 / 0.3), rgb(0 0 0 / 0.8));   /* Shadow color; drawn 0 2px 6px */
+  --cds-spacing-02: 4px;                                     /* Menu padding, top and bottom only; divider margin */
+  --carbon-menu-min-width: 12rem;                            /* Minimum width with icons, 192px (10rem without) */
+  --carbon-menu-max-width: 18rem;                            /* Maximum width, 288px; long labels truncate */
+  --carbon-menu-radius: 0;                                   /* Square corners (v12 alpha: 8px menu, 4px items) */
+
+  /* @group Item */
+  --carbon-menu-item-height-xs: 1.5rem;                      /* Row height, xs: 24px */
+  --carbon-menu-item-height-sm: 2rem;                        /* Row height, sm: 32px, the default */
+  --carbon-menu-item-height-md: 2.5rem;                      /* Row height, md: 40px */
+  --carbon-menu-item-height-lg: 3rem;                        /* Row height, lg: 48px */
+  --cds-spacing-05: 16px;                                    /* Item padding, left and right */
+  --cds-spacing-03: 8px;                                     /* Gap between check, icon, label and shortcut */
+  --carbon-menu-icon-size: 1rem;                             /* Icon and check column, 16px */
+
+  /* @group Type */
+  --carbon-menu-font: "IBM Plex Sans", system-ui, sans-serif;   /* Typeface */
+  --carbon-menu-text-size: 14px;                             /* body-compact-01: line height 18px, weight 400, tracking 0.16px */
+
+  /* @group Item colors */
+  --cds-text-secondary: light-dark(#525252, #c6c6c6);        /* Label, icon and shortcut at rest · Gray 70 / Gray 30 */
+  --cds-text-primary: light-dark(#161616, #f4f4f4);          /* Label on hover · Gray 100 / Gray 10 */
+  --cds-layer-hover: light-dark(#e8e8e8, #333333);           /* Item fill on hover · layer-hover-01 */
+  --cds-text-disabled: light-dark(rgb(22 22 22 / 0.25), rgb(244 244 244 / 0.25));   /* Disabled label and icon: text color at 25% */
+  --cds-border-subtle: light-dark(#e0e0e0, #393939);         /* Divider, 1px · border-subtle-00 */
+
+  /* @group Danger item */
+  --cds-button-danger-primary: #da1e28;                      /* Fill on hover and focus · Red 60, both themes */
+  --cds-text-on-color: #ffffff;                              /* Label and icon on the red fill */
+  --cds-background: light-dark(#ffffff, #161616);            /* 3px inset ring between focus outline and red fill */
+
+  /* @group Focus and motion */
+  --cds-focus: light-dark(#0f62fe, #ffffff);                 /* Focus outline, 2px, inside the item · Blue 60 / White */
+  --cds-duration-fast-01: 70ms;                              /* Hover fill transition */
+  --cds-motion-standard-productive: cubic-bezier(0.2, 0, 0.38, 0.9);   /* Hover fill easing */
+}
+
+/* ---- Placement: a zero-size anchor at the pointer ---- */
+.cds-anchor { position: fixed; width: 0; height: 0; pointer-events: none; }
+
+.cds-menu {
+  /* Reset the UA popover box, then draw the Carbon menu. */
+  inset: auto; margin: 0; border: 0; overflow-y: auto;
+  box-sizing: border-box;
+  min-width: var(--carbon-menu-min-width);
+  max-width: var(--carbon-menu-max-width);
+  padding: var(--cds-spacing-02) 0;
+  border-radius: var(--carbon-menu-radius);
+  background: var(--cds-layer);
+  box-shadow: 0 2px 6px var(--cds-shadow);
+
+  /* Top-left corner at the pointer; flips left and/or up at the viewport edge, as Carbon does. */
+  position-area: block-end span-inline-end;
+  position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+  /* No open or close motion: Carbon shows the menu at once. */
+}
+
+/* Row height by size. */
+.cds-menu { --_height: var(--carbon-menu-item-height-sm); }
+.cds-menu[data-size="xs"] { --_height: var(--carbon-menu-item-height-xs); }
+.cds-menu[data-size="md"] { --_height: var(--carbon-menu-item-height-md); }
+.cds-menu[data-size="lg"] { --_height: var(--carbon-menu-item-height-lg); }
+
+.cds-menu-list { display: flex; flex-direction: column; outline: none; user-select: none; }
+
+/* Item: [check] [icon] [label] [shortcut]. Carbon adds the 16px columns to every row
+   when the menu has icons or selectable items; :has() does the same here. */
+.cds-menu-item {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+  column-gap: var(--cds-spacing-03);
+  box-sizing: border-box;
+  block-size: var(--_height);
+  padding: 0 var(--cds-spacing-05);
+  border: 0;
+  border-radius: var(--carbon-menu-radius);
+  background: transparent;
+  color: var(--cds-text-secondary);
+  font: 400 var(--carbon-menu-text-size)/18px var(--carbon-menu-font);
+  letter-spacing: 0.16px;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--cds-duration-fast-01) var(--cds-motion-standard-productive);
+}
+.cds-menu-list:has(.cds-menu-item > .icon:not(.cds-menu-check)) .cds-menu-item {
+  grid-template-columns: var(--carbon-menu-icon-size) 1fr max-content;
+}
+.cds-menu-list:has(.cds-menu-item > .icon:not(.cds-menu-check)):has([role="menuitemcheckbox"]) .cds-menu-item {
+  grid-template-columns: var(--carbon-menu-icon-size) var(--carbon-menu-icon-size) 1fr max-content;
+}
+.cds-menu-item > .icon { width: var(--carbon-menu-icon-size); height: var(--carbon-menu-icon-size); }
+.cds-menu-item > .icon:not(.cds-menu-check) { grid-column: -4; }
+.cds-menu-item > .cds-menu-check { grid-column: 1; visibility: hidden; }
+.cds-menu-item[aria-checked="true"] > .cds-menu-check { visibility: visible; }
+.cds-menu-label { grid-column: -3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cds-menu-item kbd { grid-column: -2; font: inherit; }
+
+/* Hover: one layer step darker (lighter in dark), primary text. Hover does not move focus. */
+@media (any-hover: hover) {
+  .cds-menu-item:hover { background: var(--cds-layer-hover); color: var(--cds-text-primary); }
+}
+
+/* Focus: 2px inside the edge. Carbon styles :focus, so the outline also shows when the
+   menu was opened with a pointer and focus moved to the first item. */
+.cds-menu-item:focus {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: -2px;
+}
+@media (prefers-contrast: more) {
+  .cds-menu-item:focus { outline-style: dotted; }
+}
+
+/* Disabled: 25% text, no hover, skipped by arrow keys. */
+.cds-menu-item:disabled { color: var(--cds-text-disabled); cursor: not-allowed; }
+@media (any-hover: hover) {
+  .cds-menu-item:disabled:hover { background: transparent; color: var(--cds-text-disabled); }
+}
+
+/* Danger: red fill and white text on hover and focus. Focus adds a 3px ring in the
+   background color inside the outline, so the blue (or white) outline stays visible. */
+@media (any-hover: hover) {
+  .cds-menu-item.danger:enabled:hover { background: var(--cds-button-danger-primary); color: var(--cds-text-on-color); }
+}
+.cds-menu-item.danger:focus {
+  background: var(--cds-button-danger-primary);
+  color: var(--cds-text-on-color);
+  box-shadow: inset 0 0 0 3px var(--cds-background);
+}
+
+/* Divider: full width, 4px above and below. */
+.cds-menu-divider {
+  display: block;
+  inline-size: 100%;
+  block-size: 1px;
+  margin: var(--cds-spacing-02) 0;
+  border: 0;
+  background: var(--cds-border-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cds-menu-item { transition: none; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body {
+  background: light-dark(#ffffff, #161616);
+  color: var(--cds-text-primary);
+  font: 400 14px/18px var(--carbon-menu-font);
+  letter-spacing: 0.16px;
+}
+.app { height: 100%; display: flex; flex-direction: column; padding: 24px 16px; box-sizing: border-box; }
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 16px; background: var(--cds-layer);
+}
+.toolbar h1 { margin: 0; font-size: 20px; line-height: 28px; font-weight: 400; letter-spacing: 0; }
+
+/* Carbon content switcher, small, as the demo's size control. */
+.size-switch { display: flex; }
+.size-switch label {
+  display: grid; place-items: center; min-width: 40px; height: 32px; padding: 0 8px;
+  border: 1px solid light-dark(#161616, #f4f4f4); border-left-width: 0;
+  color: var(--cds-text-secondary); cursor: pointer;
+}
+.size-switch label:first-child { border-left-width: 1px; }
+.size-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.size-switch label:hover { background: var(--cds-layer-hover); color: var(--cds-text-primary); }
+.size-switch label:has(:checked) { background: light-dark(#161616, #f4f4f4); color: light-dark(#ffffff, #161616); }
+.size-switch label:has(:focus-visible) { outline: 2px solid var(--cds-focus); outline-offset: -2px; }
+
+.table { width: 100%; border-collapse: collapse; }
+.table th {
+  height: 48px; padding: 0 16px; text-align: left; font-weight: 600;
+  background: light-dark(#e0e0e0, #393939);
+}
+.table td { height: 48px; padding: 0 16px; background: var(--cds-layer); border-top: 1px solid var(--cds-border-subtle); color: var(--cds-text-secondary); }
+.table td:first-child { color: var(--cds-text-primary); }
+.table tr:hover td, .table tr.is-target td { background: var(--cds-layer-hover); }
+.table tr:focus-visible { outline: 2px solid var(--cds-focus); outline-offset: -2px; }
+.dot { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; }
+.dot.ok { background: light-dark(#24a148, #42be65); }
+.dot.off { background: light-dark(#8d8d8d, #6f6f6f); }
+.dot.busy { background: light-dark(#0f62fe, #4589ff); }
+.status { margin: 12px 0 0; min-height: 18px; color: var(--cds-text-secondary); font-size: 12px; letter-spacing: 0.32px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Right-click a row → move the zero-size anchor to the pointer → show the popover there.
+// Placement, flipping, ↑/↓, Esc and click-outside are native. Script covers what Carbon's
+// useContextMenu and Menu do on top: open at the pointer, focus the first item, run the
+// action and close, close on Tab, plus the demo's size switch.
+const table = document.querySelector('.table tbody');
+const anchor = document.querySelector('.cds-anchor');
+const menu = document.getElementById('row-menu');
+const list = menu.querySelector('.cds-menu-list');
+const status = document.querySelector('.status');
+let row = null;   // the row the menu acts on
+
+table.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  openFor(e.target, e.pointerType === '' ? null : e);   // "" = the browser's keyboard trigger
+});
+// Shift+F10 and the Menu key, handled directly so every platform behaves the same.
+table.addEventListener('keydown', e => {
+  if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
+  e.preventDefault();
+  openFor(e.target, null);
+});
+
+/** Open at the pointer, or just inside the row's left edge for keyboard opens. */
+function openFor(el, pointer) {
+  row = el.closest('tr');
+  if (!row) return;
+  const box = row.getBoundingClientRect();
+  moveAnchor(pointer ? pointer.clientX : box.left + 16, pointer ? pointer.clientY : box.bottom);
+  show();
+}
+function moveAnchor(x, y) { anchor.style.left = `${x}px`; anchor.style.top = `${y}px`; }
+function show() {
+  if (menu.matches(':popover-open')) menu.hidePopover();   // re-open at the new point
+  document.querySelector('.is-target')?.classList.remove('is-target');
+  row.classList.add('is-target');
+  menu.showPopover({ source: anchor });
+  // Carbon focuses the first enabled item on every open, pointer or keyboard.
+  list.querySelector('.cds-menu-item:enabled').focus({ preventScroll: true });
+}
+
+// Every item closes the menu when chosen; the checkbox toggles first.
+list.addEventListener('click', e => {
+  const item = e.target.closest('.cds-menu-item:enabled');
+  if (!item) return;
+  if (item.role === 'menuitemcheckbox') item.ariaChecked = String(item.ariaChecked !== 'true');
+  status.textContent = `${item.querySelector('.cds-menu-label').textContent} · ${row.dataset.name}`;
+  menu.hidePopover();
+});
+
+// Tab (or any focus leaving the menu) closes it. Closing returns focus to the row.
+menu.addEventListener('focusout', e => { if (!menu.contains(e.relatedTarget)) menu.hidePopover(); });
+menu.addEventListener('toggle', e => {
+  if (e.newState !== 'closed') return;
+  row?.classList.remove('is-target');
+  // Focus is still on the hidden item when this fires; Tab has already moved it elsewhere.
+  const lost = menu.contains(document.activeElement) || document.activeElement === document.body;
+  if (lost) row?.focus({ preventScroll: true });
+});
+
+// Demo control: change the size and reopen the menu where it was.
+document.querySelector('.size-switch').addEventListener('change', e => {
+  menu.dataset.size = e.target.value;
+  if (row) show();
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Right-click "auth-service" so the page shows the menu at rest.
+requestAnimationFrame(() => {
+  const row = document.querySelectorAll('.table tbody tr')[1];
+  const r = row.getBoundingClientRect();
+  row.dispatchEvent(new MouseEvent('contextmenu', {
+    bubbles: true, cancelable: true, button: 2,
+    clientX: r.left + r.width * 0.42, clientY: r.top + r.height * 0.6,
+  }));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="480" data-hint="Right-click a row. Shift+F10 opens it from a focused row. Switch sizes at the top right."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Menu</th><td>One square surface on $layer with a 0 2px 6px shadow. 4px padding top and bottom, none at the sides, so item fills run edge to edge. 192px minimum width with icons (160px without), 288px maximum.</td></tr>
+        <tr><th>Item</th><td>32px tall at the default size, 16px side padding. Label in body-compact-01 and $text-secondary; long labels truncate with an ellipsis.</td></tr>
+        <tr><th>Sizes</th><td>xs 24px, sm 32px (default), md 40px, lg 48px. Match the size of the control that opens the menu. Only the row height changes.</td></tr>
+        <tr><th>Columns</th><td>Check (16px), icon (16px), label, shortcut, 8px apart. A menu with any icon gives every row the icon column; with any selectable item, every row gets the check column.</td></tr>
+        <tr><th>Shortcut</th><td>Right-aligned text in the label’s style and color. Hidden from screen readers here; the action is announced by its label.</td></tr>
+        <tr><th>Selectable item</th><td>A 16px check mark in the first column when checked. Carbon also groups radio items under a label (<code>MenuItemRadioGroup</code>).</td></tr>
+        <tr><th>Divider</th><td>1px $border-subtle across the full width, 4px above and below.</td></tr>
+        <tr><th>Disabled item</th><td>$text-disabled (25% of the text color). No hover fill; arrow keys skip it.</td></tr>
+        <tr><th>Danger item</th><td>Looks like any item at rest. On hover and focus it fills with Red 60 and the label turns white. Put it last, after a divider.</td></tr>
+        <tr><th>v12 (alpha)</th><td>Rounds the menu to 8px with 4px items and 4px side padding inside the surface. Stable v11, shown here, stays square.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Opens on</th><td>Right-click on a row, or <kbd>Shift</kbd>+<kbd>F10</kbd> / the Menu key on a focused row. Carbon’s <code>useContextMenu</code> listens for <code>contextmenu</code> the same way.</td></tr>
+        <tr><th>Placement</th><td>Top-left corner at the pointer. Near the right or bottom edge it flips to end at the pointer instead, as Carbon’s own positioning does.</td></tr>
+        <tr><th>Motion</th><td>None for the menu: it appears and disappears at once. Hover fills fade in over 70ms on the productive standard curve.</td></tr>
+        <tr><th>Focus on open</th><td>The first enabled item takes focus every time, pointer or keyboard. Because Carbon styles <code>:focus</code> rather than <code>:focus-visible</code>, its outline shows after a right-click too.</td></tr>
+        <tr><th>Hover</th><td>Fills the item without moving focus, so a hovered item and the focused item can differ.</td></tr>
+        <tr><th>Choosing</th><td>Every item closes the menu, including selectable ones (the check toggles first).</td></tr>
+        <tr><th>Dismiss</th><td><kbd>Esc</kbd>, <kbd>Tab</kbd>, a click outside, or choosing an item. Focus returns to the row.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Shift</kbd>+<kbd>F10</kbd> or Menu key</th><td>Open the menu for the focused row, focus on the first item.</td></tr>
+          <tr><th><kbd>↓</kbd> <kbd>↑</kbd></th><td>Move between enabled items, wrapping at the ends.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last item (native <code>focusgroup</code>; Carbon has no equivalent).</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the action, or toggle Pin to top, and close.</td></tr>
+          <tr><th><kbd>Esc</kbd> <kbd>Tab</kbd></th><td>Close and return to the row.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>focusgroup="menu"</code> infers <code>role="menu"</code> and <code>menuitem</code>, as Carbon’s <code>&lt;ul role="menu"&gt;</code> and <code>&lt;li role="menuitem"&gt;</code> do. Pin to top is a <code>menuitemcheckbox</code>.</li>
+          <li>The danger item points at a description with <code>aria-describedby</code>, the job of Carbon’s <code>dangerDescription</code> prop, so color is not the only warning.</li>
+          <li>Focus outline: 2px $focus, Blue 60 on White and white on Gray 100. Under <code>prefers-contrast</code> it turns dotted, as in Carbon.</li>
+          <li>Contrast: $text-secondary on the menu is 7.1:1 light and 8.9:1 dark; white on the Red 60 danger fill is 5.0:1. Disabled text is intentionally low.</li>
+          <li>Rows need <code>tabindex="0"</code> for the keyboard path; in a real Carbon data table, the row or a cell carries focus.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>
