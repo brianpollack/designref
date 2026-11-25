@@ -128,6 +128,12 @@ Sources (`data-sources`, auto from the concept's `refs`). Category pages add Cor
 - **Lucide via `<use>` can't be filled** (`fill="none"` on the symbol); use a CSS mask.
 - **Keyboard context menu:** synthetic keys don't fire the browser's own `contextmenu`, so
   demos also handle Shift+F10 / ContextMenu on `keydown` (testable and consistent).
+- **Pin scripts share the demo's global scope:** a `const` in the pin that is also declared in
+  the demo's js is a SyntaxError and the pin silently does nothing; wrap the pin in `{ … }`.
+- **`hidden` loses to `display`:** `.x { display: flex }` overrides the `hidden` attribute; put
+  `display` on `.x:not([hidden])`.
+- **Chat logs:** `role="log"`, bottom-rest with `margin-top: auto` on the first child (not
+  `column-reverse`); `field-sizing: content` grows a textarea; `:has()` groups bubbles.
 - **Dev server caching:** after editing `assets/*`, run
   `await fetch('/assets/site.css', {cache: 'reload'})` in the tab before reloading.
 

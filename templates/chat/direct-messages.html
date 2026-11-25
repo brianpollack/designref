@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Direct Message Bubbles</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/direct-messages">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <header class="top">
+    <span class="avatar" style="--h:262" aria-hidden="true">PR<i class="dot" role="img" aria-label="Active now"></i></span>
+    <div class="who"><h1>Priya Raman</h1><p>Active now</p></div>
+  </header>
+
+  <!-- Each message is a row. Bubbles join into groups with CSS alone: see the :has() rules. -->
+  <ol class="log" role="log" aria-label="Conversation with Priya Raman">
+    <li class="stamp"><time datetime="2026-11-25T09:41">Today 9:41 AM</time></li>
+
+    <li class="row them">
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="bubble"><p>Morning! Did the 4.2 branch build go through?</p></div>
+    </li>
+    <li class="row them">
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="bubble"><p>I want to tag it before standup.</p><span class="react" aria-label="Reacted with a heart">❤️</span></div>
+    </li>
+
+    <li class="row me">
+      <div class="bubble"><p>Yes, green since 8:50. Notes are here:</p></div>
+    </li>
+    <li class="row me">
+      <div class="bubble card">
+        <a href="#"><strong>Atlas 4.2 release notes</strong><span>atlas.example</span></a>
+      </div>
+    </li>
+
+    <li class="row them">
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="bubble emoji"><p><span class="sr">Party popper</span><span aria-hidden="true">🎉</span></p></div>
+    </li>
+    <li class="row them">
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="bubble"><p>Tagging now. Can you check Safari once more before the 3pm release?</p></div>
+    </li>
+
+    <li class="row me">
+      <div class="bubble"><p>On it.</p></div>
+    </li>
+    <li class="status" id="status"><svg class="icon"><use href="#i-check-check"/></svg>Read 9:43 AM</li>
+  </ol>
+
+  <p class="typing" role="status"><span class="sr">Priya is typing</span><i></i><i></i><i></i></p>
+
+  <form class="compose">
+    <button type="button" class="icon-btn" aria-label="Attach a file"><svg class="icon"><use href="#i-plus"/></svg></button>
+    <textarea rows="1" aria-label="Message Priya" placeholder="Message"></textarea>
+    <button type="button" class="icon-btn" aria-label="Add emoji"><svg class="icon"><use href="#i-smile"/></svg></button>
+    <button class="send" aria-label="Send message"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+    <button type="button" class="icon-btn mic" aria-label="Record a voice message"><svg class="icon"><use href="#i-mic"/></svg></button>
+  </form>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Surfaces */
+  --dm-bg: light-dark(#ffffff, #17181c);                      /* Conversation surface */
+  --dm-rule: light-dark(#e3e5ea, #2d2f36);                    /* Hairline under the header, above the composer */
+  --dm-text: light-dark(#1c1d21, #ececef);                    /* Names and received text */
+  --dm-muted: light-dark(#5d6169, #a0a4ae);                   /* Timestamps, status, typing dots */
+  --dm-accent: light-dark(#2b59e0, #8ea6ff);                  /* Focus ring and send button */
+
+  /* @group Bubbles */
+  --dm-them-bg: light-dark(#eceef2, #2a2c33);                 /* Received bubble fill */
+  --dm-me-bg: light-dark(#2b59e0, #3f63e0);                   /* Sent bubble fill; white text, at least 4.9:1 */
+  --dm-me-text: #ffffff;                                      /* Text on a sent bubble */
+  --dm-radius: 18px;                                          /* Bubble corner */
+  --dm-radius-join: 6px;                                      /* Corner that touches the next bubble of the same sender */
+  --dm-pad: 8px 12px;                                         /* Bubble padding; text is 15px / 20px */
+  --dm-max: 78%;                                              /* Widest a bubble gets, as a share of the row */
+
+  /* @group Rhythm */
+  --dm-gap-join: 2px;                                         /* Space between bubbles of the same sender */
+  --dm-gap-group: 10px;                                       /* Space when the sender changes */
+  --dm-avatar: 28px;                                          /* Avatar beside the last bubble of a received group */
+  --dm-pad-x: 12px;                                           /* Conversation side padding */
+
+  /* @group Composer */
+  --dm-input-bg: light-dark(#f1f2f5, #24262c);                /* Message box fill */
+  --dm-input-radius: 20px;                                    /* Message box corner: a pill for one line, softer when it grows */
+  --dm-input-max: 6lh;                                        /* Grows to six lines, then scrolls */
+}
+
+/* ---- Component ---- */
+.app { height: 100dvh; display: flex; flex-direction: column; background: var(--dm-bg); color: var(--dm-text); font: 15px/20px system-ui, sans-serif; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.top { display: flex; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--dm-rule); }
+.who { flex: 1; min-width: 0; }
+.who h1 { margin: 0; font-size: 15px; line-height: 20px; font-weight: 600; }
+.who p { margin: 0; font-size: 12px; line-height: 16px; color: var(--dm-muted); }
+.avatar { position: relative; flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; font-size: 13px; font-weight: 700; background: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.74 0.1 var(--h))); color: light-dark(#fff, #14151a); }
+.avatar .dot { position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 50%; background: #2e9e5b; border: 2px solid var(--dm-bg); }
+.icon-btn { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--dm-muted); cursor: pointer; }
+.icon-btn:hover { background: var(--dm-them-bg); color: var(--dm-text); }
+
+/* The log: a scroll container that rests at the bottom (margin-top: auto on the first row). */
+.log { flex: 1; min-height: 0; margin: 0; padding: 8px var(--dm-pad-x); list-style: none; overflow-y: auto; display: flex; flex-direction: column; }
+.log > :first-child { margin-top: auto; }
+.stamp { align-self: center; margin: 6px 0; font-size: 11px; line-height: 16px; font-weight: 600; color: var(--dm-muted); }
+
+.row { display: flex; align-items: flex-end; gap: 6px; margin-top: var(--dm-gap-group); }
+.row.me { flex-direction: row-reverse; }
+/* Joined rows sit close; a new sender opens a gap. Both read the next sibling, so no script groups them. */
+.row.them + .row.them, .row.me + .row.me { margin-top: var(--dm-gap-join); }
+
+/* The avatar slot is always there so bubbles line up; only the last bubble of a group shows it. */
+.row.them .avatar { width: var(--dm-avatar); height: var(--dm-avatar); font-size: 11px; visibility: hidden; }
+.row.them:not(:has(+ .row.them)) .avatar { visibility: visible; }
+
+.bubble { position: relative; max-width: var(--dm-max); padding: var(--dm-pad); border-radius: var(--dm-radius); background: var(--dm-them-bg); }
+.bubble p { margin: 0; overflow-wrap: anywhere; white-space: pre-wrap; text-wrap: pretty; }
+.row.me .bubble { background: var(--dm-me-bg); color: var(--dm-me-text); }
+
+/* Corner rules. The corner on the sender's side tightens where bubbles join; the last one keeps a
+   small tail corner. A sent group joins on the right, a received group on the left. */
+.row.them .bubble { border-end-start-radius: var(--dm-radius-join); }
+.row.me .bubble   { border-end-end-radius: var(--dm-radius-join); }
+.row.them + .row.them .bubble { border-start-start-radius: var(--dm-radius-join); }
+.row.me + .row.me .bubble     { border-start-end-radius: var(--dm-radius-join); }
+.row.them:has(+ .row.them) .bubble { border-end-start-radius: var(--dm-radius-join); }
+.row.me:has(+ .row.me) .bubble     { border-end-end-radius: var(--dm-radius-join); }
+
+.bubble.emoji { padding: 0 4px; background: none; font-size: 40px; line-height: 48px; }   /* A lone emoji is shown big, with no bubble */
+.bubble.card { padding: 0; overflow: clip; }
+.card a { display: grid; padding: 8px 12px; color: inherit; text-decoration: none; }
+.card span { font-size: 12px; opacity: .8; }
+.react { position: absolute; top: -10px; right: -6px; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--dm-bg); border: 1px solid var(--dm-rule); font-size: 12px; }
+
+.status { align-self: flex-end; display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 11px; line-height: 16px; color: var(--dm-muted); }
+.status .icon { width: 14px; height: 14px; }
+
+/* Typing indicator: three dots that rise in turn. It lives outside the log so it is a status, not a message. */
+.typing { height: 22px; margin: 0; padding: 0 var(--dm-pad-x); display: flex; align-items: center; gap: 4px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--dm-muted); animation: dm-bob 1.2s infinite ease-in-out; }
+.typing i:nth-of-type(2) { animation-delay: .15s; } .typing i:nth-of-type(3) { animation-delay: .3s; }
+@keyframes dm-bob { 0%, 60%, 100% { transform: none; opacity: .5; } 30% { transform: translateY(-3px); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .typing i { animation: none; } }
+
+/* Composer: the box grows with its text; :has() swaps the mic for send once there is text. */
+.compose { display: flex; align-items: flex-end; gap: 4px; padding: 6px 10px 10px; border-top: 1px solid var(--dm-rule); }
+.compose textarea { flex: 1; min-width: 0; padding: 7px 14px; border: 0; border-radius: var(--dm-input-radius); background: var(--dm-input-bg); color: inherit; font: inherit; resize: none; outline: none; field-sizing: content; min-height: 1lh; max-height: var(--dm-input-max); box-sizing: content-box; }
+.compose textarea:focus-visible { box-shadow: 0 0 0 2px var(--dm-accent); }
+.compose textarea::placeholder { color: var(--dm-muted); }
+.send { display: none; place-items: center; flex: none; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: var(--dm-accent); color: light-dark(#fff, #101218); cursor: pointer; }
+.compose:has(textarea:not(:placeholder-shown)) .send { display: grid; }
+.compose:has(textarea:not(:placeholder-shown)) .mic { display: none; }
+.icon-btn:focus-visible, .send:focus-visible, .card a:focus-visible { outline: 2px solid var(--dm-accent); outline-offset: 1px; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Send is the only script: add a row, say "Delivered", keep the newest in view.
+// Grouping, tails, avatar and the mic/send swap are all CSS.
+const log = document.querySelector('.log'), box = document.querySelector('textarea'), form = document.querySelector('.compose');
+box.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
+});
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = box.value.trim();
+  if (!text) return;
+  const row = document.createElement('li');
+  row.className = 'row me';
+  row.innerHTML = '<div class="bubble"><p></p></div>';
+  row.querySelector('p').textContent = text;                    // typed text is never parsed as HTML
+  const status = document.getElementById('status');
+  log.insertBefore(row, status);                                // the status line always stays last
+  status.lastChild.textContent = 'Delivered';
+  box.value = '';
+  log.scrollTop = log.scrollHeight;
+});
+log.scrollTop = log.scrollHeight;
+</script>
+
+<script type="text/plain" data-demo="pin">
+document.querySelector('.log').scrollTop = 1e6;
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="600" data-hint="Type a message and press Enter. Shift+Enter starts a new line; the mic becomes send once there is text."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Header</th><td>Who you are talking to: avatar with presence, name, one line of status.</td></tr>
+        <tr><th>Time stamp</th><td>A small centered line when the gap between messages is long, not on every message. The exact time of any message appears on hover.</td></tr>
+        <tr><th>Received bubble</th><td>Left aligned, neutral fill, beside the sender’s avatar. The avatar shows only on the last bubble of a run.</td></tr>
+        <tr><th>Sent bubble</th><td>Right aligned in the accent color with white text. No avatar: the side is the sender.</td></tr>
+        <tr><th>Joined bubbles</th><td>Consecutive messages from one sender stack with a 2px gap and a tightened corner on their side, so a run reads as one thought. A new sender opens a 10px gap.</td></tr>
+        <tr><th>Rich bubbles</th><td>A link becomes a card inside the bubble. A message that is a single emoji drops the bubble and is shown at 40px. A reaction is a small badge overlapping the bubble’s top corner.</td></tr>
+        <tr><th>Status</th><td>One line under your most recent message: Delivered, then Read with the time. Only the last, not every message.</td></tr>
+        <tr><th>Typing</th><td>Three dots, outside the message list, so it is announced as a status and never becomes a message.</td></tr>
+        <tr><th>Composer</th><td>Attach, a pill that grows, emoji, and one trailing button that is the microphone while the box is empty and send once it is not.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Apple publishes no geometry for the Messages app’s bubbles, so these values are our own. Teams’ own values are on <a href="fluent-2-teams-chat.html">Fluent 2 Teams Chat</a>.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Grouping</th><td>Done in CSS by reading the next row: <code>.row.me:has(+ .row.me)</code> tightens the lower corner, <code>.row.me + .row.me</code> tightens the upper one. Add or remove a message and the corners recompute with no script.</td></tr>
+        <tr><th>Sending</th><td>Enter sends, Shift+Enter is a new line. The row is added optimistically and the status line changes to Delivered; replace it with Failed and a retry if the request fails.</td></tr>
+        <tr><th>Read receipt</th><td>A separate, ephemeral signal from the other side, not part of the message. In Matrix it is an “up to here” marker; the status shows against the last message at or before it.</td></tr>
+        <tr><th>Typing</th><td>Sent while the user types and expired after a few seconds without a keystroke. Matrix clients send it with a timeout (30 seconds in the spec’s example) and replace their whole typing list on each update.</td></tr>
+        <tr><th>Hover</th><td>On hover or focus a row can reveal its time and actions beside the bubble. On touch, a long press opens the same actions.</td></tr>
+        <tr><th>Reduced motion</th><td>The typing dots hold still.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <div class="prose">
+        <ul>
+          <li>The list is <code>role="log"</code> with a name that says who the conversation is with. Each sent and received message is announced politely as it arrives.</li>
+          <li>Side and color are not the only signal of who spoke. Give each bubble an accessible name such as “Priya, 9:41 AM” or “You, 9:42 AM” (omitted here to keep the markup short), and keep the avatar decorative.</li>
+          <li>Typing is a <code>role="status"</code> region outside the log. Its text is visually hidden; the dots are decoration.</li>
+          <li>An emoji-only message needs a text name (“Party popper”), since screen readers vary in how they read a lone emoji.</li>
+          <li>White on the sent fill is at least 4.9:1 in both themes; received text is the full text color on a neutral fill.</li>
+          <li>The mic and send buttons are one position, so a keyboard user’s Tab stop does not move when the text changes.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

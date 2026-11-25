@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chat &amp; Messaging</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+</head>
+<!-- Category page. Title, summary and the concept list come from assets/catalog.js. -->
+<body data-page="templates/chat">
+  <main>
+    <div class="page">
+      <header class="page-header" data-auto></header>
+
+      <section data-concepts></section>
+
+      <section class="ruled">
+        <h2>Choosing one</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>When the people are…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><th>A team talking in named channels, over days</th><td><a href="channel-chat.html">Channel Chat</a></td></tr>
+            <tr><th>Two people, or a small group, talking back and forth</th><td><a href="direct-messages.html">Direct Message Bubbles</a></td></tr>
+            <tr><th>On a call and need a side channel that disappears</th><td><a href="meeting-chat.html">Meeting Chat Panel</a></td></tr>
+            <tr><th>In Microsoft 365 or Teams</th><td><a href="fluent-2-teams-chat.html">Fluent 2 Teams Chat</a></td></tr>
+            <tr><th>In an open, federated or self-hosted system, or with AI agents in the room</th><td><a href="matrix-room.html">Matrix Room</a></td></tr>
+            <tr><th>Writing the message, in any of the above</th><td><a href="message-composer.html">Message Composer</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled">
+        <h2>Who a message is to</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>Setting</th><th>To</th><th>Lasts</th><th>Seen by</th></tr></thead>
+          <tbody>
+            <tr><th>Channel</th><td>A named place</td><td>Until deleted</td><td>Anyone who can see the channel</td></tr>
+            <tr><th>Direct message</th><td>One person or a fixed small group</td><td>Until deleted</td><td>Only those people</td></tr>
+            <tr><th>Thread</th><td>A message, inside a channel or room</td><td>As its parent</td><td>The channel, but out of the main stream; followers are notified</td></tr>
+            <tr><th>Meeting chat</th><td>Everyone in a call</td><td>Ends with the call, unless continuous chat is on</td><td>People present; late joiners miss earlier messages</td></tr>
+            <tr><th>Matrix room</th><td>A room; any member, human or agent</td><td>Until deleted</td><td>Room members</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled" data-core>
+        <h2>Core libraries</h2>
+      </section>
+
+      <section class="ruled prose">
+        <h2>The modern stack</h2>
+        <p>Chat looks like it needs a framework. In current Chrome most of it is CSS and attributes.</p>
+        <ul>
+          <li><strong><code>role="log"</code></strong> makes the message list a live region that announces additions politely and in order. MDN names chat logs as its use. It is not <code>role="feed"</code>, which is for content that loads at either end and expects Page Up and Page Down between articles.</li>
+          <li><strong><code>field-sizing: content</code></strong> grows the composer with its text, between a min and a max height. No resize observer, no measuring.</li>
+          <li><strong><code>:has()</code></strong> does the work chat apps usually do in script: it tightens bubble corners by reading the next sibling, shows the avatar only on the last bubble of a run, swaps the microphone for send once there is text, and enables the send button.</li>
+          <li><strong>Popover and anchor positioning</strong> open the emoji picker and the mention list above the box, and the call chat panel from its button with <code>commandfor</code> and no script.</li>
+          <li><strong>Scroll anchoring</strong> (<code>overflow-anchor</code>, on by default) holds the reader’s place while older messages load above, and <strong><code>content-visibility: auto</code></strong> skips layout for off-screen messages in a long history.</li>
+        </ul>
+        <p>Pin messages to the bottom with <code>margin-top: auto</code> on the first item, not <code>flex-direction: column-reverse</code>: MDN warns the reverse splits visual order from DOM order, which breaks reading and Tab order.</p>
+        <p>What still needs script: sending and rendering the new message, following the newest message only when the reader is at the bottom, reading the caret to open an @mention list, key handling for moving between messages, and anything that talks to the network. Message text must go in with <code>textContent</code>, never as HTML.</p>
+      </section>
+
+      <section class="ruled prose" data-sources>
+        <h2>Sources</h2>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

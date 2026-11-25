@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Channel Chat</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/channel-chat">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <section class="chan" aria-label="release-planning">
+    <header class="chan-head">
+      <div>
+        <h1><span class="hash">#</span>release-planning</h1>
+        <p>Plan and ship 4.2</p>
+      </div>
+    </header>
+
+    <!-- role="log": new messages are appended at the end and announced politely. -->
+    <ol class="log" role="log" aria-label="Messages in release-planning">
+      <li class="day"><span>Yesterday</span></li>
+
+      <li class="msg" tabindex="-1" aria-label="Priya Raman, 9:41 AM">
+        <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+        <div class="head"><strong class="who">Priya Raman</strong><time datetime="2026-11-24T09:41">9:41 AM</time></div>
+        <p>Cut the 4.2 branch last night. Tile cache is in; route timeouts are still open.</p>
+        <div class="reactions">
+          <button class="pill" aria-pressed="false">👍 <span>3</span></button>
+          <button class="pill" aria-pressed="false">🎉 <span>1</span></button>
+          <button class="pill add" aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+        </div>
+        <div class="actions" role="toolbar" aria-label="Message actions">
+          <button aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+          <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+          <button aria-label="More actions"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        </div>
+      </li>
+
+      <li class="msg cont" tabindex="-1" aria-label="Priya Raman, 9:42 AM">
+        <time class="gutter" datetime="2026-11-24T09:42">9:42</time>
+        <p>Release notes draft: <a href="#">atlas.example/notes/4.2</a></p>
+        <a class="unfurl" href="#">
+          <strong>Atlas 4.2 release notes</strong>
+          <span>Faster tiles, fewer timeouts, and a new offline mode.</span>
+          <small>atlas.example</small>
+        </a>
+        <div class="actions" role="toolbar" aria-label="Message actions">
+          <button aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+          <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+          <button aria-label="More actions"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        </div>
+      </li>
+
+      <li class="msg" tabindex="-1" aria-label="Marcus Webb, 10:02 AM">
+        <span class="avatar" style="--h:35" aria-hidden="true">MW</span>
+        <div class="head"><strong class="who">Marcus Webb</strong><time datetime="2026-11-24T10:02">10:02 AM</time></div>
+        <p><span class="mention">@Priya</span> I can take route timeouts. Reproduced it on the eu-west cluster.</p>
+        <button class="thread">
+          <span class="stack" aria-hidden="true"><i style="--h:262">PR</i><i style="--h:150">JO</i></span>
+          <strong>3 replies</strong><span>Last reply today at 8:15 AM</span>
+        </button>
+        <div class="actions" role="toolbar" aria-label="Message actions">
+          <button aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+          <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+          <button aria-label="More actions"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        </div>
+      </li>
+
+      <li class="day"><span>Today</span></li>
+      <li class="new" aria-label="New messages"><span>New</span></li>
+
+      <li class="msg" tabindex="-1" aria-label="Jo Okafor, 8:30 AM">
+        <span class="avatar" style="--h:150" aria-hidden="true">JO</span>
+        <div class="head"><strong class="who">Jo Okafor</strong><time datetime="2026-11-25T08:30">8:30 AM</time><span class="edited">(edited)</span></div>
+        <p>QA sign-off is green on iOS and Android. Web needs one more pass on Safari.</p>
+        <div class="reactions">
+          <button class="pill" aria-pressed="true">✅ <span>2</span></button>
+          <button class="pill add" aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+        </div>
+        <div class="actions" role="toolbar" aria-label="Message actions">
+          <button aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+          <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+          <button aria-label="More actions"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        </div>
+      </li>
+    </ol>
+
+    <form class="composer">
+      <textarea rows="1" aria-label="Message release-planning" placeholder="Message #release-planning"></textarea>
+      <div class="bar">
+        <button type="button" class="icon-btn" aria-label="Attach a file"><svg class="icon"><use href="#i-plus"/></svg></button>
+        <button type="button" class="icon-btn" aria-label="Add emoji"><svg class="icon"><use href="#i-smile"/></svg></button>
+        <button type="button" class="icon-btn" aria-label="Mention someone"><svg class="icon"><use href="#i-at-sign"/></svg></button>
+        <button class="send" aria-label="Send message" disabled><svg class="icon"><use href="#i-send"/></svg></button>
+      </div>
+    </form>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Surfaces */
+  --ch-bg: light-dark(#ffffff, #1b1c20);                      /* Channel surface */
+  --ch-rule: light-dark(#e3e5ea, #2d2f36);                    /* Hairline between regions, and around cards */
+  --ch-hover: light-dark(#f6f7f9, #212328);                   /* Message row on hover or focus */
+
+  /* @group Text */
+  --ch-text: light-dark(#1c1d21, #ececef);                    /* Message body and names */
+  --ch-muted: light-dark(#5d6169, #a0a4ae);                   /* Timestamps, topic, secondary lines */
+  --ch-accent: light-dark(#2b59e0, #8ea6ff);                  /* Mentions, links, unread badge, new-messages line, focus ring */
+  --ch-on-accent: light-dark(#ffffff, #101218);               /* Text on an accent fill */
+
+  /* @group Message */
+  --ch-avatar: 36px;                                          /* Avatar square, radius 8px */
+  --ch-gutter: 12px;                                          /* Space between avatar and text */
+  --ch-pad-x: 16px;                                           /* Row padding, left and right */
+  --ch-row-gap: 12px;                                         /* Space above a message that starts a new group */
+  --ch-body: 15px/22px system-ui, sans-serif;                 /* Body: 15px, line height 22px; names are weight 600, timestamps 12px */
+
+  /* @group Reactions and threads */
+  --ch-pill-h: 24px;                                          /* Reaction pill height; radius is half of it */
+  --ch-pill-on: light-dark(#e3eafd, #2a3158);                 /* Pill fill when you have reacted */
+
+  /* @group Composer */
+  --ch-composer-radius: 10px;                                 /* Composer corner */
+  --ch-composer-max: 8lh;                                     /* Composer grows to eight lines, then scrolls */
+}
+
+/* ---- Component ---- */
+.app { display: flex; height: 100dvh; background: var(--ch-bg); color: var(--ch-text); font: 14px/20px system-ui, sans-serif; }
+.hash { opacity: .6; margin-inline-end: 2px; }
+
+/* Channel */
+.chan { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.chan-head { display: flex; align-items: center; gap: 2px; padding: 10px var(--ch-pad-x); border-bottom: 1px solid var(--ch-rule); }
+.chan-head > div { flex: 1; min-width: 0; }
+.chan-head h1 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 700; }
+.chan-head p { margin: 0; font-size: 12px; line-height: 16px; color: var(--ch-muted); }
+.icon-btn, .actions button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--ch-muted); cursor: pointer; }
+.icon-btn:hover, .actions button:hover { background: var(--ch-hover); color: var(--ch-text); }
+.actions button:hover { background: light-dark(#e8eaee, #2f3238); }
+
+/* The log. A scroll container whose first child pushes the content to the bottom when it is short;
+   margin-top: auto (not justify-content) keeps the top reachable when it overflows. */
+.log { flex: 1; min-height: 0; margin: 0; padding: 8px 0; list-style: none; overflow-y: auto; overflow-anchor: auto; display: flex; flex-direction: column; }
+.log > :first-child { margin-top: auto; }
+
+.day { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; margin: 0; padding: 8px var(--ch-pad-x); background: var(--ch-bg); font-size: 12px; font-weight: 600; color: var(--ch-muted); }
+.day::before, .day::after { content: ""; flex: 1; height: 1px; background: var(--ch-rule); }
+.day span { padding: 2px 10px; margin-inline: 8px; border: 1px solid var(--ch-rule); border-radius: 12px; background: var(--ch-bg); }
+.new { display: flex; align-items: center; margin: 4px var(--ch-pad-x); color: var(--ch-accent); font-size: 11px; font-weight: 700; }
+.new::before { content: ""; flex: 1; height: 1px; background: var(--ch-accent); }
+.new span { order: 2; padding-inline-start: 8px; text-transform: uppercase; letter-spacing: .04em; }
+
+/* A message is a two-column grid: avatar, then everything else. Grouped follow-ups (.cont) drop the
+   avatar and name and show their time in the gutter on hover. The server decides who is grouped. */
+.msg { position: relative; display: grid; grid-template-columns: var(--ch-avatar) 1fr; column-gap: var(--ch-gutter); padding: 2px var(--ch-pad-x); margin-top: var(--ch-row-gap); font: var(--ch-body); }
+.msg.cont { margin-top: 0; }
+.msg:hover, .msg:focus-within { background: var(--ch-hover); }
+.msg:focus-visible { outline: 2px solid var(--ch-accent); outline-offset: -2px; }
+.avatar { grid-row: span 3; width: var(--ch-avatar); height: var(--ch-avatar); border-radius: 8px; display: grid; place-items: center; font-size: 13px; font-weight: 700; background: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.74 0.1 var(--h))); color: light-dark(#fff, #14151a); }
+.msg > :not(.avatar) { grid-column: 2; min-width: 0; }
+.head { display: flex; align-items: baseline; gap: 8px; }
+.who { font-weight: 600; }
+.head time, .edited { font-size: 12px; color: var(--ch-muted); }
+.msg p { margin: 0; overflow-wrap: anywhere; text-wrap: pretty; white-space: pre-wrap; }
+.msg a:not(.unfurl) { color: var(--ch-accent); }
+.mention { padding: 0 2px; border-radius: 4px; background: var(--ch-pill-on); color: var(--ch-accent); font-weight: 500; }
+.gutter { position: absolute; left: var(--ch-pad-x); width: var(--ch-avatar); text-align: center; font-size: 11px; line-height: 22px; color: var(--ch-muted); visibility: hidden; }
+.msg.cont:hover .gutter, .msg.cont:focus-within .gutter { visibility: visible; }
+.msg.cont p, .msg.cont .unfurl { grid-column: 2; }
+
+.unfurl { display: grid; gap: 2px; margin-top: 6px; padding: 6px 12px; max-width: 360px; border-inline-start: 3px solid var(--ch-rule); text-decoration: none; color: inherit; font-size: 13px; line-height: 18px; }
+.unfurl strong { color: var(--ch-accent); }
+.unfurl small { color: var(--ch-muted); }
+
+.reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.pill { display: inline-flex; align-items: center; gap: 4px; height: var(--ch-pill-h); padding: 0 8px; border: 1px solid var(--ch-rule); border-radius: calc(var(--ch-pill-h) / 2); background: none; font-size: 13px; cursor: pointer; }
+.pill span { font-size: 12px; font-weight: 600; color: var(--ch-muted); font-variant-numeric: tabular-nums; }
+.pill:hover { background: var(--ch-hover); }
+.pill[aria-pressed="true"] { background: var(--ch-pill-on); border-color: var(--ch-accent); }
+.pill[aria-pressed="true"] span { color: var(--ch-accent); }
+.pill.add { padding: 0 6px; color: var(--ch-muted); opacity: 0; }
+.msg:hover .pill.add, .msg:focus-within .pill.add { opacity: 1; }                /* The add button appears with the toolbar */
+
+.thread { display: flex; align-items: center; gap: 8px; margin-top: 4px; padding: 3px 8px 3px 4px; border: 1px solid transparent; border-radius: 8px; background: none; color: var(--ch-accent); font-size: 13px; line-height: 20px; cursor: pointer; text-align: start; }
+.thread { white-space: nowrap; }
+.thread span:last-child { color: var(--ch-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
+.thread:hover { border-color: var(--ch-rule); background: var(--ch-bg); }
+.stack { display: flex; }
+.stack i { width: 20px; height: 20px; margin-inline-end: -4px; border-radius: 5px; border: 2px solid var(--ch-bg); display: grid; place-items: center; font: normal 700 8px/1 system-ui; background: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.74 0.1 var(--h))); color: light-dark(#fff, #14151a); }
+
+/* Hover toolbar, inside the row's top-right corner so content-visibility could clip rows safely. */
+.actions { position: absolute; top: 2px; right: var(--ch-pad-x); display: flex; gap: 2px; padding: 2px; border: 1px solid var(--ch-rule); border-radius: 8px; background: var(--ch-bg); box-shadow: 0 1px 3px rgb(0 0 0 / .12); opacity: 0; pointer-events: none; }
+.msg:hover .actions, .msg:focus-within .actions { opacity: 1; pointer-events: auto; }
+
+/* Composer. field-sizing grows the textarea with its text; the send button enables itself with :has(). */
+.composer { margin: 0 var(--ch-pad-x) 14px; border: 1px solid var(--ch-rule); border-radius: var(--ch-composer-radius); background: var(--ch-bg); }
+.composer:focus-within { border-color: var(--ch-accent); box-shadow: 0 0 0 1px var(--ch-accent); }
+.composer textarea { display: block; width: 100%; padding: 10px 12px 4px; border: 0; background: none; color: inherit; font: 15px/22px system-ui, sans-serif; resize: none; outline: none; field-sizing: content; min-height: 1lh; max-height: var(--ch-composer-max); }
+.composer textarea::placeholder { color: var(--ch-muted); }
+.bar { display: flex; align-items: center; gap: 2px; padding: 2px 6px 6px; }
+.send { margin-inline-start: auto; display: grid; place-items: center; width: 32px; height: 28px; border: 0; border-radius: 6px; background: var(--ch-accent); color: var(--ch-on-accent); cursor: pointer; }
+.send:disabled { background: none; color: var(--ch-muted); opacity: .5; cursor: default; }
+.icon-btn:focus-visible, .actions button:focus-visible, .send:focus-visible, .pill:focus-visible, .thread:focus-visible, .unfurl:focus-visible { outline: 2px solid var(--ch-accent); outline-offset: -2px; }
+
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// What the platform can't do yet: send, move between messages, and toggle reactions. Everything else (hover toolbar, grow, send enabled) is CSS.
+const $ = s => document.querySelector(s);
+const log = $('.log'), box = $('.composer textarea'), send = $('.send');
+
+/* 1. Composer: Enter sends, Shift+Enter is a new line. The button is disabled while the box is empty. */
+const sync = () => { send.disabled = !box.value.trim(); };
+box.addEventListener('input', sync);
+box.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('.composer').requestSubmit(); }
+  // Up in an empty box moves to the newest message, as Slack does.
+  if (e.key === 'ArrowUp' && !box.value) { e.preventDefault(); log.querySelector('.msg:last-of-type')?.focus({ preventScroll: true }); }
+});
+$('.composer').addEventListener('submit', e => {
+  e.preventDefault();
+  const text = box.value.trim();
+  if (!text) return;
+  const li = document.createElement('li');
+  li.className = 'msg cont'; li.tabIndex = -1;
+  li.innerHTML = '<time class="gutter">now</time><p></p>';
+  li.querySelector('p').textContent = text;                     // textContent: never inject typed text as HTML
+  log.append(li);
+  box.value = ''; sync();
+  log.scrollTop = log.scrollHeight;                             // follow the newest message
+});
+
+/* 2. Message navigation: Up and Down move between messages, Esc returns to the box. */
+log.addEventListener('keydown', e => {
+  const msgs = [...log.querySelectorAll('.msg')], i = msgs.indexOf(document.activeElement);
+  if (i < 0) return;
+  if (e.key === 'Escape') { box.focus({ preventScroll: true }); return; }
+  const to = { ArrowUp: i - 1, ArrowDown: i + 1 }[e.key];
+  if (to === undefined) return;
+  e.preventDefault();
+  if (to >= msgs.length) box.focus({ preventScroll: true });
+  else msgs[Math.max(0, to)].focus();
+});
+
+/* 3. Reactions: a pill is a toggle button that adds or removes your own. */
+log.addEventListener('click', e => {
+  const pill = e.target.closest('.pill:not(.add)');
+  if (!pill) return;
+  const on = pill.getAttribute('aria-pressed') !== 'true', n = pill.querySelector('span');
+  pill.setAttribute('aria-pressed', on);
+  n.textContent = +n.textContent + (on ? 1 : -1);
+});
+
+log.scrollTop = log.scrollHeight;
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: list scrolled to the newest message.
+document.querySelector('.log').scrollTop = 1e6;
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="600" data-hint="Hover or Tab to a message for its toolbar. Type and press Enter; press ↑ in an empty box to move up through messages."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Channel header</th><td>The channel name and a one-line topic, and nothing else.</td></tr>
+        <tr><th>Message list</th><td>An <code>ol</code> with <code>role="log"</code> that scrolls. When it is short it sits at the bottom; when it is long the newest message is in view and older ones are above.</td></tr>
+        <tr><th>Date divider</th><td>A pill on a hairline that sticks to the top while that day’s messages scroll beneath it.</td></tr>
+        <tr><th>New line</th><td>A single accent hairline labelled <em>New</em> above the first message you have not seen.</td></tr>
+        <tr><th>Message</th><td>Avatar, sender, time, then the body. Follow-up messages from the same sender close behind it drop the avatar and name and show their own time in the gutter on hover.</td></tr>
+        <tr><th>Body extras</th><td>A mention is a tinted run of text. A link in the body gets a preview card with a 3px rule on its left: title, one line of description, the host.</td></tr>
+        <tr><th>Reactions</th><td>Pills under the message: an emoji and a count. Yours is tinted and outlined. The add button appears with the hover toolbar.</td></tr>
+        <tr><th>Thread link</th><td>Under a message that has replies: up to a few repliers’ avatars, the reply count, and when the last one arrived. It opens the thread beside the channel.</td></tr>
+        <tr><th>Hover toolbar</th><td>Three actions for the message under the pointer or focus: react, reply in thread, more. It appears on hover and on keyboard focus within the row.</td></tr>
+        <tr><th>Composer</th><td>One bordered box, one line tall until text makes it grow, then an action row: attach, emoji, mention, and send. See <a href="message-composer.html">Message Composer</a> for the full box.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Slack and Discord publish no pixel values for their message rows, so the sizes here are our own choices, not theirs. Behavior (grouping, hover actions, keys) follows what their help pages document.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>New message</th><td>Appended at the end. If the reader is at the bottom, the list follows it; if they have scrolled up to read, it must not move them and a “jump to newest” control appears instead.</td></tr>
+        <tr><th>Loading history</th><td>Older messages are inserted above. <code>overflow-anchor</code> (on by default in Chrome) holds what the reader is looking at in place while they arrive.</td></tr>
+        <tr><th>Grouping</th><td>The server decides, because it knows the clock: a message from the same sender shortly after the previous one is sent with <code>.cont</code>. Neither Slack nor Discord documents the window; pick one (five minutes is common) and apply it the same everywhere.</td></tr>
+        <tr><th>Send</th><td>Enter sends; Shift+Enter starts a new line. Slack documents Shift+Enter and offers a preference to swap them. Whatever the box holds is shown as text, never parsed as HTML.</td></tr>
+        <tr><th>Reaction</th><td>A pill toggles your own reaction and changes its count by one. Removing the last one removes the pill.</td></tr>
+        <tr><th>Thread</th><td>Opens a second pane on the right, with the original message on top and replies below. “Also send to channel” puts a reply in both places, as Slack does.</td></tr>
+        <tr><th>Long history</th><td>For thousands of messages add <code>content-visibility: auto</code> with <code>contain-intrinsic-size: auto 56px</code> to rows, which skips off-screen layout. It clips overflow, so keep each row’s toolbar inside the row, as this demo does.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>↑</kbd> in the empty box</th><td>Move to the newest message.</td></tr>
+          <tr><th><kbd>↑</kbd> <kbd>↓</kbd> on a message</th><td>Previous and next message; ↓ from the last returns to the box.</td></tr>
+          <tr><th><kbd>Tab</kbd> on a message</th><td>Reach its toolbar, reactions, thread link and links.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Back to the box.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The list is <code>role="log"</code> with a name: it has an implicit <code>aria-live="polite"</code>, so a new message is read when the user is idle and does not interrupt typing. MDN names chat logs as the use case.</li>
+          <li>It is not <code>role="feed"</code>. The feed pattern is for content that loads at either end and expects <kbd>Page Up</kbd> and <kbd>Page Down</kbd> between articles; a chat log has live additions and its own keys.</li>
+          <li>Do not use <code>flex-direction: column-reverse</code> to pin messages to the bottom. MDN warns it separates visual order from DOM order, which breaks reading and Tab order. Here <code>margin-top: auto</code> on the first item does the job.</li>
+          <li>Each message has an <code>aria-label</code> of sender and time so focusing it reads a summary, as Slack’s screen-reader mode does. Avatars are decorative and hidden.</li>
+          <li>Unread is never color alone: bold plus a count, with an accessible label on the count.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

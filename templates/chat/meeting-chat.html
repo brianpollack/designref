@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Meeting Chat Panel</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/meeting-chat">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="call">
+  <aside class="panel" aria-label="In-call messages">
+    <header><h2>In-call messages</h2></header>
+
+    <!-- Host control. When off, everyone can still read but nobody but the host can send. -->
+    <div class="host">
+      <span id="host-label">Let contributors send messages</span>
+      <button class="switch" role="switch" aria-checked="true" aria-labelledby="host-label"><i></i></button>
+    </div>
+
+    <p class="note">Only people in the call can see messages. They disappear when you leave.</p>
+
+    <button class="pinned" hidden>
+      <svg class="icon"><use href="#i-pin"/></svg><span><strong></strong> <em></em></span>
+    </button>
+
+    <ol class="log" role="log" aria-label="Messages">
+      <li class="msg" tabindex="-1">
+        <div class="head"><strong>Priya Raman</strong><time>9:02 AM</time></div>
+        <p>Agenda: 1. 4.2 status 2. Safari bug 3. Launch time</p>
+        <button class="pin" aria-pressed="false" aria-label="Pin message"><svg class="icon"><use href="#i-pin"/></svg></button>
+      </li>
+      <li class="msg" tabindex="-1">
+        <div class="head"><strong>Marcus Webb</strong><time>9:04 AM</time></div>
+        <p>Joining from the train, audio may drop.</p>
+        <button class="pin" aria-pressed="false" aria-label="Pin message"><svg class="icon"><use href="#i-pin"/></svg></button>
+      </li>
+      <li class="msg" tabindex="-1">
+        <div class="head"><strong>You</strong><time>9:05 AM</time></div>
+        <p>Notes: <a href="#">atlas.example/notes/4.2</a></p>
+        <p>Please add questions here.</p>
+        <button class="pin" aria-pressed="false" aria-label="Pin message"><svg class="icon"><use href="#i-pin"/></svg></button>
+      </li>
+      <li class="msg" tabindex="-1">
+        <div class="head"><strong>Sam Ito</strong><time>9:07 AM</time></div>
+        <p>+1 on doing Safari first.</p>
+        <button class="pin" aria-pressed="false" aria-label="Pin message"><svg class="icon"><use href="#i-pin"/></svg></button>
+      </li>
+    </ol>
+
+    <form class="compose">
+      <input aria-label="Send a message to everyone" placeholder="Send a message to everyone" autocomplete="off">
+      <button class="send" aria-label="Send message" disabled><svg class="icon"><use href="#i-send"/></svg></button>
+    </form>
+    <p class="off" hidden>The host has turned off chat for this call.</p>
+  </aside>
+
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Panel */
+  --mt-panel-bg: light-dark(#ffffff, #2a2b30);                /* Panel fill */
+  --mt-pad: 14px;                                             /* Inner side padding */
+  --mt-rule: light-dark(#e3e5ea, #3a3c44);                    /* Hairline under the header and above the composer */
+
+  /* @group Text */
+  --mt-text: light-dark(#1c1d21, #ececef);                    /* Message text and names */
+  --mt-muted: light-dark(#5d6169, #a0a4ae);                   /* Times, notes and placeholder */
+  --mt-accent: light-dark(#1a63e8, #8ab4f8);                  /* Links, focus ring, switch on, send */
+
+  /* @group Messages */
+  --mt-name: 600 13px/18px system-ui, sans-serif;             /* Sender: 13px, line height 18px, weight 600 */
+  --mt-body: 14px/20px system-ui, sans-serif;                 /* Text: 14px, line height 20px */
+  --mt-gap: 12px;                                             /* Space between messages from different people */
+  --mt-hover: light-dark(#f3f4f7, #33353c);                   /* Row fill on hover and focus */
+
+  /* @group Composer */
+  --mt-input-bg: light-dark(#f1f3f7, #34363d);                /* Input fill; the pill is 40px tall with a 20px radius */
+}
+
+/* ---- Component ---- */
+.panel { height: 100dvh; display: flex; flex-direction: column; background: var(--mt-panel-bg); color: var(--mt-text); font: var(--mt-body); }
+
+.panel header { padding: 14px var(--mt-pad) 6px; }
+.panel h2 { flex: 1; margin: 0; font-size: 16px; line-height: 24px; font-weight: 600; }
+
+.host { display: flex; align-items: center; gap: 12px; padding: 6px var(--mt-pad); font-size: 13px; }
+.host span { flex: 1; }
+.switch { position: relative; width: 36px; height: 20px; padding: 0; border: 0; border-radius: 10px; background: var(--mt-muted); cursor: pointer; }
+.switch i { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: translate .15s; }
+.switch[aria-checked="true"] { background: var(--mt-accent); }
+.switch[aria-checked="true"] i { translate: 16px 0; }
+.note { margin: 0; padding: 4px var(--mt-pad) 10px; border-bottom: 1px solid var(--mt-rule); font-size: 12px; line-height: 16px; color: var(--mt-muted); }
+
+.pinned { gap: 8px; align-items: center; margin: 8px var(--mt-pad) 0; padding: 6px 10px; border: 0; border-radius: 8px; background: var(--mt-hover); color: inherit; font: inherit; font-size: 13px; text-align: start; cursor: pointer; }
+.pinned span { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.pinned em { font-style: normal; color: var(--mt-muted); }
+.pinned:not([hidden]) { display: flex; }
+
+/* The list rests at the bottom and is dense: no avatars, name and time on one line. */
+.log { flex: 1; min-height: 0; margin: 0; padding: 8px 0; list-style: none; overflow-y: auto; display: flex; flex-direction: column; }
+.log > :first-child { margin-top: auto; }
+.msg { position: relative; padding: 4px var(--mt-pad); margin-top: var(--mt-gap); }
+.msg:hover, .msg:focus-within { background: var(--mt-hover); }
+.msg:focus-visible { outline: 2px solid var(--mt-accent); outline-offset: -2px; }
+.head { display: flex; align-items: baseline; gap: 8px; }
+.head strong { font: var(--mt-name); }
+.head time { font-size: 12px; color: var(--mt-muted); }
+.msg p { margin: 0; overflow-wrap: anywhere; }
+.msg a { color: var(--mt-accent); }
+.pin { position: absolute; top: 2px; right: 8px; display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: var(--mt-panel-bg); color: var(--mt-muted); box-shadow: 0 1px 3px rgb(0 0 0 / .25); cursor: pointer; opacity: 0; }
+.msg:hover .pin, .msg:focus-within .pin, .pin[aria-pressed="true"] { opacity: 1; }
+.pin[aria-pressed="true"] { color: var(--mt-accent); }
+.pin:focus-visible, .switch:focus-visible, .send:focus-visible, .pinned:focus-visible { outline: 2px solid var(--mt-accent); outline-offset: 1px; }
+
+.compose { display: flex; align-items: center; gap: 4px; margin: 0; padding: 10px var(--mt-pad) 14px; border-top: 1px solid var(--mt-rule); }
+.compose input { flex: 1; min-width: 0; height: 40px; padding: 0 16px; border: 0; border-radius: 20px; background: var(--mt-input-bg); color: inherit; font: inherit; }
+.compose input::placeholder { color: var(--mt-muted); }
+.compose input:focus-visible { outline: 2px solid var(--mt-accent); outline-offset: 0; }
+.send { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--mt-accent); cursor: pointer; }
+.send:disabled { color: var(--mt-muted); opacity: .5; cursor: default; }
+/* Chat turned off by the host: the box is replaced by a sentence, not left disabled with no reason. */
+.off { margin: 0; padding: 14px var(--mt-pad); border-top: 1px solid var(--mt-rule); font-size: 13px; color: var(--mt-muted); }
+.off:not([hidden]) { display: block; }
+.panel:has(.switch[aria-checked="false"]) .compose { display: none; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Sending, pinning and the host switch.
+const $ = s => document.querySelector(s);
+const log = $('.log'), input = $('.compose input'), send = $('.send'), pinned = $('.pinned'), host = $('.switch');
+
+input.addEventListener('input', () => { send.disabled = !input.value.trim(); });
+$('.compose').addEventListener('submit', e => {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  const li = document.createElement('li');
+  li.className = 'msg'; li.tabIndex = -1;
+  li.innerHTML = '<div class="head"><strong>You</strong><time>now</time></div><p></p>';
+  li.querySelector('p').textContent = text;
+  log.append(li); input.value = ''; send.disabled = true;
+  log.scrollTop = log.scrollHeight;
+});
+
+/* Pin: one message at a time is shown in the banner; clicking the banner scrolls back to it. */
+log.addEventListener('click', e => {
+  const btn = e.target.closest('.pin'); if (!btn) return;
+  const msg = btn.closest('.msg'), on = btn.getAttribute('aria-pressed') !== 'true';
+  log.querySelectorAll('.pin').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  btn.setAttribute('aria-pressed', on);
+  pinned.hidden = !on;
+  if (on) { pinned.querySelector('strong').textContent = msg.querySelector('strong').textContent + ':'; pinned.querySelector('em').textContent = msg.querySelector('p').textContent; pinned.target = msg; }
+});
+pinned.addEventListener('click', () => pinned.target?.scrollIntoView({ block: 'nearest' }));
+
+/* Host switch: off hides the composer for everyone; reading still works. */
+host.addEventListener('click', () => {
+  const on = host.getAttribute('aria-checked') !== 'true';
+  host.setAttribute('aria-checked', on);
+  $('.off').hidden = on;
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: one message pinned.
+document.querySelector('.msg .pin').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="620" data-hint="Hover a message and pin it. Turn off “Let contributors send messages” to see the host state."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Panel</th><td>A side panel beside the call, titled “In-call messages”. In Meet it opens from the Chat button at the bottom right of the call.</td></tr>
+        <tr><th>Host control</th><td>A switch, shown to hosts only, that turns sending off for everyone. In Meet it is “Let contributors send messages”.</td></tr>
+        <tr><th>Persistence note</th><td>One line saying who can see messages and when they disappear. People do not expect a call’s chat to vanish; say it.</td></tr>
+        <tr><th>Pinned message</th><td>A banner above the list that shows the pinned message and jumps to it. Pin appears on hover, as in Meet.</td></tr>
+        <tr><th>Message</th><td>Dense: a name and time on one line, then the text. No avatars, because the call already shows faces. Messages from the same person close together share a name.</td></tr>
+        <tr><th>Composer</th><td>A single-line pill and a send button. No formatting row, no attachments: the call is not the place for either.</td></tr>
+        <tr><th>Chat off</th><td>The composer is replaced by a sentence naming the cause. People can still read.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Google publishes no pixel values for Meet’s panel, so sizes here are our own. What is taken from Meet’s help page is behavior: who sees messages, persistence, the host switch, and pinning.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Who sees it</th><td>Everyone in the call. With continuous meeting chat, internal guests on the calendar invite also see it; external guests and anyone not invited see only what is sent while they are present.</td></tr>
+        <tr><th>Persistence</th><td>By default messages sent before you join do not appear, and all messages disappear when you leave. With continuous chat, internal invitees keep the history. Pinned messages are the exception that people can find again.</td></tr>
+        <tr><th>Host off</th><td>Hosts can turn off “Let contributors send messages”, which needs host management on. Participants can still read. For one-time or instant meetings the setting resets when the meeting ends.</td></tr>
+        <tr><th>Pin</th><td>Computer users hover a message and pin it. You can pin and unpin your own; hosts can unpin anyone’s. Meet does not show pinned messages on mobile.</td></tr>
+        <tr><th>Mobile</th><td>On a phone the panel is a sheet from the bottom. Internal guests on mobile are sent to the Google Chat or Gmail app for calendar-linked chat.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <div class="prose">
+        <ul>
+          <li>The panel is an <code>aside</code> with a name, and the message list is <code>role="log"</code>: new messages are announced politely, so they do not talk over the people in the call.</li>
+          <li>The host control is a <code>role="switch"</code> with <code>aria-checked</code> and a visible label.</li>
+          <li>Pin is a toggle button (<code>aria-pressed</code>) that is reachable from the keyboard: it shows with focus inside the row, not only on hover.</li>
+          <li>Chat off is stated in words. A disabled input with no explanation leaves a screen-reader user guessing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

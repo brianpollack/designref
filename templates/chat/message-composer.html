@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Message Composer</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/message-composer">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <!-- Just enough channel to show where the composer sits. -->
+  <div class="stub">
+    <p><strong>Priya Raman</strong> <small>9:41 AM</small></p>
+    <p>Release notes are ready for review.</p>
+  </div>
+
+  <form class="composer" aria-label="Write a message">
+    <!-- Attachments are chips above the box, each removable. -->
+    <ul class="files" aria-label="Attachments" hidden></ul>
+
+    <div class="fmt" role="toolbar" aria-label="Formatting">
+      <button type="button" data-wrap="*" aria-label="Bold"><svg class="icon"><use href="#i-bold"/></svg></button>
+      <button type="button" data-wrap="_" aria-label="Italic"><svg class="icon"><use href="#i-italic"/></svg></button>
+      <button type="button" data-wrap="`" aria-label="Code"><svg class="icon"><use href="#i-code"/></svg></button>
+      <button type="button" data-wrap="[|](url)" aria-label="Link"><svg class="icon"><use href="#i-link"/></svg></button>
+    </div>
+
+    <!-- The textarea is a combobox so a mention list can be driven from it without moving focus. -->
+    <textarea id="box" rows="1" role="combobox" aria-label="Message #release-planning" aria-autocomplete="list"
+      aria-expanded="false" aria-controls="mentions" placeholder="Message #release-planning"></textarea>
+
+    <div class="bar">
+      <input type="file" id="pick" multiple hidden>
+      <button type="button" class="ib" id="attach" aria-label="Attach files"><svg class="icon"><use href="#i-paperclip"/></svg></button>
+      <button type="button" class="ib" popovertarget="emoji" aria-label="Add emoji"><svg class="icon"><use href="#i-smile"/></svg></button>
+      <button type="button" class="ib" id="at" aria-label="Mention someone"><svg class="icon"><use href="#i-at-sign"/></svg></button>
+      <span class="hint">Enter to send · Shift+Enter for a new line</span>
+      <button class="send" aria-label="Send message" disabled><svg class="icon"><use href="#i-send"/></svg></button>
+    </div>
+  </form>
+
+  <!-- Mention list: a manual popover, so typing never light-dismisses it. -->
+  <ul class="menu" id="mentions" role="listbox" aria-label="People" popover="manual"></ul>
+
+  <!-- Emoji picker: an auto popover, so Esc and outside click close it for free. -->
+  <div class="menu emoji" id="emoji" popover="auto" role="dialog" aria-label="Emoji">
+    <button type="button">👍</button><button type="button">🎉</button><button type="button">✅</button><button type="button">🙏</button>
+    <button type="button">😄</button><button type="button">😅</button><button type="button">🤔</button><button type="button">👀</button>
+    <button type="button">🚀</button><button type="button">🔥</button><button type="button">❤️</button><button type="button">💡</button>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Box */
+  --mc-bg: light-dark(#ffffff, #1b1c20);                      /* Box fill */
+  --mc-border: light-dark(#cfd3db, #3a3d46);                  /* Box border at rest, 1px */
+  --mc-accent: light-dark(#2b59e0, #8ea6ff);                  /* Border and ring when focused, send button, active option */
+  --mc-radius: 10px;                                          /* Box corner */
+  --mc-pad: 10px 12px 4px;                                    /* Text area padding: top, sides, bottom (the bar below adds the rest) */
+  --mc-font: 15px/22px system-ui, sans-serif;                 /* Text: 15px, line height 22px */
+  --mc-max: 8lh;                                              /* Grows to eight lines, then scrolls inside the box */
+
+  /* @group Actions */
+  --mc-muted: light-dark(#5d6169, #a0a4ae);                   /* Icons, hint and placeholder */
+  --mc-hover: light-dark(#eceef2, #2b2d34);                   /* Icon button hover fill */
+  --mc-btn: 28px;                                             /* Icon button square, radius 6px; the send button is 32px wide */
+
+  /* @group Pickers */
+  --mc-menu-bg: light-dark(#ffffff, #25272d);                 /* Mention list and emoji picker fill */
+  --mc-menu-rule: light-dark(#e3e5ea, #383b44);               /* Picker border, 1px */
+  --mc-menu-w: 320px;                                         /* Mention list width, never wider than the box */
+  --mc-option-h: 36px;                                        /* Mention option height */
+  --mc-option-on: light-dark(#e3eafd, #2a3158);               /* Active option fill */
+}
+
+/* ---- Component ---- */
+.app { height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; gap: 14px; background: light-dark(#f4f5f7, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.stub p { margin: 0; font: var(--mc-font); } .stub small { color: var(--mc-muted); font-size: 12px; }
+
+.composer { anchor-name: --mc-box; position: relative; border: 1px solid var(--mc-border); border-radius: var(--mc-radius); background: var(--mc-bg); }
+/* :focus-within puts the ring on the whole box, not just the text area. */
+.composer:focus-within { border-color: var(--mc-accent); box-shadow: 0 0 0 1px var(--mc-accent); }
+
+/* Text area: field-sizing makes it as tall as its text, between one line and --mc-max. */
+.composer textarea { display: block; width: 100%; padding: var(--mc-pad); border: 0; background: none; color: inherit; font: var(--mc-font); resize: none; outline: none; field-sizing: content; min-height: 1lh; max-height: var(--mc-max); }
+.composer textarea::placeholder { color: var(--mc-muted); }
+
+.fmt { display: flex; gap: 2px; padding: 4px 6px 0; }
+.bar { display: flex; align-items: center; gap: 2px; padding: 2px 6px 6px; }
+.fmt button, .ib { display: grid; place-items: center; width: var(--mc-btn); height: var(--mc-btn); padding: 0; border: 0; border-radius: 6px; background: none; color: var(--mc-muted); cursor: pointer; }
+.fmt button:hover, .ib:hover { background: var(--mc-hover); color: inherit; }
+.hint { margin-inline-start: auto; padding-inline: 8px; font-size: 12px; color: var(--mc-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.send { display: grid; place-items: center; width: 32px; height: var(--mc-btn); padding: 0; border: 0; border-radius: 6px; background: var(--mc-accent); color: light-dark(#fff, #101218); cursor: pointer; }
+.send:disabled { background: none; color: var(--mc-muted); opacity: .5; cursor: default; }
+:is(.fmt button, .ib, .send):focus-visible { outline: 2px solid var(--mc-accent); outline-offset: -2px; }
+@container (width < 400px) { .hint { display: none; } }
+
+/* Attachment chips. */
+.files { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 8px 8px 0; list-style: none; }
+.files li { display: flex; align-items: center; gap: 4px; height: 28px; padding: 0 4px 0 10px; border: 1px solid var(--mc-menu-rule); border-radius: 8px; font-size: 13px; }
+.files button { display: grid; place-items: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 4px; background: none; color: var(--mc-muted); cursor: pointer; }
+.files button:hover { background: var(--mc-hover); }
+
+/* Pickers: shared look, each positioned against the box by anchor name. */
+.menu { margin: 0; padding: 4px; border: 1px solid var(--mc-menu-rule); border-radius: 10px; background: var(--mc-menu-bg); color: inherit; box-shadow: 0 6px 20px rgb(0 0 0 / .18); list-style: none; inset: auto; position-anchor: --mc-box; left: anchor(left); bottom: calc(anchor(top) + 6px); overflow: visible; }
+.menu:popover-open { display: block; }
+#mentions { width: var(--mc-menu-w); max-width: anchor-size(width); max-height: calc(var(--mc-option-h) * 5 + 8px); overflow-y: auto; }
+#mentions li { display: flex; align-items: center; gap: 8px; height: var(--mc-option-h); padding: 0 8px; border-radius: 6px; cursor: pointer; }
+#mentions li small { margin-inline-start: auto; color: var(--mc-muted); }
+#mentions li[aria-selected="true"] { background: var(--mc-option-on); }
+.emoji:popover-open { display: grid; grid-template-columns: repeat(6, 36px); gap: 2px; }
+.emoji button { width: 36px; height: 36px; padding: 0; border: 0; border-radius: 6px; background: none; font-size: 20px; cursor: pointer; }
+.emoji button:hover, .emoji button:focus-visible { background: var(--mc-hover); outline: none; }
+.emoji { left: auto; right: anchor(right); }
+.composer { container-type: inline-size; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// What the platform can't do: read the caret for @mentions, insert text, hold attachments, and send.
+// Everything visual (grow, focus ring, popovers, anchoring) is CSS and HTML.
+const $ = s => document.querySelector(s);
+const box = $('#box'), form = $('.composer'), send = $('.send'), list = $('#mentions'), files = $('.files'), pick = $('#pick');
+const PEOPLE = [['Priya Raman', 'Owner'], ['Marcus Webb', 'Maintainer'], ['Jo Okafor', 'Reader'], ['Sam Ito', 'Reader']];
+let active = -1;
+
+/* Send is enabled by text or an attachment. */
+const sync = () => { send.disabled = !box.value.trim() && !files.children.length; };
+
+/* ---- Mentions: an "@" at the start of a word, before the caret, opens the list ---- */
+const query = () => box.value.slice(0, box.selectionStart).match(/(^|\s)@(\w*)$/);
+function openList(q) {
+  const hits = PEOPLE.filter(([n]) => n.toLowerCase().split(' ').some(w => w.startsWith(q.toLowerCase())))   // match the start of a first or last name;
+  list.innerHTML = hits.map(([n, role], i) => `<li role="option" id="m${i}" aria-selected="false">${n}<small>${role}</small></li>`).join('');
+  if (!hits.length) return closeList();
+  list.showPopover();
+  box.setAttribute('aria-expanded', 'true');
+  setActive(0);
+}
+function closeList() { if (list.matches(':popover-open')) list.hidePopover(); box.setAttribute('aria-expanded', 'false'); box.removeAttribute('aria-activedescendant'); active = -1; }
+function setActive(i) {
+  const items = [...list.children];
+  active = (i + items.length) % items.length;
+  items.forEach((el, n) => el.setAttribute('aria-selected', n === active));
+  box.setAttribute('aria-activedescendant', items[active].id);   // focus stays in the box; this names the option
+}
+function insertMention() {
+  const name = list.children[active].firstChild.textContent;
+  const caret = box.selectionStart, before = box.value.slice(0, caret).replace(/@\w*$/, '@' + name + ' ');
+  box.value = before + box.value.slice(caret);
+  box.selectionStart = box.selectionEnd = before.length;
+  closeList(); sync();
+}
+list.addEventListener('mousedown', e => { e.preventDefault(); const i = [...list.children].indexOf(e.target.closest('li')); if (i >= 0) { active = i; insertMention(); } });
+
+box.addEventListener('input', () => { const m = query(); m ? openList(m[2]) : closeList(); sync(); });
+box.addEventListener('keydown', e => {
+  if (list.matches(':popover-open')) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(active + 1); return; }
+    if (e.key === 'ArrowUp') { e.preventDefault(); setActive(active - 1); return; }
+    if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); insertMention(); return; }
+    if (e.key === 'Escape') { e.preventDefault(); closeList(); return; }
+  }
+  if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); }
+});
+$('#at').addEventListener('click', () => { box.focus(); box.setRangeText('@', box.selectionStart, box.selectionEnd, 'end'); box.dispatchEvent(new Event('input')); });
+
+/* ---- Formatting: wrap the selection in markdown, so the box stays plain text ---- */
+$('.fmt').addEventListener('click', e => {
+  const [pre, post = pre] = e.target.closest('[data-wrap]')?.dataset.wrap.split('|') ?? [];
+  if (pre === undefined) return;
+  const s = box.selectionStart, t = box.value.slice(s, box.selectionEnd);
+  box.setRangeText(pre + t + post, s, box.selectionEnd, 'end');
+  box.focus(); sync();
+});
+
+/* ---- Emoji: insert at the caret and close ---- */
+$('#emoji').addEventListener('click', e => {
+  if (!e.target.closest('button')) return;
+  box.setRangeText(e.target.textContent, box.selectionStart, box.selectionEnd, 'end');
+  $('#emoji').hidePopover(); box.focus(); sync();
+});
+
+/* ---- Attachments ---- */
+$('#attach').addEventListener('click', () => pick.click());
+pick.addEventListener('change', () => {
+  for (const f of pick.files) files.insertAdjacentHTML('beforeend', `<li>${f.name.replace(/[<&]/g, '')}<button type="button" aria-label="Remove ${f.name.replace(/[<&"]/g, '')}"><svg class="icon"><use href="#i-x"/></svg></button></li>`);
+  files.hidden = !files.children.length; pick.value = ''; sync();
+});
+files.addEventListener('click', e => { e.target.closest('li')?.remove(); files.hidden = !files.children.length; sync(); box.focus(); });
+
+/* ---- Send: clear everything, keep focus ---- */
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  if (send.disabled) return;
+  box.value = ''; files.replaceChildren(); files.hidden = true; closeList(); sync(); box.focus();
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: one attachment, two lines of text, and the mention list open on "@ma".
+{
+  const dt = new DataTransfer();
+  dt.items.add(new File(['x'], 'release-notes.pdf'));
+  const pick = document.getElementById('pick');
+  pick.files = dt.files; pick.dispatchEvent(new Event('change'));
+  const box = document.getElementById('box');
+  box.value = 'Review before 3pm please\n@ma';
+  box.selectionStart = box.selectionEnd = box.value.length;
+  box.dispatchEvent(new Event('input'));
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="420" data-hint="Type @ to open the people list, then ↑ ↓ and Enter. Try the emoji button, the formatting buttons, and Shift+Enter."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Box</th><td>One bordered container that owns the focus ring, so the text area, the format row and the actions read as one control.</td></tr>
+        <tr><th>Text area</th><td>A <code>textarea</code> one line tall until text makes it grow, up to eight lines, then it scrolls inside the box. It holds plain text; formatting is markdown typed or inserted.</td></tr>
+        <tr><th>Formatting row</th><td>Bold, italic, code and link. They wrap the selection in markdown markers. Slack, Google Chat and Discord all take typed markdown, and Slack lets the row be hidden.</td></tr>
+        <tr><th>Action row</th><td>Attach, emoji, mention on the left; a hint and the send button on the right.</td></tr>
+        <tr><th>Attachment chips</th><td>One per file, above the text, each with a remove button.</td></tr>
+        <tr><th>Mention list</th><td>Opens above the box when <code>@</code> starts a word. People, with their role. It never takes focus from the box.</td></tr>
+        <tr><th>Emoji picker</th><td>A popover of emoji above the box, right aligned to it. Choosing one inserts it at the caret.</td></tr>
+        <tr><th>Send</th><td>Disabled and faint while there is nothing to send; filled in the accent color when there is text or an attachment.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Send</th><td>Enter sends; Shift+Enter starts a new line, as in Slack and Teams. Slack offers a preference to swap them, and Teams uses Ctrl+Enter once the box is expanded. Never send while an input method is composing (<code>isComposing</code>).</td></tr>
+        <tr><th>Grow</th><td><code>field-sizing: content</code> with <code>min-height: 1lh</code> and <code>max-height: 8lh</code>. No resize observer and no script measuring text.</td></tr>
+        <tr><th>@ mention</th><td>Open on <code>@</code> at the start of a word, filter as the word grows, close when it stops matching or on <kbd>Esc</kbd>. <kbd>Enter</kbd> or <kbd>Tab</kbd> inserts the name and a space. Mentioning someone outside the channel should offer to add them, as Google Chat does.</td></tr>
+        <tr><th>Mention in a DM</th><td>Google Chat treats a mention in a one-to-one chat as a reference only, because the other person is notified anyway.</td></tr>
+        <tr><th>Markdown</th><td>The toolbar and typing both produce markdown. Discord documents <code>**bold**</code>, <code>*italic*</code>, <code>~~strike~~</code>, <code>||spoiler||</code> and <code>[text](url)</code>; Google Chat uses single-marker <code>*bold*</code> and <code>_italic_</code>. Pick one dialect and render it the same everywhere.</td></tr>
+        <tr><th>Drafts</th><td>Keep what was typed when the user switches channel. Google Chat saves a draft after 5 seconds of paused typing, keeps up to 100 drafts, and drops them 30 days after the last edit.</td></tr>
+        <tr><th>Attach</th><td>The button opens the file picker; dropping files on the box and pasting images should do the same. Each file becomes a chip before the message is sent.</td></tr>
+        <tr><th>Limits</th><td>Discord caps a message at 2,000 characters and shows no error until sending, so show a count as the limit nears and keep what was typed.</td></tr>
+        <tr><th>Edit last message</th><td>↑ in an empty box edits your last message in Slack and Discord. In the channel demo, ↑ moves up through messages instead; choose one and document it.</td></tr>
+        <tr><th>Disabled</th><td>If posting is not allowed (a read-only channel, or a call where the host turned chat off), replace the box with a sentence saying so, rather than a disabled box with no reason. See <a href="meeting-chat.html">Meeting Chat Panel</a>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd></th><td>Send, or insert the highlighted person while the list is open.</td></tr>
+          <tr><th><kbd>Shift</kbd> + <kbd>Enter</kbd></th><td>New line.</td></tr>
+          <tr><th><kbd>↑</kbd> <kbd>↓</kbd></th><td>Move through the mention list; the box keeps focus.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Insert the highlighted person while the list is open; otherwise move to the toolbar and actions.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close the list or the emoji picker.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The mention list follows the APG combobox pattern: DOM focus stays on the input, <code>aria-activedescendant</code> names the highlighted option, and <code>aria-expanded</code> and <code>aria-controls</code> describe the list. APG documents the single-line case; this adapts it to a <code>textarea</code>, and that adaptation is ours, not APG’s.</li>
+          <li>Every icon-only button has a label, including the formatting row and the chip remove buttons.</li>
+          <li>The ring is on the whole box with a 1px border plus a 1px shadow, in both themes, so a focused box is clear without relying on color alone.</li>
+          <li>The send button is real <code>disabled</code> when there is nothing to send, so it leaves the Tab order and is announced as unavailable.</li>
+          <li>Slack returns focus to the box when an attachment is removed; the chip remove button here does the same.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Matrix Room</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/matrix-room">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <header class="room-head">
+    <span class="room-avatar" aria-hidden="true">R</span>
+    <div class="room-name"><h1>release-planning</h1><p>Plan and ship 4.2 · 4 people, 1 agent</p></div>
+  </header>
+
+  <!-- The timeline. In Element each event is a "tile"; in the modern layout the avatar sits in a 64px gutter. -->
+  <div class="timeline" role="log" aria-label="Messages in release-planning">
+    <div class="date" role="separator"><span>Today</span></div>
+
+    <article class="tile" tabindex="0" aria-label="Priya Raman, 9:41 AM">
+      <time class="ts" datetime="2026-11-25T09:41">9:41</time>
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="name"><b>Priya Raman</b></div>
+      <p class="body">Can someone summarise what is still blocking 4.2?</p>
+      <div class="reactions"><button class="reaction" aria-pressed="false">👍 <span>2</span></button><button class="reaction add" aria-label="Add reaction"><svg class="icon"><use href="#i-smile-plus"/></svg></button></div>
+      <button class="thread-summary">
+        <span class="avatar sm" style="--h:35" aria-hidden="true">MW</span><strong>Marcus Webb</strong><span class="grow">I can take route timeouts</span><strong>3 replies</strong>
+      </button>
+      <div class="actions" role="toolbar" aria-label="Message actions">
+        <button aria-label="React"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+        <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+        <button aria-label="Options"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+      </div>
+    </article>
+
+    <!-- An agent is an ordinary room member. Its reply carries a tool trace the reader can open. -->
+    <article class="tile" tabindex="0" aria-label="Release agent, 9:41 AM">
+      <time class="ts" datetime="2026-11-25T09:41">9:41</time>
+      <span class="avatar agent" aria-hidden="true">RA</span>
+      <div class="name"><b>Release agent</b><span class="badge">Agent</span></div>
+      <details class="trace" open>
+        <summary>Used 2 tools · 1.8s</summary>
+        <ul>
+          <li><code>search_issues</code> <span>label:4.2 state:open</span> <em>3 results</em></li>
+          <li><code>run_tests</code> <span>core</span> <em>passed</em></li>
+        </ul>
+      </details>
+      <p class="body">Three issues are open: route timeouts (Marcus), Safari scroll (Jo), and the offline banner copy. Tests on core pass.</p>
+      <div class="actions" role="toolbar" aria-label="Message actions">
+        <button aria-label="React"><svg class="icon"><use href="#i-smile-plus"/></svg></button>
+        <button aria-label="Reply in thread"><svg class="icon"><use href="#i-message-square"/></svg></button>
+        <button aria-label="Options"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+      </div>
+    </article>
+
+    <div class="marker" role="separator" aria-label="New messages"><span>New</span></div>
+
+    <article class="tile" tabindex="0" aria-label="Priya Raman, 9:44 AM">
+      <time class="ts" datetime="2026-11-25T09:44">9:44</time>
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="name"><b>Priya Raman</b></div>
+      <p class="body"><span class="pill-mention">@Release agent</span> send these notes to <a href="#">#announcements</a></p>
+    </article>
+
+    <!-- A sensitive action waits for approval and shows exactly what will be sent and where. -->
+    <article class="tile" tabindex="0" aria-label="Release agent, 9:44 AM">
+      <time class="ts" datetime="2026-11-25T09:44">9:44</time>
+      <span class="avatar agent" aria-hidden="true">RA</span>
+      <div class="name"><b>Release agent</b><span class="badge">Agent</span></div>
+      <div class="approval" role="group" aria-label="Approval needed">
+        <strong>Approval needed</strong>
+        <p>Send to <b>#announcements</b> (212 members): “Atlas 4.2 ships today at 3pm. Notes: atlas.example/notes/4.2”</p>
+        <div class="approval-actions"><button class="btn primary" data-act="approve">Send</button><button class="btn" data-act="deny">Don’t send</button></div>
+      </div>
+    </article>
+
+    <!-- A reply that is still streaming: the sender keeps editing one event (m.replace). -->
+    <article class="tile streaming" tabindex="0" aria-label="Release agent, writing">
+      <time class="ts">9:45</time>
+      <span class="avatar agent" aria-hidden="true">RA</span>
+      <div class="name"><b>Release agent</b><span class="badge">Agent</span></div>
+      <p class="body">Also drafting a reminder for the Safari fix<span class="caret" aria-hidden="true"></span></p>
+      <button class="btn stop" data-act="stop">Stop</button>
+    </article>
+
+    <div class="receipts" aria-label="Read by Marcus Webb and Jo Okafor">
+      <span class="avatar xs" style="--h:35" aria-hidden="true">MW</span><span class="avatar xs" style="--h:150" aria-hidden="true">JO</span>
+    </div>
+  </div>
+
+  <form class="composer">
+    <textarea rows="1" aria-label="Send a message" placeholder="Send a message…"></textarea>
+    <button type="button" class="icon-btn" aria-label="Attach"><svg class="icon"><use href="#i-paperclip"/></svg></button>
+    <button type="button" class="icon-btn" aria-label="Emoji"><svg class="icon"><use href="#i-smile"/></svg></button>
+    <button class="icon-btn send" aria-label="Send message" disabled><svg class="icon"><use href="#i-send"/></svg></button>
+  </form>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: Compound (Element's design tokens), light and dark ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Compound colors */
+  --cpd-color-bg-canvas-default: light-dark(#ffffff, #101317);          /* Room surface, composer and action bar fill */
+  --cpd-color-bg-subtle-secondary: light-dark(#f0f2f5, #1d1f24);        /* Tile hover, thread summary, trace and card fill (gray-300) */
+  --cpd-color-bg-subtle-primary: light-dark(#e1e6ec, #26282d);          /* Stronger neutral fill (gray-400) */
+  --cpd-color-text-primary: light-dark(#1b1d22, #ebeef2);               /* Message text and names */
+  --cpd-color-text-secondary: light-dark(#656d77, #808994);             /* Timestamps, topic, thread summary text */
+  --cpd-color-text-action-accent: light-dark(#007a61, #129a78);         /* New-messages label, links, mentions (green-900) */
+  --cpd-color-bg-action-primary-rest: light-dark(#1b1d22, #ebeef2);     /* Primary button fill, selected-tile marker (gray-1400) */
+  --cpd-color-border-disabled: light-dark(#cdd3da, #323539);            /* Action bar and card border, hairlines (gray-500) */
+  --cpd-color-border-interactive-secondary: light-dark(#bdc4cc, #3c3f44); /* Thread summary hover border (gray-600) */
+  --cpd-color-border-accent-primary: light-dark(#007a61, #129a78);      /* New-messages line (green-900) */
+  --cpd-color-icon-secondary: light-dark(#656d77, #808994);             /* Action bar and composer icons (gray-900) */
+  --cpd-color-gray-200: light-dark(#f7f9fa, #181a1f);                   /* Reaction pill fill */
+  --cpd-color-gray-400: light-dark(#e1e6ec, #26282d);                   /* Reaction pill border */
+  --cpd-color-green-300: light-dark(#e3f7ed, #002513);                  /* Reaction pill fill when you reacted */
+  --cpd-color-green-800: light-dark(#009b78, #007a62);                  /* Reaction pill border when you reacted */
+
+  /* @group Compound type */
+  --cpd-font-family-sans: Inter, "Helvetica Neue", "Segoe UI", Roboto, Ubuntu, "Fira Sans", "Noto Sans", Arial, sans-serif;  /* Font stack */
+  --cpd-font-size-body-md: 0.9375rem;                                   /* 15px: message body and name, weight 400 and 600 */
+  --cpd-font-size-body-sm: 0.8125rem;                                   /* 13px: thread summary, topic, trace */
+  --cpd-font-size-body-xs: 0.6875rem;                                   /* 11px: badges and show-all */
+
+  /* @group Compound spacing (4px scale) */
+  --cpd-space-1x: 4px;                                                  /* Gap between reaction pills */
+  --cpd-space-1-5x: 6px;                                                /* Reaction pill side padding */
+  --cpd-space-2x: 8px;                                                  /* Avatar inset in the gutter */
+  --cpd-space-3x: 12px;                                                 /* Header and thread summary padding */
+
+  /* @group Element tile geometry (hard-coded in Element, not Compound tokens) */
+  --tile-gutter: 64px;                                                  /* Left gutter that holds the avatar and the hover time */
+  --tile-gap: 18px;                                                     /* Space above a tile that starts a new sender */
+  --tile-line: 22px;                                                    /* Body line height (1.375rem); tile corner 8px */
+  --header-h: 64px;                                                     /* Room header height, 1px rule beneath */
+  --composer-min: 60px;                                                 /* Composer minimum height; the text grows to 120px, then scrolls */
+}
+
+/* ---- Component ---- */
+.app { height: 100dvh; display: flex; flex-direction: column; background: var(--cpd-color-bg-canvas-default); color: var(--cpd-color-text-primary); font: 400 var(--cpd-font-size-body-md)/var(--tile-line) var(--cpd-font-family-sans); }
+.icon-btn { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--cpd-color-icon-secondary); cursor: pointer; }
+.icon-btn:hover { background: var(--cpd-color-bg-subtle-secondary); }
+:is(.icon-btn, .actions button, .reaction, .thread-summary, .btn, .tile, summary):focus-visible { outline: 2px solid var(--cpd-color-text-action-accent); outline-offset: -2px; }
+
+/* Header */
+.room-head { flex: none; display: flex; align-items: center; gap: var(--cpd-space-3x); height: var(--header-h); padding: 0 var(--cpd-space-3x) 0 18px; border-bottom: 1px solid var(--cpd-color-border-disabled); }
+.room-avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--cpd-color-bg-subtle-primary); font-weight: 600; }
+.room-name { flex: 1; min-width: 0; }
+.room-name h1 { margin: 0; font-size: var(--cpd-font-size-body-md); line-height: 20px; font-weight: 600; }
+.room-name p { margin: 0; font-size: var(--cpd-font-size-body-sm); line-height: 18px; color: var(--cpd-color-text-secondary); }
+
+/* Timeline: rests at the bottom. */
+.timeline { flex: 1; min-height: 0; display: flex; flex-direction: column; padding-bottom: 8px; overflow-y: auto; }
+.timeline > :first-child { margin-top: auto; }
+
+.date { display: flex; align-items: center; gap: 12px; padding: 12px var(--cpd-space-3x) 0 var(--tile-gutter); font-size: var(--cpd-font-size-body-sm); color: var(--cpd-color-text-secondary); }
+.date::after { content: ""; flex: 1; height: 1px; background: var(--cpd-color-border-disabled); }
+
+/* A tile: the gutter holds the avatar and, on hover, the time. Content starts after the gutter. */
+.tile { position: relative; padding: 1px 34px 3px var(--tile-gutter); margin-top: var(--tile-gap); border-radius: 8px; }
+.tile:hover, .tile:focus-within { background: var(--cpd-color-bg-subtle-secondary); }
+.tile .avatar { position: absolute; left: var(--cpd-space-2x); top: 2px; }
+.ts { position: absolute; left: 0; top: 0; width: 46px; height: var(--tile-line); display: none; place-items: center; font-size: 0.625rem; font-variant-numeric: tabular-nums; color: var(--cpd-color-text-secondary); }
+.tile:hover .ts, .tile:focus-within .ts { display: grid; }
+.tile:hover .avatar, .tile:focus-within .avatar { visibility: visible; }
+.name { display: flex; align-items: center; gap: 6px; font-weight: 600; line-height: 20px; }
+.body { margin: 0; overflow-wrap: anywhere; text-wrap: pretty; }
+.body a, .pill-mention { color: var(--cpd-color-text-action-accent); }
+.pill-mention { padding: 0 4px; border-radius: 10px; background: var(--cpd-color-green-300); font-weight: 500; }
+
+.avatar { display: grid; place-items: center; flex: none; width: 30px; height: 30px; border-radius: 50%; font-size: 12px; font-weight: 600; background: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.74 0.1 var(--h))); color: light-dark(#fff, #14151a); }
+.avatar.sm { width: 20px; height: 20px; font-size: 8px; }
+.avatar.xs { width: 14px; height: 14px; font-size: 6px; box-shadow: 0 0 0 1px var(--cpd-color-bg-canvas-default); }
+.avatar.agent { border-radius: 8px; background: var(--cpd-color-bg-subtle-primary); color: var(--cpd-color-text-primary); }   /* Agents get a rounded square so they read as not-human at a glance */
+.badge { padding: 0 6px; border-radius: 4px; background: var(--cpd-color-bg-subtle-primary); font-size: var(--cpd-font-size-body-xs); line-height: 16px; font-weight: 500; color: var(--cpd-color-text-secondary); }
+
+/* Hover action bar: sits just above the tile's top-right corner. 28px buttons, 3px margin, 1px border. */
+.actions { position: absolute; z-index: 10; right: var(--cpd-space-2x); top: -36px; display: flex; gap: 2px; border: 1px solid var(--cpd-color-border-disabled); border-radius: 8px; background: var(--cpd-color-bg-canvas-default); opacity: 0; pointer-events: none; }
+.actions button { display: grid; place-items: center; width: 28px; height: 28px; margin: 3px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--cpd-color-icon-secondary); cursor: pointer; }
+.actions button:hover { background: var(--cpd-color-bg-subtle-secondary); }
+.tile:hover .actions, .tile:focus-within .actions { opacity: 1; pointer-events: auto; }
+
+/* Reactions: pills with 6px side padding, a 1px border, a 10px corner. Yours is green. */
+.reactions { display: flex; flex-wrap: wrap; gap: var(--cpd-space-1x); margin-top: 4px; }
+.reaction { display: inline-flex; align-items: center; gap: 4px; padding: 1px var(--cpd-space-1-5x); border: 1px solid var(--cpd-color-gray-400); border-radius: 10px; background: var(--cpd-color-gray-200); color: inherit; font: inherit; font-size: var(--cpd-font-size-body-sm); line-height: 20px; cursor: pointer; }
+.reaction[aria-pressed="true"] { background: var(--cpd-color-green-300); border-color: var(--cpd-color-green-800); }
+.reaction.add { padding: 4px; border-radius: 4px; border-color: transparent; background: none; color: var(--cpd-color-icon-secondary); opacity: 0; }
+.reaction.add .icon { width: 16px; height: 16px; }
+.tile:hover .reaction.add, .tile:focus-within .reaction.add { opacity: 1; }                 /* The add button shows with the tile */
+
+/* Thread summary: a 40px bar under the root message. */
+.thread-summary { display: flex; align-items: center; gap: 8px; width: 100%; max-width: min(100%, 600px); min-width: 0; height: 40px; margin-top: 8px; padding: 0 var(--cpd-space-3x); border: 1px solid transparent; border-radius: 8px; background: var(--cpd-color-bg-subtle-secondary); color: var(--cpd-color-text-secondary); font: inherit; font-size: var(--cpd-font-size-body-sm); cursor: pointer; text-align: start; }
+.tile:hover .thread-summary { background: var(--cpd-color-bg-canvas-default); }
+.thread-summary:hover { border-color: var(--cpd-color-border-interactive-secondary); }
+.thread-summary strong { font-weight: 600; white-space: nowrap; }
+.thread-summary .grow { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* Agent additions: tool trace, approval card, streaming caret and stop. */
+.trace { margin: 4px 0; padding: 4px 10px; border-radius: 8px; background: var(--cpd-color-bg-subtle-secondary); font-size: var(--cpd-font-size-body-sm); line-height: 20px; color: var(--cpd-color-text-secondary); }
+.tile:hover .trace { background: var(--cpd-color-bg-canvas-default); }
+.trace summary { cursor: pointer; }
+.trace ul { margin: 2px 0 4px; padding: 0; list-style: none; }
+.trace code { font: 12px/1 ui-monospace, Inconsolata, monospace; color: var(--cpd-color-text-primary); }
+.trace em { float: right; font-style: normal; }
+.approval { margin: 4px 0; padding: 10px 12px; max-width: 420px; border: 1px solid var(--cpd-color-border-disabled); border-radius: 8px; background: var(--cpd-color-bg-canvas-default); }
+.approval p { margin: 2px 0 8px; font-size: var(--cpd-font-size-body-sm); line-height: 20px; }
+.approval-actions { display: flex; gap: 8px; }
+.btn { padding: 4px 12px; border: 1px solid var(--cpd-color-border-interactive-secondary); border-radius: 20px; background: none; color: inherit; font: inherit; font-size: var(--cpd-font-size-body-sm); line-height: 20px; cursor: pointer; }
+.btn:hover { background: var(--cpd-color-bg-subtle-primary); }
+.btn.primary { background: var(--cpd-color-bg-action-primary-rest); border-color: transparent; color: var(--cpd-color-bg-canvas-default); }
+.btn.primary:hover { opacity: .88; }
+.stop { margin-top: 4px; }
+.caret { display: inline-block; width: 2px; height: 1em; margin-inline-start: 2px; vertical-align: text-bottom; background: var(--cpd-color-text-primary); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.tile[data-state="done"] .caret, .tile[data-state="done"] .stop { display: none; }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }
+
+/* New-messages line: 1px accent rule and a label. */
+.marker { display: flex; align-items: center; gap: 8px; margin: 10px var(--cpd-space-3x) 0 var(--tile-gutter); color: var(--cpd-color-text-action-accent); font-size: var(--cpd-font-size-body-sm); font-weight: 500; }
+.marker::before { content: ""; order: 1; flex: 1; height: 1px; background: var(--cpd-color-border-accent-primary); }
+
+.receipts { display: flex; justify-content: flex-end; gap: 2px; padding: 4px 34px 0 0; }
+
+/* Composer: hairline above, 60px minimum, grows to 120px. */
+.composer { flex: none; display: flex; align-items: center; gap: 6px; min-height: var(--composer-min); padding: 0 16px 0 var(--tile-gutter); border-top: 1px solid var(--cpd-color-border-disabled); }
+.composer textarea { flex: 1; min-width: 0; padding: 6px 0; border: 0; background: none; color: inherit; font: inherit; resize: none; outline: none; field-sizing: content; min-height: 1lh; max-height: 120px; }
+.composer textarea::placeholder { color: var(--cpd-color-text-secondary); }
+.send:disabled { opacity: .4; cursor: default; }
+.send:not(:disabled) { color: var(--cpd-color-text-action-accent); }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// The agent additions and send. Everything else, including the hover bar, is CSS.
+const $ = s => document.querySelector(s);
+const timeline = $('.timeline'), box = $('textarea'), send = $('.send'), form = $('.composer');
+
+// Streaming: the agent keeps editing one event. Stop ends it; the reply stays as it was.
+// Approval: the agent waits; the buttons record the human's decision in place.
+timeline.addEventListener('click', e => {
+  const act = e.target.closest('[data-act]')?.dataset.act;
+  if (act === 'stop') {
+    const tile = e.target.closest('.tile');
+    tile.dataset.state = 'done';
+    tile.querySelector('.body').append(' (stopped)');
+  }
+  if (act === 'approve' || act === 'deny') {
+    const card = e.target.closest('.approval');
+    card.querySelector('.approval-actions').replaceChildren(Object.assign(document.createElement('span'), { textContent: act === 'approve' ? 'Sent by you' : 'Not sent' }));
+  }
+  const pill = e.target.closest('.reaction:not(.add)');
+  if (pill) {                                                   // a reaction toggles your own
+    const on = pill.getAttribute('aria-pressed') !== 'true', n = pill.querySelector('span');
+    pill.setAttribute('aria-pressed', on); n.textContent = +n.textContent + (on ? 1 : -1);
+  }
+});
+
+box.addEventListener('input', () => { send.disabled = !box.value.trim(); });
+box.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } });
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = box.value.trim();
+  if (!text) return;
+  const tile = document.createElement('article');
+  tile.className = 'tile'; tile.tabIndex = 0; tile.style.marginTop = '0';       // same sender as nobody above: a continuation
+  tile.innerHTML = '<time class="ts">now</time><span class="avatar" style="--h:150" aria-hidden="true">JO</span><div class="name"><b>You</b></div><p class="body"></p>';
+  tile.querySelector('p').textContent = text;                                    // typed text is never parsed as HTML
+  timeline.insertBefore(tile, $('.receipts'));
+  box.value = ''; send.disabled = true; timeline.scrollTop = timeline.scrollHeight;
+});
+timeline.scrollTop = timeline.scrollHeight;
+</script>
+
+<script type="text/plain" data-demo="pin">
+document.querySelector('.timeline').scrollTop = 1e6;
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="640" data-hint="Hover a message for the action bar. Open the tool trace, approve or decline the send, stop the streaming reply, then type and press Enter."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Room header</th><td>64px tall with a 1px rule: room avatar, name and a one-line topic.</td></tr>
+        <tr><th>Tile</th><td>One event. Element’s modern layout reserves a 64px gutter on the left: the avatar sits 8px in, and on hover a 46px slot shows the time at 10px. Text starts after the gutter, with 18px above a new sender and none above a continuation. Hover fills the tile with a subtle fill and an 8px corner.</td></tr>
+        <tr><th>Name</th><td>Display name in weight 600 at the body size. Element adds the Matrix ID in a secondary color when two people share a display name.</td></tr>
+        <tr><th>Action bar</th><td>Absolute, right 8px, resting just above the tile’s top edge: a canvas-colored bar with a 1px border and 8px corner, holding 28px icon buttons with 3px margin and a 6px corner.</td></tr>
+        <tr><th>Reactions</th><td>Pills with 1px of vertical and 6px of horizontal padding, a 1px border and a 10px corner. Yours is green. The add button is 16px and appears with the tile’s hover.</td></tr>
+        <tr><th>Thread summary</th><td>A 40px bar with an 8px corner under the root message: the latest reply’s sender and text, and the reply count. A border appears on hover.</td></tr>
+        <tr><th>New-messages line</th><td>A 1px accent rule with a medium-weight accent label.</td></tr>
+        <tr><th>Read receipts</th><td>A right-aligned row of 14px avatars with a 1px canvas ring, under the last event they have seen.</td></tr>
+        <tr><th>Composer</th><td>A 1px hairline above, 60px minimum height, text at the body size growing to 120px; 20px icon buttons with 6px between.</td></tr>
+        <tr><th>Agent member</th><td>MindRoom agents are ordinary Matrix users, so an agent tile is a normal tile. The rounded-square avatar and the “Agent” badge are ours, to make a non-human sender clear at a glance.</td></tr>
+        <tr><th>Tool trace</th><td>MindRoom shows tool calls as collapsible traces. A <code>details</code> with a one-line summary (count, time) and one line per call: the tool, its arguments, the result.</td></tr>
+        <tr><th>Approval card</th><td>MindRoom asks before sensitive actions and shows what will be sent and to whom. Two buttons; once chosen they are replaced by what was decided.</td></tr>
+        <tr><th>Streaming</th><td>The reply grows in place with a caret and a Stop button, as MindRoom’s agents “type into the room with progressive edits, visible tool traces, and cancellation”.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Color, type and spacing are Compound’s own tokens, read from its published CSS. Compound has no radius tokens; the 8, 10 and 6px corners are values Element hard-codes. Element computes the timeline avatar size in code, and we did not find it: the 30px here is our choice. MindRoom’s own UI measurements are not published.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>What a message is in Matrix</h2>
+      <table class="kv long-keys">
+        <thead><tr><th>Concept</th><th>On the wire</th></tr></thead>
+        <tbody>
+          <tr><th>Message</th><td><code>m.room.message</code> with <code>msgtype</code> and a plain <code>body</code>; optionally <code>format</code> = <code>org.matrix.custom.html</code> and a <code>formatted_body</code> from a small tag set (headings, lists, links, code, tables, <code>span</code> with <code>data-mx-spoiler</code>).</td></tr>
+          <tr><th>Kinds</th><td><code>m.text</code>, <code>m.emote</code> (the /me line), <code>m.notice</code> (for automated senders: show it distinctly and never auto-reply to it), and <code>m.image</code>, <code>m.file</code>, <code>m.audio</code>, <code>m.video</code> whose <code>body</code> is the filename or a caption.</td></tr>
+          <tr><th>Reply</th><td><code>m.relates_to.m.in_reply_to.event_id</code>. No <code>rel_type</code>.</td></tr>
+          <tr><th>Thread</th><td><code>rel_type: m.thread</code> pointing at the root. Every event in the thread references the root; threads cannot nest.</td></tr>
+          <tr><th>Edit</th><td><code>rel_type: m.replace</code> with <code>m.new_content</code>. Same sender, room and type; an edit cannot be edited. This is how a streaming reply grows: many edits of one event.</td></tr>
+          <tr><th>Reaction</th><td>An <code>m.reaction</code> event with <code>rel_type: m.annotation</code> and a <code>key</code> that is the emoji.</td></tr>
+          <tr><th>Read receipt</th><td>A marker saying “I have read up to here”, per user, with <code>m.read</code>, <code>m.read.private</code> or <code>m.fully_read</code>. A receipt can be scoped to a thread, or to <code>main</code>.</td></tr>
+          <tr><th>Typing</th><td>Ephemeral. A client sends <code>typing: true</code> with a timeout; each update replaces the whole list of who is typing.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Agent replies</th><td>MindRoom replies in threads using Matrix thread relations. In a thread with one human, the agent keeps answering without being tagged; once two or more humans are in it, agents answer only when tagged. If nobody is tagged a router picks one.</td></tr>
+        <tr><th>Streaming</th><td>Each update is an edit of the same event, so the timeline shows one message that grows, not many. A Synapse fork exists “for faster message edit streaming”. Stop sends no more edits and leaves what was written.</td></tr>
+        <tr><th>Approval</th><td>The agent blocks on the card. The decision replaces the buttons so the record shows who decided what.</td></tr>
+        <tr><th>Timestamps</th><td>Shown in the gutter on hover or focus, so a quiet timeline has no clock noise.</td></tr>
+        <tr><th>Layouts</th><td>Element ships three: modern (this one), IRC (a dense single line with a fixed-width name) and bubble (12px corners, 70% max width, others gray and yours green).</td></tr>
+        <tr><th>MindRoom’s own views</th><td>Its client has a Compact thread view (one card per thread with status and sort filters) and a Threads view (a badge under each thread’s first message). Agents title threads; users can rename, tag, pin or resolve them.</td></tr>
+        <tr><th>Reduced motion</th><td>The streaming caret stops blinking.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <div class="prose">
+        <ul>
+          <li>The timeline is <code>role="log"</code> with a name. Each tile is focusable and summarised by an <code>aria-label</code> of sender and time; Tab then reaches its action bar, reactions, links and trace.</li>
+          <li>The streaming reply should not be re-announced on every edit: keep it out of the live announcement until it finishes (for example <code>aria-busy</code> on the tile while it grows), then announce once.</li>
+          <li>The tool trace is a native <code>details</code> and <code>summary</code>, so it is keyboard operable and its state is exposed with no script.</li>
+          <li>The approval card is a labelled group. It is not a modal: the room stays readable while the decision waits. Do not auto-focus its buttons.</li>
+          <li>The agent badge is text, not only the avatar shape or color.</li>
+          <li>Compound’s secondary text is #656d77 on white (5.2:1) in light and #808994 on #101317 (5.3:1) in dark. The 10px timestamp is Element’s own choice and is small; keep it for a hover aid and do not use it for anything a reader needs.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

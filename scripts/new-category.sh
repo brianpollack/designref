@@ -13,6 +13,6 @@ SECTION="$1"; ID="$2"; TITLE="${3:-$ID}"
 DIR="$SECTION/$ID"
 [[ -e "$DIR/index.html" ]] && { echo "$DIR/index.html already exists"; exit 1; }
 mkdir -p "$DIR"
-sed -e "s|{{PAGE}}|$SECTION/$ID|" -e "s|{{TITLE}}|$TITLE|" _scaffold/category.html > "$DIR/index.html"
+sed -e "s|{{PAGE}}|$SECTION/$ID|" -e "s|{{TITLE}}|${TITLE//&/\\&}|" _scaffold/category.html > "$DIR/index.html"
 echo "Created $DIR/index.html"
 grep -q "id: '$ID'" assets/catalog.js || echo "Next: add the category to assets/catalog.js"

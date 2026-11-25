@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluent 2 Teams Chat</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="templates/chat/fluent-2-teams-chat">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <header class="top">
+    <span class="avatar" style="--h:262">PR<i class="presence" role="img" aria-label="Available"></i></span>
+    <div class="who"><h1>Priya Raman</h1><p>Available</p></div>
+  </header>
+
+  <!-- role="log": new messages are announced politely. -->
+  <div class="log" role="log" aria-label="Chat with Priya Raman">
+    <div class="divider" role="separator"><span>Yesterday</span></div>
+
+    <!-- Received message: avatar, name and time above the bubble. -->
+    <div class="msg them" tabindex="0" aria-label="Priya Raman, 9:41 AM">
+      <span class="avatar" style="--h:262" aria-hidden="true">PR</span>
+      <div class="col">
+        <div class="byline"><span>Priya Raman</span><time>9:41 AM</time></div>
+        <div class="bubble"><p>Cut the 4.2 branch last night. Tile cache is in; route timeouts are still open.</p></div>
+        <div class="reactions"><button class="pill" aria-pressed="false">👍 <span>2</span></button></div>
+        <div class="tools" role="toolbar" aria-label="Message actions">
+          <button aria-label="React with like">👍</button><button aria-label="React with heart">❤️</button><button aria-label="React with laugh">😆</button>
+          <button aria-label="React with surprised">😮</button><button aria-label="React with sad">🙁</button>
+          <button aria-label="Reply"><span class="fi"><svg class="icon r"><use href="#i-arrow_reply_20_regular"/></svg><svg class="icon f"><use href="#i-arrow_reply_20_filled"/></svg></span></button>
+          <button aria-label="More actions"><span class="fi"><svg class="icon"><use href="#i-more_horizontal_20_regular"/></svg></span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- An attached message from the same sender: no avatar, no byline, 2px above instead of 16px. -->
+    <div class="msg them attached" tabindex="0" aria-label="Priya Raman, 9:42 AM">
+      <div class="col">
+        <div class="bubble"><p>Can you take a look at Safari?</p></div>
+      </div>
+    </div>
+
+    <div class="divider" role="separator"><span>Today</span></div>
+
+    <!-- My messages: right aligned, brand-tinted, with a status icon. -->
+    <div class="msg me" tabindex="0" aria-label="You, 8:30 AM, read">
+      <div class="bubble"><p>On it. <span class="mention">@Priya</span> I’ll report back before standup.</p></div>
+      <span class="status" role="img" aria-label="Read"><svg class="icon"><use href="#i-eye_16_filled"/></svg></span>
+    </div>
+    <div class="msg me attached" tabindex="0" aria-label="You, 8:31 AM, delivered">
+      <div class="bubble"><p>Safari is clean on 4.2.</p></div>
+      <span class="status" role="img" aria-label="Delivered"><svg class="icon"><use href="#i-checkmark_circle_16_regular"/></svg></span>
+    </div>
+  </div>
+
+  <form class="compose">
+    <div class="field">
+      <textarea rows="1" aria-label="Type a message" placeholder="Type a message"></textarea>
+      <div class="row">
+        <button type="button" class="btn" aria-label="Format"><span class="fi"><svg class="icon"><use href="#i-text_font_20_regular"/></svg></span></button>
+        <button type="button" class="btn" aria-label="Emoji"><span class="fi"><svg class="icon r"><use href="#i-emoji_20_regular"/></svg><svg class="icon f"><use href="#i-emoji_20_filled"/></svg></span></button>
+        <button type="button" class="btn" aria-label="Attach"><span class="fi"><svg class="icon"><use href="#i-attach_20_regular"/></svg></span></button>
+        <button class="btn send" aria-label="Send" disabled><span class="fi"><svg class="icon r"><use href="#i-send_20_regular"/></svg><svg class="icon f"><use href="#i-send_20_filled"/></svg></span></button>
+      </div>
+    </div>
+  </form>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: Fluent 2 alias tokens in the Teams theme, resolved to light and Teams dark ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Neutral surfaces */
+  --colorNeutralBackground1: light-dark(#ffffff, #292929);          /* Chat surface */
+  --colorNeutralBackground3: light-dark(#f5f5f5, #1f1f1f);          /* Received bubble */
+  --colorNeutralBackground6: light-dark(#e6e6e6, #333333);          /* Avatar fill (neutral) */
+  --colorSubtleBackgroundHover: light-dark(#f5f5f5, #383838);       /* Subtle button on hover */
+  --colorSubtleBackgroundPressed: light-dark(#e0e0e0, #2e2e2e);     /* Subtle button pressed */
+
+  /* @group Neutral text and strokes */
+  --colorNeutralForeground1: light-dark(#242424, #ffffff);          /* Message text, names, title */
+  --colorNeutralForeground2: light-dark(#424242, #d6d6d6);          /* Divider text, button icons */
+  --colorNeutralForeground3: light-dark(#616161, #adadad);          /* Byline: name and time */
+  --colorNeutralStroke1: light-dark(#d1d1d1, #666666);              /* Compose box outline */
+  --colorNeutralStroke2: light-dark(#e0e0e0, #525252);              /* Divider line, reaction pill border */
+  --colorNeutralStrokeAccessible: light-dark(#616161, #adadad);     /* Compose box bottom edge */
+
+  /* @group Brand (brandTeams ramp) */
+  --colorBrandBackground2: light-dark(#e8ebfa, #2f2f4a);            /* My message bubble: brand[160] light, brand[20] dark */
+  --colorBrandForeground1: light-dark(#5b5fc7, #7f85f5);            /* Status icon, send icon, mention: brand[80] light, brand[100] dark */
+  --colorCompoundBrandStroke: light-dark(#5b5fc7, #7f85f5);         /* Focus bar under the compose box, 2px */
+
+  /* @group Shape and spacing */
+  --borderRadiusMedium: 4px;                                        /* Bubble, button, compose box and toolbar corners */
+  --borderRadiusCircular: 10000px;                                  /* Avatars and presence dot */
+  --spacingHorizontalS: 8px;                                        /* Gap between avatar and bubble */
+  --spacingVerticalL: 16px;                                         /* Space above a message that starts a run; the bubble's right and bottom padding */
+  --spacingVerticalXXS: 2px;                                        /* Space above an attached message */
+
+  /* @group Type (Segoe UI stack) */
+  --fontFamilyBase: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;  /* Font stack */
+  --fontSizeBase300: 14px;                                          /* Message body; line height 20px, weight 400 */
+  --fontSizeBase200: 12px;                                          /* Byline, divider text, reaction count; line height 16px */
+
+  /* @group Elevation */
+  --shadow4: 0 0 2px light-dark(rgb(0 0 0 / .12), rgb(0 0 0 / .24)), 0 2px 4px light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .28));   /* Hover toolbar */
+
+  /* @group Avatar and message sizes */
+  --avatar-size: 32px;                                              /* Avatar, from the Avatar size scale (default 32px) */
+  --bubble-pad: 8px 16px 16px 16px;                                 /* Bubble padding: top, right, bottom, left */
+  --bubble-gap: calc(100% - 100px);                                 /* Received bubble max width */
+  --pill-h: 26px;                                                   /* Reaction pill height; radius 13px, min width 41px */
+}
+
+/* ---- Component ---- */
+.app { height: 100dvh; display: flex; flex-direction: column; background: var(--colorNeutralBackground1); color: var(--colorNeutralForeground1); font: 400 var(--fontSizeBase300)/20px var(--fontFamilyBase); }
+
+/* Header */
+.top { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--colorNeutralStroke2); }
+.who { flex: 1; min-width: 0; }
+.who h1 { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; }
+.who p { margin: 0; font-size: var(--fontSizeBase200); line-height: 16px; color: var(--colorNeutralForeground3); }
+.avatar { position: relative; flex: none; display: grid; place-items: center; width: var(--avatar-size); height: var(--avatar-size); border-radius: var(--borderRadiusCircular); font-size: 12px; font-weight: 600; background: light-dark(oklch(0.52 0.13 var(--h)), oklch(0.74 0.1 var(--h))); color: light-dark(#fff, #14151a); }
+.presence { position: absolute; right: -2px; bottom: -2px; width: 10px; height: 10px; border-radius: 50%; background: #13a10e; box-shadow: 0 0 0 1.5px var(--colorNeutralBackground1); }
+
+/* Subtle icon button: transparent, fills on hover, icon flips Regular to Filled. */
+.btn { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: var(--borderRadiusMedium); background: none; color: var(--colorNeutralForeground2); cursor: pointer; }
+.btn:hover { background: var(--colorSubtleBackgroundHover); }
+.btn:active { background: var(--colorSubtleBackgroundPressed); }
+.btn:focus-visible, .tools button:focus-visible, .pill:focus-visible, .msg:focus-visible { outline: 2px solid var(--colorNeutralForeground1); outline-offset: -2px; }
+.icon { width: 20px; height: 20px; }
+.fi { display: grid; } .fi .f { display: none; }
+:is(.btn, .tools button):hover .fi .r { display: none; }
+:is(.btn, .tools button):hover .fi .f { display: block; }
+.fi .r, .fi .f { grid-area: 1 / 1; }
+
+/* Log: rests at the bottom. */
+.log { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 12px 8px 16px; overflow-y: auto; }
+.log > :first-child { margin-top: auto; }
+
+/* Divider with text: lines either side, 12px of space around the label. */
+.divider { display: flex; align-items: center; gap: 12px; margin-top: 16px; font-size: var(--fontSizeBase200); line-height: 16px; color: var(--colorNeutralForeground2); }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--colorNeutralStroke2); }
+
+/* A message is a row. Received: avatar column, then the stack. Mine: pushed right, 50px clear on the left. */
+.msg { position: relative; display: flex; column-gap: var(--spacingHorizontalS); padding-top: var(--spacingVerticalL); }
+.msg.attached { padding-top: var(--spacingVerticalXXS); }
+.msg.them.attached { margin-left: 40px; }                         /* 32px avatar + 8px gap keeps the bubbles aligned */
+.col { position: relative; min-width: 0; max-width: var(--bubble-gap); }
+.byline { display: flex; align-items: center; column-gap: 12px; font-size: var(--fontSizeBase200); line-height: 16px; color: var(--colorNeutralForeground3); }
+.msg.attached .byline { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }   /* Kept for screen readers */
+.bubble { padding: var(--bubble-pad); border-radius: var(--borderRadiusMedium); background: var(--colorNeutralBackground3); }
+.bubble p { margin: 0; overflow-wrap: anywhere; }
+.msg:has(.reactions) .bubble { margin-bottom: 18px; }            /* Room for the pills: they straddle the bubble's bottom edge, 12px in and 14px out */
+
+.msg.me { align-self: flex-end; margin-left: 50px; display: grid; grid-template-columns: auto 16px; grid-template-areas: "body status"; }
+.msg.me .bubble { grid-area: body; justify-self: end; background: var(--colorBrandBackground2); }
+.status { grid-area: status; align-self: end; display: grid; color: var(--colorBrandForeground1); }
+.status .icon { width: 16px; height: 16px; }
+.mention { color: var(--colorBrandForeground1); font-weight: 600; }
+
+/* Reactions: a zero-height row so the pills hang over the bubble's lower edge. */
+.reactions { position: relative; height: 0; display: flex; padding-right: 20px; }
+.pill { display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-width: 41px; height: var(--pill-h); padding: 0 8px; border: 1px solid var(--colorNeutralStroke2); border-radius: 13px; background: var(--colorNeutralBackground1); color: var(--colorNeutralForeground2); font: 400 var(--fontSizeBase200)/16px var(--fontFamilyBase); cursor: pointer; transform: translateY(-30px); }
+.pill:hover { background: var(--colorSubtleBackgroundHover); }
+.pill[aria-pressed="true"] { border-color: var(--colorBrandForeground1); color: var(--colorBrandForeground1); }
+
+/* Hover toolbar: five quick reactions, reply, more. Fluent ships the slot, not the styling. */
+.tools { position: absolute; top: -12px; right: 0; display: flex; gap: 0; padding: 2px; border-radius: var(--borderRadiusMedium); background: var(--colorNeutralBackground1); box-shadow: var(--shadow4); opacity: 0; pointer-events: none; z-index: 2; }
+.tools button { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: var(--borderRadiusMedium); background: none; color: var(--colorNeutralForeground2); font-size: 16px; cursor: pointer; }
+.tools button:hover { background: var(--colorSubtleBackgroundHover); }
+.msg:hover .tools, .msg:focus-within .tools { opacity: 1; pointer-events: auto; }
+
+/* Compose: Fluent Textarea, outline appearance, with the actions in the box. */
+.compose { padding: 8px 12px 12px; }
+.field { border: 1px solid var(--colorNeutralStroke1); border-bottom-color: var(--colorNeutralStrokeAccessible); border-radius: var(--borderRadiusMedium); background: var(--colorNeutralBackground1); position: relative; }
+.field::after { content: ""; position: absolute; inset: auto -1px -1px; height: 2px; border-radius: 0 0 var(--borderRadiusMedium) var(--borderRadiusMedium); background: var(--colorCompoundBrandStroke); transform: scaleX(0); transition: transform .2s cubic-bezier(.33, 0, .67, 1); }
+.field:focus-within::after { transform: scaleX(1); }
+.field textarea { display: block; width: 100%; padding: 6px 12px; border: 0; background: none; color: inherit; font: inherit; resize: none; outline: none; field-sizing: content; min-height: 52px; max-height: 8lh; }
+.field textarea::placeholder { color: var(--colorNeutralForeground3); }
+.row { display: flex; gap: 2px; padding: 0 4px 4px; }
+.send { margin-inline-start: auto; color: var(--colorBrandForeground1); }
+.send:disabled { color: light-dark(#bdbdbd, #5c5c5c); cursor: default; }
+.send:disabled:hover { background: none; }
+.send:disabled:hover .fi .r { display: grid; } .send:disabled:hover .fi .f { display: none; }
+@media (prefers-reduced-motion: reduce) { .field::after { transition: none; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; overflow: hidden; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Send, reactions, and nothing else. Hover toolbar, status icons, grow and focus bar are CSS.
+const log = document.querySelector('.log'), box = document.querySelector('textarea'), send = document.querySelector('.send'), form = document.querySelector('.compose');
+const sync = () => { send.disabled = !box.value.trim(); };
+box.addEventListener('input', sync);
+// Enter sends, Shift+Enter is a new line. Teams uses Ctrl+Enter only when the box is expanded.
+box.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); form.requestSubmit(); } });
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  const text = box.value.trim();
+  if (!text) return;
+  const row = document.createElement('div');
+  row.className = 'msg me attached'; row.tabIndex = 0;
+  row.innerHTML = '<div class="bubble"><p></p></div><span class="status" role="img" aria-label="Sending"><svg class="icon"><use href="#i-circle_16_regular"/></svg></span>';
+  row.querySelector('p').textContent = text;                    // typed text is never parsed as HTML
+  log.append(row); box.value = ''; sync(); log.scrollTop = log.scrollHeight;
+});
+// Quick reactions add a pill, or add one to the count of the pill that matches.
+log.addEventListener('click', e => {
+  const quick = e.target.closest('.tools button[aria-label^="React"]'), pill = e.target.closest('.pill');
+  const col = (quick || pill)?.closest('.col'); if (!col) return;
+  const emoji = quick ? quick.textContent : pill.firstChild.textContent.trim();
+  let p = [...col.querySelectorAll('.pill')].find(b => b.firstChild.textContent.trim() === emoji);
+  if (!p) { col.querySelector('.reactions') || col.querySelector('.bubble').insertAdjacentHTML('afterend', '<div class="reactions"></div>');
+    p = Object.assign(document.createElement('button'), { className: 'pill', innerHTML: emoji + ' <span>0</span>' }); p.setAttribute('aria-pressed', 'false'); col.querySelector('.reactions').append(p); }
+  const on = p.getAttribute('aria-pressed') !== 'true', n = p.querySelector('span');
+  p.setAttribute('aria-pressed', on); n.textContent = +n.textContent + (on ? 1 : -1);
+  if (!+n.textContent) p.remove();
+});
+log.scrollTop = log.scrollHeight;
+</script>
+
+<script type="text/plain" data-demo="pin">
+document.querySelector('.log').scrollTop = 1e6;
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="620" data-hint="Hover or Tab to a message for the toolbar and click a reaction. Type and press Enter. Icons flip from Regular to Filled on hover."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Received message</th><td>A 32px avatar, then a stack: a byline (name and time, 12px, second-level gray) over a bubble. The bubble is 4px-cornered on the neutral background 3 fill with padding of 8px top, 16px right and left, 16px bottom, and is at most the row width less 100px.</td></tr>
+        <tr><th>Attached message</th><td>A follow-up from the same sender: no avatar and no byline, 2px above instead of 16px, shifted 40px so its bubble lines up under the first. The byline stays in the DOM for screen readers.</td></tr>
+        <tr><th>My message</th><td>Pushed to the right with at least 50px clear on the left, filled with the brand background 2 tint, and with no avatar or byline. A 16px status icon sits at its lower right.</td></tr>
+        <tr><th>Status icon</th><td>Sending: circle. Received: check in a circle. Read: filled eye. Failed: filled warning. Blocked: filled flag. Scheduled: clock. All 16px; brand colored, red when failed or blocked.</td></tr>
+        <tr><th>Divider</th><td>A Fluent Divider with text: lines either side of a 12px label, 12px of space around it, line in stroke 2.</td></tr>
+        <tr><th>Reaction pill</th><td>26px high, 13px radius, 1px stroke 2, minimum 41px wide, an emoji and a 12px count. The row has no height of its own, so the pills hang over the bubble’s lower edge; the bubble gets extra bottom margin to make room. The overlap offsets are ours: react-chat supplies the zero-height container and nothing more.</td></tr>
+        <tr><th>Hover toolbar</th><td>Five quick reactions, reply and more, in a shadow 4 card at the bubble’s top right. The react-chat package provides only the slot, so its geometry is ours.</td></tr>
+        <tr><th>Compose</th><td>A Fluent Textarea in the outline appearance, at least 52px tall, with a 1px stroke 1 outline and a stronger bottom edge. Focus draws a 2px brand bar along the bottom. Format, emoji and attach sit in the box; send is brand colored when enabled.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Token names are Fluent 2’s own. Values are resolved from the Teams theme: the Teams dark neutrals and the brandTeams ramp, by step index (the hex comments beside brand tokens in lightColor.ts and darkColor.ts show a placeholder ramp, so they are not used).</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Grouping</th><td>The consumer marks a message <code>attached</code> when the previous one is from the same sender; the component only styles it. Teams does not publish the time window.</td></tr>
+        <tr><th>Reactions</th><td>Hover a message and choose one. Teams shows up to five quick emoji and a More reactions button; the reaction appears just below the message; tapping it again removes yours; a message holds up to 20 reactions. Which five are the defaults is not documented; we use the first five of the six named types: like, heart, laugh, surprised, sad. Angry is the sixth.</td></tr>
+        <tr><th>Icons</th><td>Regular at rest, Filled while hovered, as Fluent does for toolbar and selected states. Both are in the DOM and CSS swaps them, so there is no flash.</td></tr>
+        <tr><th>Focus</th><td>The message body is focusable and traps focus in its group, so Tab reaches its toolbar and links; the component sets <code>tabindex="0"</code> and a limited focus trap. Here, Tab on a message reaches the toolbar because focus within shows it.</td></tr>
+        <tr><th>Highlight</th><td>A message that is jumped to flashes a marigold background and a 0.1rem dark-orange inset ring that fade over 4 seconds.</td></tr>
+        <tr><th>Mentions</th><td>Type <kbd>@</kbd> and pick from the menu. <kbd>@channel</kbd> and <kbd>@team</kbd> work in channels; <kbd>@everyone</kbd> works in a chat if the owner enabled it. The recipient gets an Activity notification that opens at that message.</td></tr>
+        <tr><th>Unread</th><td>Unread chats are bold with a count; muted chats are bold with no count. There is no dot.</td></tr>
+        <tr><th>Edit and delete</th><td>Hover your own message for Edit, then Done. Delete is in More options and offers Undo.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key (Teams, Windows)</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Ctrl</kbd> + <kbd>R</kbd></th><td>Go to the compose box.</td></tr>
+          <tr><th><kbd>Ctrl</kbd> + <kbd>M</kbd></th><td>Move focus to the message pane.</td></tr>
+          <tr><th><kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd></th><td>Reply to the last message.</td></tr>
+          <tr><th><kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>R</kbd></th><td>React to the last message.</td></tr>
+          <tr><th><kbd>Ctrl</kbd> + <kbd>J</kbd></th><td>Jump to the last read or newest message.</td></tr>
+          <tr><th><kbd>Shift</kbd> + <kbd>Enter</kbd></th><td>New line; <kbd>Ctrl</kbd> + <kbd>Enter</kbd> sends once the box is expanded.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>This demo wires Enter, Shift+Enter and Tab only; the Teams shortcuts above are what a production build should add.</li>
+          <li>Status icons carry a text label, because Fluent’s icons are not read as meaning on their own. Fluent’s own guidance for avatars says presence icons are hard to see at 32px and below, so pair them with text: the header’s “Available” does that.</li>
+          <li>Each message has a summary name (sender, time and status) so focusing it reads the whole message.</li>
+          <li>Focus ring is a 2px line in the foreground color, inside the element, so it is visible on every fill in both themes.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>
