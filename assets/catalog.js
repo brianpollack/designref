@@ -19,6 +19,8 @@
  *         system          Optional id of the core library (sources.js → systems) this concept
  *                         is built to. Add `inspired: true` when it follows that library's look
  *                         and guidance but the values are our own.
+ *         icons           Optional icon library id (icon-libraries.js) the demo draws from;
+ *                         default 'lucide'. Built-to-spec concepts use their library's own set.
  *         refs[]          Citations, rendered as the page's Sources section. Each is
  *                         [pageId, note]: pageId (or an array of ids sharing one note) is a key
  *                         of SOURCES.pages; the note says what the page contributed (HTML allowed).
@@ -60,6 +62,7 @@ window.CATALOG = {
     'view-transitions':   { name: 'View transitions',     url: 'https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API' },
     'field-sizing':       { name: 'field-sizing',         url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/field-sizing' },
     'highlight-api':      { name: 'Custom Highlight API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CSS_Custom_Highlight_API' },
+    'scroll-target-group': { name: 'scroll-target-group', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-target-group' },
     'anchored-queries':   { name: 'Anchored container queries', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/container-type' },
   },
 
@@ -132,7 +135,7 @@ window.CATALOG = {
               title: 'Material 3 Expressive Menu',
               summary: 'Google’s vertical menu: grouped segments with 2dp gaps, rounded selection, standard and vibrant color styles.',
               features: ['invoker-commands', 'popover', 'anchor-positioning', 'focusgroup', 'starting-style', 'light-dark'],
-            system: 'material-3',
+            system: 'material-3', icons: 'material-symbols',
             refs: [
               ['m3-menus', 'anatomy, the vertical menu layouts and both color styles.'],
               ['9to5-m3e-menus', 'the gap guidance (one or two per menu), Vibrant “should be used sparingly”, inset selection and submenu shape morphing.'],
@@ -147,7 +150,7 @@ window.CATALOG = {
               title: 'Fluent 2 Menu',
               summary: 'Microsoft’s menu from Fluent UI React v9: 32px rows, checkmark and icon columns, a brand-tinted icon on hover.',
               features: ['invoker-commands', 'popover', 'anchor-positioning', 'anchored-queries', 'focusgroup', 'has', 'starting-style', 'light-dark'],
-            system: 'fluent-2',
+            system: 'fluent-2', icons: 'fluent-system-icons',
             refs: [
               ['fluent-menu', 'when to use a menu, grouping with dividers and headers, and selectable items.'],
               [['fluent-menu-popover-styles', 'fluent-menu-list-styles'], 'the surface: 4px corners, 4px padding, 138–300px width, shadow16 and the 2px gap between items.'],
@@ -163,7 +166,7 @@ window.CATALOG = {
               title: 'Carbon Menu',
               summary: 'IBM’s context menu: square corners, 16px icons, four row heights, and a danger item that fills red on focus.',
               features: ['popover', 'anchor-positioning', 'position-try', 'focusgroup', 'has', 'light-dark'],
-            system: 'carbon',
+            system: 'carbon', icons: 'carbon-icons',
             refs: [
               ['carbon-menu', 'when to use a menu, sizes, selectable items and danger actions.'],
               ['carbon-menu-scss', 'every size, space and state on this page, including the danger focus ring.'],
@@ -244,7 +247,89 @@ window.CATALOG = {
         { id: 'sliders', title: 'Range Sliders' },
         { id: 'splitters', title: 'Splitters & Resizable Panes' },
         { id: 'steppers', title: 'Steppers' },
-        { id: 'tabs', title: 'Tabs' },
+        {
+          id: 'tabs',
+          title: 'Tabs & Tabbed Navigation',
+          summary: 'One row of labels, one visible panel. Tabs switch views in place; the same markup can also navigate a long page.',
+          specs: { 'material-3': 'm3-tabs', 'apple-hig': 'hig-tab-bars', 'fluent-2': 'fluent-tablist', 'carbon': 'carbon-tabs' },
+          refs: [
+            ['apg-tabs'],
+            ['mdn-tab-role'],
+            ['m3-tabs'],
+            ['fluent-tablist'],
+            ['carbon-tabs'],
+            ['hig-tab-bars'],
+          ],
+          concepts: [
+            {
+              id: 'underline-tabs',
+              title: 'Underline Tabs',
+              summary: 'The standard tablist. One indicator slides between tabs, placed by anchor positioning; arrow keys move and select.',
+              features: ['anchor-positioning', 'has', 'light-dark'],
+              refs: [
+                ['apg-tabs', 'roles and states, roving <code>tabindex</code>, arrow keys with wrapping, <kbd>Home</kbd> and <kbd>End</kbd>, and automatic activation when panels show instantly.'],
+                ['mdn-tab-role', '<code>aria-selected</code> and <code>aria-controls</code>, and why a tab is a button that controls a panel.'],
+                ['fluent-tab-indicator', 'one indicator element animated between tabs instead of one underline per tab.'],
+                ['mdn-position-area', 'the anchor functions that size the indicator to the selected tab.'],
+              ],
+            },
+            {
+              id: 'scroll-spy-tabs',
+              title: 'Scroll-Spy Tabs',
+              summary: 'Tabs that navigate one long page. The browser marks the tab for the section in view: no scroll listener, no script.',
+              features: ['scroll-target-group', 'anchor-positioning', 'light-dark'],
+              refs: [
+                ['mdn-scroll-target-group', '<code>scroll-target-group: auto</code> on the tab container makes each in-page link a scroll marker.'],
+                ['mdn-target-current', '<code>:target-current</code> matches the link whose section is in view.'],
+                ['apg-tabs', 'where this differs: these are links to sections, so the tab roles do not apply.'],
+              ],
+            },
+            {
+              id: 'material-3-tabs',
+              title: 'Material 3 Tabs',
+              summary: 'Google’s tab row: primary tabs with a 3px rounded indicator under the label, secondary tabs with a full-width underline.',
+              features: ['anchor-positioning', 'has', 'light-dark'],
+              system: 'material-3', icons: 'material-symbols',
+              refs: [
+                ['m3-tabs', 'primary and secondary tabs, when to use each, and badges.'],
+                [['compose-primary-tab-tokens', 'compose-secondary-tab-tokens'], 'every height, indicator, type and color role on this page.'],
+                ['compose-tabrow', 'the indicator is at least 24dp wide and tracks the label, the divider sits under the row, and scrollable rows use a 90dp minimum tab and 52dp start padding.'],
+                [['compose-color-light-tokens', 'compose-color-dark-tokens', 'compose-palette-tokens'], 'which role maps to which tone, and the tone values.'],
+              ],
+            },
+            {
+              id: 'fluent-2-tab-list',
+              title: 'Fluent 2 Tab List',
+              summary: 'Microsoft’s tab list: a 3px rounded brand indicator that slides, hover pill under the label, bold selected text.',
+              features: ['anchor-positioning', 'has', 'light-dark'],
+              system: 'fluent-2', icons: 'fluent-system-icons',
+              refs: [
+                ['fluent-tablist', 'when to use tabs, transparent and subtle appearances, and sizes.'],
+                ['fluent-tab-styles', 'padding by size, the indicator geometry, hover and pressed colors, and the focus ring.'],
+                ['fluent-tablist-styles', 'a row with no gap for the line appearance.'],
+                ['fluent-tab-indicator', 'one indicator translated and scaled between tabs over 300ms.'],
+                [['fluent-grey-colors', 'fluent-light-color', 'fluent-dark-color', 'fluent-brand-colors'], 'every color on this page, resolved to the web brand and grey ramps.'],
+                [['fluent-durations', 'fluent-curves'], 'the 300ms duration and the decelerate curve.'],
+                ['fluent-shadows', 'shadow4, half of the keyboard focus ring.'],
+              ],
+            },
+            {
+              id: 'carbon-tabs',
+              title: 'Carbon Tabs',
+              summary: 'IBM’s tabs: a line variant with a 2px underline and a contained variant of gray blocks, in three heights.',
+              features: ['has', 'light-dark'],
+              system: 'carbon', icons: 'carbon-icons',
+              refs: [
+                ['carbon-tabs', 'line and contained variants, and when to use each.'],
+                [['carbon-tabs-scss', 'carbon-tabs-vars'], 'every size, border, hover and selected state, including the 2px underline colors.'],
+                ['carbon-tabs-tsx', 'roles, selected tab in the tab order, arrow, <kbd>Home</kbd> and <kbd>End</kbd> keys, and automatic or manual activation.'],
+                ['carbon-layout-scss', 'row heights 32, 40 and 48px and the 16px inline padding.'],
+                [['carbon-white-theme', 'carbon-g100-theme', 'carbon-colors-tokens'], 'which tokens a tab resolves to, and the gray and blue values.'],
+                ['carbon-focus-outline', 'the inset 2px outline.'],
+              ],
+            },
+          ],
+        },
         { id: 'toasts', title: 'Toasts & Notifications' },
         { id: 'toolbars', title: 'Toolbars' },
         { id: 'tooltips', title: 'Tooltips' },

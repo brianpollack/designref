@@ -14,7 +14,8 @@
      6. Lists             home catalog and category concept rows
      7. Concept           preview frames, toolbar, spec table, code viewer
      8. Sources           citations, core-library tables, sources.html
-     9. Thumb mode        concept page rendered as a category thumbnail
+     9. Icons             icons.html: comparison table and icon grids
+    10. Thumb mode        concept page rendered as a category thumbnail
    ========================================================================== */
 
 /* 1. Tokens ---------------------------------------------------------------- */
@@ -172,17 +173,21 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 .nav-tree a:hover { background: var(--bg-3); }
 .nav-tree a[aria-current="page"] { color: var(--accent); background: var(--accent-soft); }
 .nav-tree .planned { color: var(--muted); cursor: default; }
-.planned-group summary {
+.nav-fold summary {
   display: flex; align-items: baseline; gap: 8px; padding: 4px 8px; border-radius: 6px;
   font-size: 13.5px; color: var(--muted); cursor: pointer; list-style: none;
 }
-.planned-group summary::-webkit-details-marker { display: none; }
+.nav-fold summary::-webkit-details-marker { display: none; }
 /* Drawn chevron marks the row as a fold, not a category; it turns down when open. */
-.planned-group .chev { width: 14px; height: 14px; margin-inline-start: -2px; align-self: center; transition: rotate .15s; }
-.planned-group[open] .chev { rotate: 90deg; }
-.planned-group summary:hover { background: var(--bg-3); color: var(--text); }
-.planned-group ul { margin: 2px 0 6px 10px; }
-.planned-group .planned { font-size: 13px; }
+.nav-fold .chev { width: 14px; height: 14px; margin-inline-start: -2px; align-self: center; transition: rotate .15s; }
+.nav-fold[open] .chev { rotate: 90deg; }
+.nav-fold summary:hover { background: var(--bg-3); color: var(--text); }
+.nav-fold ul { margin: 2px 0 6px 10px; }
+.nav-fold .planned { font-size: 13px; }
+/* A fold that is its own sidebar section (Icon libraries): spaced like a section heading,
+   labelled in the text color because its links lead somewhere. */
+.nav-fold.section { margin-top: 14px; }
+.nav-fold.section > summary { color: var(--text); }
 .nav-tree .count { margin-inline-start: auto; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .nav-tree ul ul { margin: 2px 0 6px 10px; }
 .nav-tree ul ul a { font-size: 13px; color: var(--muted); }
@@ -198,13 +203,13 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 .page-header h1, .page-header .summary { max-width: var(--measure); }
 .page-header .summary { margin-top: 10px; font-size: 16.5px; color: var(--muted); }
 /* Facts line under a title: page headers, and each core library on sources.html. */
-:is(.page-header, .system) .meta {
+:is(.page-header, .library) .meta {
   margin-top: 14px; font-size: 13px; color: var(--muted);
   display: flex; flex-wrap: wrap; gap: 4px 16px;
 }
 .page-header .meta :is([data-js-lines], .built-to) { color: var(--text); }
-:is(.page-header, .system) .meta a { color: inherit; text-decoration-color: var(--line); }
-:is(.page-header, .system) .meta a:hover { color: var(--accent); }
+:is(.page-header, .library) .meta a { color: inherit; text-decoration-color: var(--line); }
+:is(.page-header, .library) .meta a:hover { color: var(--accent); }
 
 /* Sections: generous space above a heading, tight below. Hairline separates. */
 .page > section { margin-top: 56px; }
@@ -237,8 +242,8 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 /* 6. Lists ----------------------------------------------------------------- */
 /* Home: each section is a heading plus a multi-column list of categories. */
 .catalog-section + .catalog-section { margin-top: 56px; }
-:is(.catalog-section, .system) > h2 { margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; }
-:is(.catalog-section, .system) > h2 .count { color: var(--muted); font-weight: 400; font-size: 13px; }
+:is(.catalog-section, .library) > h2 { margin-bottom: 14px; display: flex; gap: 10px; align-items: baseline; }
+:is(.catalog-section, .library) > h2 .count { color: var(--muted); font-weight: 400; font-size: 13px; }
 
 .featured { list-style: none; padding: 0; margin: 0 0 24px; }
 .featured li { padding: 14px 0; border-bottom: 1px solid var(--line); }
@@ -317,6 +322,8 @@ body.resizing iframe { pointer-events: none; }  /* Frames would swallow pointer 
 .spec .swatch > i { position: absolute; inset: 0; }
 .spec .layer + .layer { margin-top: 3px; }
 .spec-note { margin-top: 12px; font-size: 13px; color: var(--muted); max-width: var(--measure); }
+/* Credit for a demo's icon library, at the end of Specs. */
+.icon-credit { margin-top: 24px; font-size: 13px; color: var(--muted); max-width: var(--measure); }
 
 /* Code viewer: tab row + one panel. */
 .code-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 2px; margin-bottom: 8px; }
@@ -350,18 +357,18 @@ a.site:hover { color: var(--accent); }
 [id] { scroll-margin-top: 24px; }
 
 /* One core library: summary, facts line, foundations, notes, then the pages cited. */
-.system > h2 { margin-bottom: 6px; }
-.system-summary { max-width: var(--measure); color: var(--muted); }
-.system .meta { margin: 10px 0 6px; }
-.system h3 { margin: 36px 0 2px; }
+.library > h2 { margin-bottom: 6px; }
+.library-summary { max-width: var(--measure); color: var(--muted); }
+.library .meta { margin: 10px 0 6px; }
+.library h3 { margin: 36px 0 2px; }
 .foundations th { font-weight: 500; width: 22%; }
 .foundations td { font-variant-numeric: tabular-nums; }
 .foundations td.src { width: 1%; white-space: nowrap; }
-:is(.foundations td.src, .system-notes) a { font-size: 12px; color: var(--muted); text-decoration-color: var(--line); }
-:is(.foundations td.src, .system-notes) a:hover { color: var(--accent); }
-.system-notes { max-width: var(--measure); margin: 16px 0 0; padding-inline-start: 20px; font-size: 13.5px; color: var(--muted); }
-.system-notes li + li { margin-top: 6px; }
-.system-notes li::marker { color: var(--faint); }
+:is(.foundations td.src, .library-notes) a { font-size: 12px; color: var(--muted); text-decoration-color: var(--line); }
+:is(.foundations td.src, .library-notes) a:hover { color: var(--accent); }
+.library-notes { max-width: var(--measure); margin: 16px 0 0; padding-inline-start: 20px; font-size: 13.5px; color: var(--muted); }
+.library-notes li + li { margin-top: 6px; }
+.library-notes li::marker { color: var(--faint); }
 
 /* Narrow: each foundation row stacks (label and source, then the value) so long token
    names wrap instead of widening the page. */
@@ -387,7 +394,31 @@ a.site:hover { color: var(--accent); }
 .cited .host { margin-inline-start: 10px; color: var(--muted); font-weight: 400; font-size: 12px; }
 .cited .site-note { display: block; margin-top: 2px; color: var(--muted); font-weight: 400; font-size: 12.5px; }
 
-/* 9. Thumb mode ------------------------------------------------------------- */
+/* 9. Icons ------------------------------------------------------------------ */
+/* Comparison: one row per idea, one column per library. Scrolls sideways on its own
+   on narrow screens rather than squeezing the glyphs. */
+.icon-compare-wrap { overflow-x: auto; }
+.icon-compare { border-collapse: collapse; font-size: 13px; min-width: 560px; width: 100%; table-layout: fixed; }
+.icon-compare tr > :first-child { width: 88px; }   /* row labels; library columns share the rest equally */
+.icon-compare :is(th, td) { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); text-align: start; vertical-align: top; }
+.icon-compare thead th { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.icon-compare thead a { color: inherit; }
+.icon-compare tbody th { font-weight: 500; }
+.icon-compare tr:last-child > * { border-bottom: 0; }
+/* Shared by the table cells and the grid tiles: glyph above its name. */
+:is(.icon-compare td, .icon-grid li) .icon { display: block; width: 24px; height: 24px; color: var(--text); }
+:is(.icon-compare td, .icon-grid li) code {
+  display: block; margin-top: 6px; font: 11.5px/1.35 var(--mono); color: var(--muted);
+  background: none; padding: 0; overflow-wrap: anywhere;
+}
+
+/* Every icon we hold from a library: an even grid, no boxes. */
+.icon-grid {
+  list-style: none; margin: 24px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 20px 16px;
+}
+
+/* 10. Thumb mode ------------------------------------------------------------ */
 /* concept.html#thumb (or #thumb-dark): one frame, full viewport, no chrome. */
 html.thumb, html.thumb body { height: 100%; overflow: hidden; background: transparent; }
 html.thumb body > :not(main), html.thumb main > :not(.page),

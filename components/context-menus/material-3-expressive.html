@@ -8,6 +8,8 @@
   <script src="../../assets/catalog.js"></script>
   <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
 </head>
@@ -30,15 +32,15 @@
     <button class="icon-btn" type="button" aria-label="Search"><svg class="icon"><use href="#i-search"/></svg></button>
     <!-- The trigger. Invoker command: opens the menu and anchors it here, no script. -->
     <button class="icon-btn" type="button" aria-label="More options" aria-haspopup="menu"
-            commandfor="notes-menu" command="toggle-popover"><svg class="icon"><use href="#i-ellipsis-vertical"/></svg></button>
+            commandfor="notes-menu" command="toggle-popover"><svg class="icon"><use href="#i-more_vert"/></svg></button>
   </header>
 
   <ul class="notes">
     <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-check"/></svg></span><span class="note-text"><strong>Grocery run</strong><span>Oat milk, lemons, sourdough, coffee beans</span></span><time>9:41</time></li>
     <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-flag"/></svg></span><span class="note-text"><strong>Lisbon trip</strong><span>Tram 28 early, pastéis at Manteigaria</span></span><time>Mon</time></li>
     <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-bookmark"/></svg></span><span class="note-text"><strong>Book club</strong><span>Chapters 7–9 before Thursday</span></span><time>Sun</time></li>
-    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-heart"/></svg></span><span class="note-text"><strong>Gift ideas</strong><span>Film camera for Sam, ceramics class</span></span><time>Nov 18</time></li>
-    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-sun"/></svg></span><span class="note-text"><strong>Garden</strong><span>Plant garlic before the first frost</span></span><time>Nov 12</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-favorite"/></svg></span><span class="note-text"><strong>Gift ideas</strong><span>Film camera for Sam, ceramics class</span></span><time>Nov 18</time></li>
+    <li class="note"><span class="note-icon"><svg class="icon"><use href="#i-sunny"/></svg></span><span class="note-text"><strong>Garden</strong><span>Plant garlic before the first frost</span></span><time>Nov 12</time></li>
   </ul>
 
   <!-- Demo control, not part of the component: switch the menu's color style. -->
@@ -47,7 +49,7 @@
     <label><input type="radio" name="menu-color" value="vibrant"><svg class="icon"><use href="#i-check"/></svg>Vibrant</label>
   </div>
 
-  <button class="fab" type="button" aria-label="New note"><svg class="icon"><use href="#i-plus"/></svg></button>
+  <button class="fab" type="button" aria-label="New note"><svg class="icon"><use href="#i-add"/></svg></button>
 </div>
 
 <!-- The menu. The popover is the shell; the focusgroup inside is the menu.
@@ -58,15 +60,15 @@
 
     <div class="md-menu-group" role="group" aria-label="Sort by">
       <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="true">
-        <svg class="icon"><use href="#i-clock"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <svg class="icon"><use href="#i-schedule"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
         <span class="md-menu-text">Last edited</span>
       </button>
       <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="false">
-        <svg class="icon"><use href="#i-calendar"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <svg class="icon"><use href="#i-calendar_today"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
         <span class="md-menu-text">Date created</span>
       </button>
       <button type="button" class="md-menu-item" role="menuitemradio" aria-checked="false">
-        <svg class="icon"><use href="#i-type"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
+        <svg class="icon"><use href="#i-title"/></svg><svg class="icon md-menu-check"><use href="#i-check"/></svg>
         <span class="md-menu-text">Title</span>
       </button>
     </div>
@@ -78,11 +80,11 @@
         <span class="md-menu-text">Share notebook<small>Anyone with the link can view</small></span>
       </button>
       <button type="button" class="md-menu-item" commandfor="notes-menu" command="hide-popover">
-        <svg class="icon"><use href="#i-printer"/></svg>
+        <svg class="icon"><use href="#i-print"/></svg>
         <span class="md-menu-text">Print</span><kbd aria-hidden="true">Ctrl+P</kbd>
       </button>
       <button type="button" class="md-menu-item" disabled>
-        <svg class="icon"><use href="#i-clipboard-paste"/></svg>
+        <svg class="icon"><use href="#i-content_paste"/></svg>
         <span class="md-menu-text">Paste note</span><kbd aria-hidden="true">Ctrl+V</kbd>
       </button>
     </div>
@@ -93,7 +95,7 @@
         <span class="md-menu-text">Settings</span>
       </button>
       <button type="button" class="md-menu-item danger" commandfor="notes-menu" command="hide-popover">
-        <svg class="icon"><use href="#i-trash-2"/></svg>
+        <svg class="icon"><use href="#i-delete"/></svg>
         <span class="md-menu-text">Delete notebook</span>
       </button>
     </div>

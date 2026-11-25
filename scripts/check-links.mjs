@@ -6,7 +6,8 @@
  *   node scripts/check-links.mjs mdn       only URLs containing "mdn"
  *
  * Collects URLs from assets/sources.js (sites, pages, core-library foundations and notes)
- * and the FEATURES glossary in assets/catalog.js. Prints one line per URL as results arrive,
+ * the FEATURES glossary in assets/catalog.js, and the icon libraries in
+ * assets/icon-libraries.js. Prints one line per URL as results arrive,
  * then a summary. Exits 1 if any URL failed.
  *
  *   ✓  200 at the cited URL
@@ -14,6 +15,8 @@
  *   ✗  error status, timeout or network failure
  *   ?  a host in BOT_CHECKED answered with an error; it serves a browser check to scripts,
  *      so open it by hand (does not fail the run)
+ *   ~  still rate limited (429/503) after retries, common with GitHub; run again later
+ *      (does not fail the run)
  */
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -29,7 +32,7 @@ const BOT_CHECKED = ['bjk5.com'];
 /** Load the classic browser scripts that hold the data. */
 const sandbox = { window: {} };
 vm.createContext(sandbox);
-for (const f of ['assets/catalog.js', 'assets/sources.js']) {
+for (const f of ['assets/catalog.js', 'assets/sources.js', 'assets/icon-libraries.js']) {
   vm.runInContext(readFileSync(join(ROOT, f), 'utf8'), sandbox, { filename: f });
 }
 const C = sandbox.window.CATALOG, S = sandbox.window.SOURCES;
@@ -45,12 +48,16 @@ for (const sys of Object.values(S.systems)) {
   (sys.notes ?? []).forEach(([, src]) => add(src));
 }
 Object.values(C.FEATURES).forEach(f => add(f.url));
+Object.values(sandbox.window.ICON_LIBRARIES.libraries).forEach(l => { add(l.url); add(l.licenseUrl); add(l.docs); });
 
 const filter = process.argv[2];
 const list = [...urls].filter(u => !filter || u.includes(filter)).sort();
 
+const RETRIES = 3;          // for rate-limited answers (429, 503), with a growing pause
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 /** GET the URL (some servers reject HEAD), following redirects. */
-async function probe(url) {
+async function probe(url, attempt = 1) {
   try {
     const res = await fetch(url, {
       redirect: 'follow',
@@ -61,6 +68,10 @@ async function probe(url) {
     // Compare without query or trailing slash: Google sites add a random ?hl= locale for bots.
     const bare = u => { const x = new URL(u); return x.origin + x.pathname.replace(/\/$/, ''); };
     const moved = bare(res.url) !== bare(url);
+    if (res.status === 429 || res.status === 503) {
+      if (attempt <= RETRIES) { await sleep(attempt * 4000); return probe(url, attempt + 1); }
+      return { mark: '~', detail: `${res.status} rate limited` };
+    }
     if (!res.ok) return { mark: BOT_CHECKED.includes(new URL(url).hostname) ? '?' : '✗', detail: `${res.status}` };
     return moved ? { mark: '→', detail: res.url } : { mark: '✓', detail: '' };
   } catch (e) {
@@ -86,7 +97,9 @@ await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 const failed = results.filter(r => r.mark === '✗');
 const moved = results.filter(r => r.mark === '→');
 const manual = results.filter(r => r.mark === '?');
-console.log(`\n${results.length - failed.length - moved.length - manual.length} ok, ${moved.length} redirected, ${failed.length} failed, ${manual.length} to open by hand.`);
+const limited = results.filter(r => r.mark === '~');
+console.log(`\n${results.length - failed.length - moved.length - manual.length - limited.length} ok, ${moved.length} redirected, ${failed.length} failed, ${manual.length} to open by hand, ${limited.length} rate limited.`);
+if (limited.length) console.log(`\nRate limited (run again later): ${limited.length} URL(s) on ${[...new Set(limited.map(r => new URL(r.url).hostname))].join(', ')}`);
 if (manual.length) console.log('\nOpen by hand (bot check):\n' + manual.map(r => `  ${r.url}`).join('\n'));
 if (moved.length) console.log('\nRedirected (consider updating):\n' + moved.map(r => `  ${r.url}\n    → ${r.detail}`).join('\n'));
 if (failed.length) console.log('\nFailed:\n' + failed.map(r => `  ${r.url}  ${r.detail}`).join('\n'));

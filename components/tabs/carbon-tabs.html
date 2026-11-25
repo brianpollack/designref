@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carbon Tabs</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/tabs/carbon-tabs">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <h1 class="app-title">prod-cluster-01</h1>
+
+  <!-- Line tabs: the default. -->
+  <div class="cds-tabs">
+    <div class="cds-tablist" role="tablist" aria-label="Cluster">
+      <button class="cds-tab" role="tab" id="l-overview" aria-controls="lp-overview" aria-selected="true"><span class="cds-tab-label">Overview</span></button>
+      <button class="cds-tab" role="tab" id="l-nodes" aria-controls="lp-nodes" aria-selected="false" tabindex="-1"><span class="cds-tab-label">Nodes</span></button>
+      <button class="cds-tab" role="tab" id="l-access" aria-controls="lp-access" aria-selected="false" tabindex="-1"><span class="cds-tab-label">Access</span></button>
+      <button class="cds-tab" role="tab" id="l-billing" aria-controls="lp-billing" aria-selected="false" tabindex="-1" disabled><span class="cds-tab-label">Billing</span></button>
+    </div>
+  </div>
+  <div class="cds-panel" role="tabpanel" id="lp-overview" aria-labelledby="l-overview" tabindex="0"><p>Running · 3 workers · Kubernetes 1.31</p></div>
+  <div class="cds-panel" role="tabpanel" id="lp-nodes" aria-labelledby="l-nodes" tabindex="0" hidden><p>3 of 3 nodes ready.</p></div>
+  <div class="cds-panel" role="tabpanel" id="lp-access" aria-labelledby="l-access" tabindex="0" hidden><p>2 service IDs can deploy to this cluster.</p></div>
+  <div class="cds-panel" role="tabpanel" id="lp-billing" aria-labelledby="l-billing" tabindex="0" hidden></div>
+
+  <!-- Contained tabs: gray blocks, each with an icon. -->
+  <div class="cds-tabs cds-contained">
+    <div class="cds-tablist" role="tablist" aria-label="Cluster tools">
+      <button class="cds-tab" role="tab" id="c-dash" aria-controls="cp-dash" aria-selected="true"><svg class="icon" aria-hidden="true"><use href="#i-dashboard"/></svg><span class="cds-tab-label">Dashboard</span></button>
+      <button class="cds-tab" role="tab" id="c-logs" aria-controls="cp-logs" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-document"/></svg><span class="cds-tab-label">Logs</span></button>
+      <button class="cds-tab" role="tab" id="c-settings" aria-controls="cp-settings" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg><span class="cds-tab-label">Settings</span></button>
+    </div>
+  </div>
+  <div class="cds-panel cds-layered" role="tabpanel" id="cp-dash" aria-labelledby="c-dash" tabindex="0"><p>CPU 41% · Memory 58%</p></div>
+  <div class="cds-panel cds-layered" role="tabpanel" id="cp-logs" aria-labelledby="c-logs" tabindex="0" hidden><p>No errors in the last hour.</p></div>
+  <div class="cds-panel cds-layered" role="tabpanel" id="cp-settings" aria-labelledby="c-settings" tabindex="0" hidden><p>Autoscaling is on.</p></div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* IBM Plex Sans from Google Fonts; the stack below falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap");
+
+/* ---- Tokens ----
+   Carbon v11 tokens under the names Carbon emits (--cds-*), White theme in light and Gray 100
+   in dark. Tabs sit on the page background, so $layer is layer-01, $layer-accent is
+   layer-accent-01 and $border-subtle is border-subtle-00. Sizes are literals from _tabs.scss. */
+:root {
+  color-scheme: light dark;
+
+  /* @group Tab */
+  --cds-tab-height-sm: 2rem;                                  /* Row height, sm: 32px */
+  --cds-tab-height-md: 2.5rem;                                /* Row height, md: 40px, the line default */
+  --cds-tab-height-lg: 3rem;                                  /* Row height, lg: 48px, the contained default (tall: 64px) */
+  --cds-spacing-05: 16px;                                     /* Tab padding, left and right (condensed density: 8px) */
+  --cds-spacing-03: 8px;                                      /* Icon to label */
+  --cds-tab-gap: 1px;                                         /* Space between line tabs; contained tabs share a 1px divider */
+  --cds-tab-icon-size: 1rem;                                  /* Icon, 16px */
+  --cds-tab-font: "IBM Plex Sans", system-ui, sans-serif;     /* Typeface */
+  --cds-tab-text-size: 14px;                                  /* body-compact-01: line height 18px, weight 400, tracking 0.16px; selected is heading-compact-01 at 600 */
+
+  /* @group Line tabs */
+  --cds-text-secondary: light-dark(#525252, #c6c6c6);         /* Label at rest · Gray 70 / Gray 30 */
+  --cds-text-primary: light-dark(#161616, #f4f4f4);           /* Label when selected or hovered · Gray 100 / Gray 10 */
+  --cds-text-disabled: light-dark(rgb(22 22 22 / 0.25), rgb(244 244 244 / 0.25));   /* Disabled label: text color at 25% */
+  --cds-border-subtle: light-dark(#e0e0e0, #393939);          /* Underline at rest and when disabled, 2px · border-subtle-00 */
+  --cds-border-strong: light-dark(#8d8d8d, #6f6f6f);          /* Underline on hover, 2px · border-strong-01 · Gray 50 / Gray 60 */
+  --cds-border-interactive: light-dark(#0f62fe, #4589ff);     /* Selected underline, 2px · Blue 60 / Blue 50 */
+
+  /* @group Contained tabs */
+  --cds-layer-accent: light-dark(#e0e0e0, #393939);           /* Unselected block fill · layer-accent-01 · Gray 20 / Gray 80 */
+  --cds-layer-accent-hover: light-dark(#d1d1d1, #474747);     /* Unselected block on hover · Gray 20 hover / Gray 80 hover */
+  --cds-layer: light-dark(#f4f4f4, #262626);                  /* Selected block, and the panel under it · layer-01 · Gray 10 / Gray 90 */
+
+  /* @group Focus and motion */
+  --cds-focus: light-dark(#0f62fe, #ffffff);                  /* Focus outline, 2px, inside the tab · Blue 60 / White */
+  --cds-duration-fast-01: 70ms;                               /* Color and border transitions */
+  --cds-motion-standard-productive: cubic-bezier(0.2, 0, 0.38, 0.9);   /* Easing for those transitions */
+}
+
+/* ---- Component ---- */
+.cds-tablist { display: flex; font: 400 var(--cds-tab-text-size)/18px var(--cds-tab-font); letter-spacing: 0.16px; }
+
+.cds-tab {
+  appearance: none; margin: 0; padding: 0 var(--cds-spacing-05); cursor: pointer;
+  display: flex; align-items: center; flex: 1 0 auto;
+  block-size: var(--cds-tab-height-md);
+  background: none; border: 0;
+  border-block-end: 2px solid var(--cds-border-subtle);          /* Every tab draws its own underline */
+  font: inherit; letter-spacing: inherit; text-align: start;
+  color: var(--cds-text-secondary);
+  transition: color var(--cds-duration-fast-01) var(--cds-motion-standard-productive),
+              border-color var(--cds-duration-fast-01) var(--cds-motion-standard-productive);
+
+  /* Carbon styles :focus, not :focus-visible, so the outline also shows after a click. */
+  &:focus { outline: 2px solid var(--cds-focus); outline-offset: -2px; }
+  & + .cds-tab { margin-inline-start: var(--cds-tab-gap); }
+
+  &:not([aria-selected="true"]):not(:disabled):hover { border-block-end-color: var(--cds-border-strong); color: var(--cds-text-primary); }
+  &[aria-selected="true"] { border-block-end-color: var(--cds-border-interactive); color: var(--cds-text-primary); font-weight: 600; }
+  &:disabled { color: var(--cds-text-disabled); border-block-end-color: var(--cds-border-subtle); cursor: not-allowed; }
+}
+/* The 2px underline sits inside the row height; nudge the label down 1px so it looks centered. */
+.cds-tab-label { position: relative; inset-block-start: 1px; white-space: nowrap; }
+.cds-tab .icon { width: var(--cds-tab-icon-size); height: var(--cds-tab-icon-size); fill: currentColor; margin-inline-end: var(--cds-spacing-03); flex: none; }
+
+/* Contained: gray blocks with a 1px divider between them; selected gets a top border and the layer fill. */
+.cds-contained .cds-tab {
+  block-size: var(--cds-tab-height-lg);
+  background: var(--cds-layer-accent);
+  border-block-end: 0;
+  box-shadow: -1px 0 0 0 var(--cds-border-strong);              /* Divider drawn outside the content box */
+  margin-inline-start: 0;
+
+  &:not([aria-selected="true"]):not(:disabled):hover { background: var(--cds-layer-accent-hover); }
+  &[aria-selected="true"] { background: var(--cds-layer); box-shadow: inset 0 2px 0 0 var(--cds-border-interactive); }
+  &[aria-selected="true"] + .cds-tab { box-shadow: -1px 0 0 0 transparent; }   /* No divider beside the selected block */
+}
+.cds-contained .cds-tab-label { inset-block-start: 0; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #161616); color: var(--cds-text-primary); font: 400 14px/18px var(--cds-tab-font); }
+.app { max-width: 560px; margin: 0 auto; padding: 24px; }
+.app-title { margin: 0 0 16px; font: 400 20px/28px var(--cds-tab-font); }
+.cds-panel { padding: 16px 0; min-height: 20px; }
+.cds-panel p { margin: 0; }
+.cds-contained { margin-top: 12px; }
+.cds-layered { background: var(--cds-layer); padding: 16px; }   /* Contained tabs sit on a layer: the selected block and panel share it */
+</style>
+
+<script type="text/plain" data-demo="js">
+// Selection and keys for each tab row. Chrome does not yet honor focusgroup="tablist", so
+// arrows are handled here. Carbon's default is automatic activation (selection follows
+// focus); disabled tabs are skipped.
+document.querySelectorAll('[role="tablist"]').forEach(list => {
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+  const enabled = () => tabs.filter(t => !t.disabled);
+
+  function select(tab) {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    }
+  }
+  list.addEventListener('click', e => { const t = e.target.closest('[role="tab"]'); if (t && !t.disabled) select(t); });
+  list.addEventListener('focusin', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+
+  list.addEventListener('keydown', e => {
+    const set = enabled(), i = set.indexOf(document.activeElement);
+    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: set.length - 1 }[e.key];
+    if (i < 0 || to === undefined) return;
+    e.preventDefault();
+    set[(to + set.length) % set.length].focus({ preventScroll: true });
+  });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Select Nodes in the line row and Logs in the contained row.
+document.getElementById('l-nodes').click();
+document.getElementById('c-logs').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="360" data-hint="Click a tab or use the arrow keys. The top row is line tabs, the bottom row contained; Billing is disabled."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Line tabs</th><td>The default. Each tab draws its own 2px underline in $border-subtle, so together they make one rule; tabs are 1px apart. Sits directly on the page background.</td></tr>
+        <tr><th>Contained tabs</th><td>Blocks filled with $layer-accent and a 1px $border-strong divider. The selected block takes the $layer fill and a 2px top border, so it joins the panel below. Use when the tabs sit on a layer of their own.</td></tr>
+        <tr><th>Sizes</th><td>sm 32px, md 40px (line default), lg 48px (contained default). Tall contained tabs are 64px and can carry a secondary label.</td></tr>
+        <tr><th>Padding</th><td>16px on each side (condensed density: 8px). Tabs share the row’s width in proportion to their labels; full-width contained tabs split it equally.</td></tr>
+        <tr><th>Label</th><td>body-compact-01, 14 / 18 at weight 400; selected is heading-compact-01 at 600. Long labels truncate with an ellipsis.</td></tr>
+        <tr><th>Icon</th><td>16px, 8px before the label, in the label’s color. A tab can also be icon-only: square, at the row’s height.</td></tr>
+        <tr><th>Also in Carbon</th><td>Dismissable tabs with a close button, a vertical layout, and overflow buttons that scroll a long row. Not built here.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Selecting</th><td>Click, or arrow to a tab: selection follows focus. Carbon’s <code>activation</code> prop switches to manual, where arrows move focus and <kbd>Enter</kbd> or <kbd>Space</kbd> selects.</td></tr>
+        <tr><th>Hover</th><td>Line tabs: label turns $text-primary and the underline $border-strong. Contained tabs: the block fills with $layer-accent-hover. Selected tabs do not change.</td></tr>
+        <tr><th>Selected</th><td>Label turns $text-primary at weight 600; the underline (line) or top border (contained) turns $border-interactive. There is no moving indicator: each tab draws its own.</td></tr>
+        <tr><th>Motion</th><td>Colors and borders ease over 70ms (duration-fast-01, productive standard).</td></tr>
+        <tr><th>Disabled</th><td>The label at 25% opacity, the underline stays $border-subtle, no hover. Arrow keys skip it.</td></tr>
+        <tr><th>Focus</th><td>2px $focus outline inside the tab. Carbon styles <code>:focus</code>, so it also shows after a mouse click.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Enter the row at the selected tab, then leave it for the panel.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Previous and next enabled tab, wrapping, selecting as it goes.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last enabled tab.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>role="tablist"</code>, <code>role="tab"</code> with <code>aria-selected</code> and <code>aria-controls</code>, and <code>role="tabpanel"</code>, as in Carbon’s <code>Tabs</code>. Only the selected tab has <code>tabindex="0"</code>.</li>
+          <li>Icons are decorative; each tab has a text label.</li>
+          <li>Selected state is shown by weight, the colored border and <code>aria-selected</code>, not color alone.</li>
+          <li>Focus outline: 2px, Blue 60 on White and white on Gray 100.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

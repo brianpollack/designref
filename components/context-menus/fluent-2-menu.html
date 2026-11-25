@@ -8,6 +8,8 @@
   <script src="../../assets/catalog.js"></script>
   <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
 </head>
@@ -23,20 +25,20 @@
 <!-- A OneDrive-style file list: a command bar with a More button, then the files. -->
 <div class="app">
   <div class="command-bar">
-    <button class="cmd primary" type="button"><svg class="icon"><use href="#i-plus"/></svg>New</button>
-    <button class="cmd" type="button"><svg class="icon"><use href="#i-share"/></svg>Share</button>
+    <button class="cmd primary" type="button"><svg class="icon"><use href="#i-add_20_regular"/></svg>New</button>
+    <button class="cmd" type="button"><svg class="icon"><use href="#i-share_20_regular"/></svg>Share</button>
     <!-- The trigger. Invoker command: opens the menu and anchors it here, no script. -->
     <button class="cmd" type="button" aria-label="More options" aria-haspopup="menu"
-            commandfor="file-menu" command="toggle-popover"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+            commandfor="file-menu" command="toggle-popover"><svg class="icon"><use href="#i-more_horizontal_20_regular"/></svg></button>
     <span class="selection">1 selected</span>
   </div>
 
   <ul class="files">
-    <li class="file"><svg class="icon"><use href="#i-folder"/></svg><span>Planning</span><time>Yesterday</time></li>
-    <li class="file selected"><svg class="icon"><use href="#i-file-text"/></svg><span>Q3 roadmap.docx</span><time>9:41 AM</time></li>
-    <li class="file"><svg class="icon"><use href="#i-file-image"/></svg><span>Launch banner.png</span><time>Nov 18</time></li>
-    <li class="file"><svg class="icon"><use href="#i-file"/></svg><span>Budget.xlsx</span><time>Nov 12</time></li>
-    <li class="file"><svg class="icon"><use href="#i-file-text"/></svg><span>Meeting notes.docx</span><time>Nov 3</time></li>
+    <li class="file"><svg class="icon"><use href="#i-folder_20_regular"/></svg><span>Planning</span><time>Yesterday</time></li>
+    <li class="file selected"><svg class="icon"><use href="#i-document_text_20_regular"/></svg><span>Q3 roadmap.docx</span><time>9:41 AM</time></li>
+    <li class="file"><svg class="icon"><use href="#i-image_20_regular"/></svg><span>Launch banner.png</span><time>Nov 18</time></li>
+    <li class="file"><svg class="icon"><use href="#i-document_20_regular"/></svg><span>Budget.xlsx</span><time>Nov 12</time></li>
+    <li class="file"><svg class="icon"><use href="#i-document_text_20_regular"/></svg><span>Meeting notes.docx</span><time>Nov 3</time></li>
   </ul>
 </div>
 
@@ -45,17 +47,17 @@
 <div class="fl-menu" id="file-menu" popover>
   <div class="fl-menu-list" focusgroup="menu nomemory" tabindex="-1" aria-label="More options">
     <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
-      <svg class="icon"><use href="#i-download"/></svg><span class="fl-menu-content">Download</span>
+      <svg class="icon"><use href="#i-arrow_download_20_regular"/></svg><svg class="icon fl-filled"><use href="#i-arrow_download_20_filled"/></svg><span class="fl-menu-content">Download</span>
     </button>
     <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
-      <svg class="icon"><use href="#i-link"/></svg><span class="fl-menu-content">Copy link</span><kbd aria-hidden="true">Ctrl+L</kbd>
+      <svg class="icon"><use href="#i-link_20_regular"/></svg><svg class="icon fl-filled"><use href="#i-link_20_filled"/></svg><span class="fl-menu-content">Copy link</span><kbd aria-hidden="true">Ctrl+L</kbd>
     </button>
     <button type="button" class="fl-menu-item" commandfor="file-menu" command="hide-popover">
-      <svg class="icon"><use href="#i-pencil"/></svg><span class="fl-menu-content">Rename</span><kbd aria-hidden="true">F2</kbd>
+      <svg class="icon"><use href="#i-edit_20_regular"/></svg><svg class="icon fl-filled"><use href="#i-edit_20_filled"/></svg><span class="fl-menu-content">Rename</span><kbd aria-hidden="true">F2</kbd>
     </button>
     <!-- Fluent keeps disabled items focusable (aria-disabled), so arrow keys still reach them. -->
     <button type="button" class="fl-menu-item" aria-disabled="true">
-      <svg class="icon"><use href="#i-clipboard-paste"/></svg><span class="fl-menu-content">Paste</span><kbd aria-hidden="true">Ctrl+V</kbd>
+      <svg class="icon"><use href="#i-clipboard_paste_20_regular"/></svg><svg class="icon fl-filled"><use href="#i-clipboard_paste_20_filled"/></svg><span class="fl-menu-content">Paste</span><kbd aria-hidden="true">Ctrl+V</kbd>
     </button>
 
     <hr class="fl-menu-divider">
@@ -63,13 +65,13 @@
     <div class="fl-menu-group" role="group" aria-labelledby="sort-header">
       <div class="fl-menu-group-header" id="sort-header" aria-hidden="true">Sort by</div>
       <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="true">
-        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">Name</span>
+        <svg class="icon fl-menu-check"><use href="#i-checkmark_16_filled"/></svg><span class="fl-menu-content">Name</span>
       </button>
       <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="false">
-        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">Modified</span>
+        <svg class="icon fl-menu-check"><use href="#i-checkmark_16_filled"/></svg><span class="fl-menu-content">Modified</span>
       </button>
       <button type="button" class="fl-menu-item" role="menuitemradio" aria-checked="false">
-        <svg class="icon fl-menu-check"><use href="#i-check"/></svg><span class="fl-menu-content">File size</span>
+        <svg class="icon fl-menu-check"><use href="#i-checkmark_16_filled"/></svg><span class="fl-menu-content">File size</span>
       </button>
     </div>
 
@@ -77,8 +79,8 @@
 
     <!-- Checkbox items keep the menu open, as in Fluent (persistOnClick). -->
     <button type="button" class="fl-menu-item" role="menuitemcheckbox" aria-checked="true">
-      <svg class="icon fl-menu-check"><use href="#i-check"/></svg>
-      <svg class="icon"><use href="#i-info"/></svg><span class="fl-menu-content">Details pane</span>
+      <svg class="icon fl-menu-check"><use href="#i-checkmark_16_filled"/></svg>
+      <svg class="icon"><use href="#i-info_20_regular"/></svg><svg class="icon fl-filled"><use href="#i-info_20_filled"/></svg><span class="fl-menu-content">Details pane</span>
     </button>
   </div>
 </div>
@@ -210,7 +212,6 @@
 .fl-menu-item > .icon {
   width: var(--fl-menu-icon-size);
   height: var(--fl-menu-icon-size);
-  stroke-width: 1.5;   /* closer to Fluent’s Regular weight than Lucide’s default 2 */
 }
 .fl-menu-content { grid-column: -3; padding-inline: var(--fl-menu-content-padding); }
 
@@ -220,11 +221,12 @@
   width: var(--fl-menu-checkmark-size);
   height: var(--fl-menu-checkmark-size);
   margin-top: 2px;
-  stroke-width: 2.5;
   visibility: hidden;
 }
 .fl-menu-item[aria-checked="true"] > .fl-menu-check { visibility: visible; }
-.fl-menu-item > .icon:not(.fl-menu-check) { grid-column: -4; }
+.fl-menu-item > .icon:not(.fl-menu-check) { grid-column: -4; grid-row: 1; }
+/* Regular at rest; the Filled twin shares its cell and replaces it on hover. */
+.fl-menu-item > .fl-filled { visibility: hidden; }
 
 /* Secondary content: shortcuts, in caption1 on the label’s 20px line. */
 .fl-menu-item kbd {
@@ -234,12 +236,13 @@
   color: var(--colorNeutralForeground3);
 }
 
-/* Hover: lighter fill, darker label, brand icon. Fluent also swaps the Regular icon
-   for its Filled twin; Lucide has no filled set, so only the color changes here. */
+/* Hover: lighter fill, darker label, and the icon swaps to its Filled twin in brand blue. */
 .fl-menu-item:hover {
   background: var(--colorNeutralBackground1Hover);
   color: var(--colorNeutralForeground2Hover);
   & > .icon:not(.fl-menu-check) { color: var(--colorNeutralForeground2BrandSelected); }
+  &:not([aria-disabled="true"]) > .icon:has(+ .fl-filled) { visibility: hidden; }
+  &:not([aria-disabled="true"]) > .fl-filled { visibility: visible; }
   & kbd { color: var(--colorNeutralForeground3Hover); }
 }
 .fl-menu-item:hover:active {
@@ -311,7 +314,7 @@ body {
   border: 1px solid transparent; border-radius: 4px; background: transparent;
   color: var(--colorNeutralForeground2); font: 600 14px/20px var(--fontFamilyBase); cursor: pointer;
 }
-.cmd .icon { width: 20px; height: 20px; stroke-width: 1.5; }
+.cmd .icon { width: 20px; height: 20px; }
 .cmd:hover { background: light-dark(#f5f5f5, #383838); color: var(--colorNeutralForeground2Hover); }
 .cmd:focus-visible { outline: 2px solid var(--colorStrokeFocus2); outline-offset: 0; }
 .cmd.primary { background: light-dark(#0f6cbd, #115ea3); color: #ffffff; }
@@ -325,7 +328,7 @@ body:has(#file-menu:popover-open) .cmd[commandfor="file-menu"] { background: lig
   display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 12px;
   height: 44px; padding: 0 12px; border-bottom: 1px solid light-dark(#f0f0f0, #2e2e2e);
 }
-.file .icon { width: 20px; height: 20px; stroke-width: 1.5; color: light-dark(#0f6cbd, #479ef5); }
+.file .icon { width: 20px; height: 20px; color: light-dark(#0f6cbd, #479ef5); }
 .file time { color: var(--colorNeutralForeground3); font-size: 12px; }
 .file.selected { background: light-dark(#ebf3fc, #0e4775); border-radius: 4px; border-color: transparent; }
 </style>
@@ -435,7 +438,7 @@ requestAnimationFrame(() => {
         <tr><th>Opens on</th><td>A click on the trigger, <kbd>Enter</kbd> or <kbd>Space</kbd>, or <kbd>↓</kbd>. <code>commandfor</code> and <code>command="toggle-popover"</code> handle the click with no script.</td></tr>
         <tr><th>Placement</th><td>Below the trigger with left edges aligned (Fluent’s <code>below-start</code>), no offset. Flips above when there is no room below.</td></tr>
         <tr><th>Motion</th><td>Enter only: a fade and a 10px slide away from the trigger over 400ms on decelerateMid. Closing is instant. No motion with reduced motion set.</td></tr>
-        <tr><th>States</th><td>Each state is its own color token, not an overlay. Hover lightens the fill, darkens the label and turns the icon brand blue. Pressed uses the darker Pressed fill. Disabled items ignore both.</td></tr>
+        <tr><th>States</th><td>Each state is its own color token, not an overlay. Hover lightens the fill, darkens the label, and swaps the icon from Regular to Filled in brand blue. Pressed uses the darker Pressed fill. Disabled items ignore both.</td></tr>
         <tr><th>Hover and focus</th><td>Moving the pointer over an item focuses it, so <kbd>↓</kbd> continues from the pointer. The outline appears only for keyboard focus.</td></tr>
         <tr><th>Selection</th><td>A radio item checks and closes the menu. A checkbox item toggles and leaves the menu open.</td></tr>
         <tr><th>Dismiss</th><td>Choosing a command, <kbd>Esc</kbd> (focus returns to the trigger), a click outside, or <kbd>Tab</kbd>.</td></tr>

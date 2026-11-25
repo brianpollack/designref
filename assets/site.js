@@ -8,6 +8,7 @@
  * A page declares where it lives with <body data-page="…">:
  *   ""                                        home (index.html)
  *   "sources"                                 sources.html
+ *   "icons"                                   icons.html (rendered by assets/icons-page.js)
  *   "components/context-menus"                category page
  *   "components/context-menus/right-click-menu"  concept page
  *
@@ -30,6 +31,7 @@
 
   const C = window.CATALOG;
   const S = window.SOURCES;
+  const IL = window.ICON_LIBRARIES;
   const ROOT = new URL('..', document.currentScript.src);   // assets/ lives one level below root
   const html = document.documentElement;
 
@@ -64,6 +66,8 @@
 
   /* Sources helpers (data in assets/sources.js) */
   const sourcesUrl = id => url('sources.html') + (id ? `#${id}` : '');
+  /* Icon libraries (data in assets/icon-libraries.js) */
+  const iconsUrl = id => url('icons.html') + (id ? `#${id}` : '');
   const siteLabel = id => S.sites[id].short ?? S.sites[id].name;
   const systemIds = () => Object.keys(S.systems);          // display order
   /** Short host for a source column: no www., and raw GitHub files read as github.com. */
@@ -146,11 +150,24 @@
         items += `<li><a href="${categoryUrl(section, cat)}"${catCurrent}>${esc(cat.title)}<span class="count">${cat.concepts.length}</span></a>${sub}</li>`;
       }
       const plannedHtml = planned.length ? `
-        <details class="planned-group"${q ? ' open' : ''}>
+        <details class="nav-fold"${q ? ' open' : ''}>
           <summary>${Icons.svg('chevron-right', 'icon chev')}Planned <span class="count">${planned.length}</span></summary>
           <ul>${planned.map(t => `<li><span class="planned">${esc(t)}</span></li>`).join('')}</ul>
         </details>` : '';
       if (items || plannedHtml) out += `<h2>${esc(section.title)}</h2>${items ? `<ul>${items}</ul>` : ''}${plannedHtml}`;
+    }
+
+    // Icon libraries: one fold, closed unless on icons.html or filtering. Opens to the
+    // comparison table, then one link per library.
+    const libs = Object.entries(IL.libraries).filter(([, lib]) => match(lib.name) || match('Icon libraries'));
+    if (libs.length) {
+      const open = here.id === 'icons' || q ? ' open' : '';
+      const links = [['compare', 'Side by side'], ...libs.map(([id, lib]) => [id, lib.name])];
+      out += `
+        <details class="nav-fold section"${open}>
+          <summary>${Icons.svg('chevron-right', 'icon chev')}Icon libraries <span class="count">${Object.keys(IL.libraries).length}</span></summary>
+          <ul>${links.map(([id, label]) => `<li><a href="${iconsUrl(id)}">${esc(label)}</a></li>`).join('')}</ul>
+        </details>`;
     }
 
     // Reference: the sources page, with its sections listed while it is open.
@@ -313,7 +330,9 @@
     }).join('') + `<section class="catalog-section">
       <h2>Reference</h2>
       <ul class="featured"><li><a href="${sourcesUrl()}">Sources</a><span class="count">${Object.keys(S.sites).length} sites</span>
-        <p>Every page we learned from, and the core libraries concepts are built to: ${esc(andList(systemIds().map(siteLabel)))}.</p></li></ul>
+        <p>Every page we learned from, and the core libraries concepts are built to: ${esc(andList(systemIds().map(siteLabel)))}.</p></li>
+        <li><a href="${iconsUrl()}">Icon libraries</a><span class="count">${Object.keys(IL.libraries).length} libraries</span>
+        <p>Licenses, styles and a side-by-side comparison. Concepts built to a core library use its own icons.</p></li></ul>
     </section>`;
   }
 
@@ -433,15 +452,15 @@
     }).join('');
     const notes = (sys.notes ?? []).map(([text, src]) => `<li>${esc(text)}${src ? ` <a href="${src}">${host(src)}</a>` : ''}</li>`).join('');
     return `
-      <section class="ruled system" id="${id}">
+      <section class="ruled library" id="${id}">
         <h2>${esc(site.name)}<span class="count">${esc(sys.owner)}</span></h2>
-        <p class="system-summary">${esc(sys.summary)}</p>
+        <p class="library-summary">${esc(sys.summary)}</p>
         <div class="meta">
           <span>${esc(sys.version)}</span><span>${esc(sys.platforms)}</span>
           <a href="${site.url}">Guidelines</a><a href="${sys.components}">Components</a><a href="${sys.tokens.url}">${esc(sys.tokens.label)}</a>
         </div>
         <table class="spec foundations"><tbody>${rows}</tbody></table>
-        ${notes ? `<ul class="system-notes">${notes}</ul>` : ''}
+        ${notes ? `<ul class="library-notes">${notes}</ul>` : ''}
         <h3>Cited here</h3>
         ${pagesTable([id], cited)}
       </section>`;
@@ -517,7 +536,7 @@
     if (concept && page) renderPager(page);
   }
 
-  window.Site = { ROOT, url, store, copy, toast, jsLabel, esc, isDark, get here() { return here; } };
+  window.Site = { ROOT, url, conceptUrl, store, copy, toast, jsLabel, esc, isDark, get here() { return here; } };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();

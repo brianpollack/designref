@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scroll-Spy Tabs</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/tabs/scroll-spy-tabs">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<header class="bar">
+  <div class="bar-title">Lumen</div>
+  <!-- A nav of in-page links. scroll-target-group makes each link a scroll marker. -->
+  <nav class="tabs" aria-label="On this page">
+    <a href="#overview">Overview</a>
+    <a href="#install">Install</a>
+    <a href="#usage">Usage</a>
+    <a href="#limits">Limits</a>
+  </nav>
+</header>
+
+<main class="doc">
+  <section id="overview">
+    <h2>Overview</h2>
+    <p>Lumen turns a folder of images into a fast, cached gallery. It reads your files, resizes them once and serves the rest from disk.</p>
+  </section>
+  <section id="install">
+    <h2>Install</h2>
+    <p>Add the package, then point it at a folder. The first run builds the cache; later runs only touch what changed.</p>
+  </section>
+  <section id="usage">
+    <h2>Usage</h2>
+    <p>Run <code>lumen serve photos/</code> and open the address it prints. Folders become albums; file names become titles.</p>
+  </section>
+  <section id="limits">
+    <h2>Limits</h2>
+    <p>Albums hold up to 5,000 images. Files over 50 MB are skipped and listed in the log so you can resize them yourself.</p>
+  </section>
+</main>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Tab */
+  --ss-pad-y: 10px;                                           /* Tab padding, top and bottom; with the 20px line the tab is 40px tall */
+  --ss-pad-x: 14px;                                           /* Tab padding, left and right */
+  --ss-gap: 4px;                                              /* Space between tabs */
+  --ss-radius: 6px;                                           /* Corner of the hover fill and focus ring */
+  --ss-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 */
+
+  /* @group Tab colors */
+  --ss-text: light-dark(#5c6270, #a3a8b4);                    /* Label for sections out of view */
+  --ss-text-current: light-dark(#16181d, #f2f3f5);            /* Label for the section in view, and on hover */
+  --ss-hover: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.07));   /* Fill on hover */
+
+  /* @group Indicator and bar */
+  --ss-accent: light-dark(#2b59e0, #8ea6ff);                  /* Indicator, and the focus ring */
+  --ss-indicator-h: 2px;                                      /* Indicator thickness */
+  --ss-bar-bg: light-dark(#ffffff, #1f2024);                  /* Sticky bar fill */
+  --ss-rule: light-dark(#e1e4ea, #34373f);                    /* Rule under the bar, 1px */
+  --ss-slide: 250ms cubic-bezier(0.2, 0, 0, 1);               /* Indicator slide; off under reduced motion */
+}
+
+/* ---- Component ---- */
+.tabs {
+  display: flex;
+  gap: var(--ss-gap);
+  position: relative;
+  scroll-target-group: auto;                                  /* Every in-page link inside becomes a scroll marker */
+}
+
+.tabs a {
+  padding: var(--ss-pad-y) var(--ss-pad-x);
+  font: var(--ss-font);
+  color: var(--ss-text);
+  text-decoration: none;
+  border-radius: var(--ss-radius);
+
+  &:hover { background: var(--ss-hover); color: var(--ss-text-current); }
+  &:focus-visible { outline: 2px solid var(--ss-accent); outline-offset: -2px; }
+
+  /* The browser matches this on the link whose section is in view: no scroll listener. */
+  &:target-current { color: var(--ss-text-current); anchor-name: --ss-active; }
+}
+
+.tabs::after {
+  content: "";
+  position: absolute;
+  position-anchor: --ss-active;
+  left: anchor(left);
+  right: anchor(right);
+  bottom: 0;
+  height: var(--ss-indicator-h);
+  background: var(--ss-accent);
+  border-radius: var(--ss-indicator-h) var(--ss-indicator-h) 0 0;
+  transition: left var(--ss-slide), right var(--ss-slide);
+}
+@media (prefers-reduced-motion: reduce) { .tabs::after { transition: none; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f4f5f7, #141518); color: light-dark(#16181d, #f2f3f5); font: 14px/22px system-ui, sans-serif; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.bar { position: sticky; top: 0; z-index: 1; padding: 12px 24px 0; background: var(--ss-bar-bg); border-bottom: 1px solid var(--ss-rule); }
+.bar-title { font-weight: 600; margin-bottom: 4px; }
+.doc { max-width: 520px; margin: 0 auto; padding: 0 24px; }
+.doc section { padding: 28px 0 8px; min-height: 220px; }
+.doc section:last-child { min-height: 100vh; }
+.doc h2 { margin: 0 0 8px; font-size: 18px; line-height: 26px; }
+.doc p { margin: 0; color: light-dark(#3a3e48, #c4c8d2); }
+code { font: 13px ui-monospace, monospace; background: light-dark(#eceef2, #2a2c33); padding: 1px 5px; border-radius: 4px; }
+</style>
+
+<script type="text/plain" data-demo="pin">
+// Scroll the page to "Usage" so the indicator is away from the first tab.
+// scrollTo, not scrollIntoView, which would also scroll the host page.
+document.documentElement.style.scrollBehavior = 'auto';
+window.scrollTo(0, document.getElementById('usage').offsetTop - 70);
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="400" data-hint="Scroll the page inside the frame, or click a tab. The indicator follows the section in view."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Bar</th><td>A sticky strip holding a <code>nav</code> of in-page links, with a 1px rule under it. It stays at the top while the sections scroll beneath.</td></tr>
+        <tr><th>Tab</th><td>An ordinary <code>a href="#section"</code>, 40px tall, 14px / 20px at weight 500. These are links, not <code>role="tab"</code>: nothing is hidden, the page just scrolls.</td></tr>
+        <tr><th>Scroll marker</th><td><code>scroll-target-group: auto</code> on the nav turns each link into a marker for its target section. The browser tracks which one is in view.</td></tr>
+        <tr><th>Current tab</th><td>The link matching <code>:target-current</code>: darker text, and it holds the anchor name the indicator follows.</td></tr>
+        <tr><th>Indicator</th><td>One 2px bar, the nav’s <code>::after</code>, spanning the current tab and sliding as the section changes.</td></tr>
+        <tr><th>Sections</th><td>Each has the <code>id</code> its tab links to. Make the last one tall enough to scroll to the top, or its tab can never become current.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Scrolling</th><td>The current tab changes as sections cross the top of the viewport. The browser decides which one is current; there is no scroll listener and no script on this page.</td></tr>
+        <tr><th>Clicking</th><td>A normal anchor jump, smoothed with <code>scroll-behavior</code>. <code>scroll-padding-top</code> keeps the section heading clear of the sticky bar.</td></tr>
+        <tr><th>Direct links</th><td>Opening the page at <code>#usage</code> lands on that section with its tab already current.</td></tr>
+        <tr><th>Indicator</th><td>Slides over 250ms, the same anchor technique as Underline Tabs. Reduced motion removes the slide and the smooth scroll.</td></tr>
+        <tr><th>Use for</th><td>Long pages split into a few named sections. For separate views that replace each other, use Underline Tabs.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Move through the links like any others. They are all in the Tab order; this is not a single-stop tablist.</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>Scroll to the section. Focus stays on the link.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Links in a labeled <code>nav</code> are the right semantics here: a tablist would promise hidden panels and arrow keys this does not have.</li>
+          <li><code>:target-current</code> changes how the link looks, not what assistive technology is told. If the current section matters to a screen reader user, the headings and landmarks already carry it.</li>
+          <li>Current state is shown by darker text and the indicator, not color alone.</li>
+          <li>Focus ring: 2px in the accent color, inside the link.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

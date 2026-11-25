@@ -13,7 +13,8 @@
  *       "open at rest" state after load (e.g. dispatch a contextmenu event). Not shown as code.
  *
  *   <section data-preview data-height="440" data-hint="Right-click a file">  → frames + toolbar
- *   <section data-spec><h2>Specs</h2></section>                            → token table
+ *   <section data-spec><h2>Specs</h2></section>                            → token table, then
+ *       the credit for the demo's icon library (catalog `icons`, default Lucide)
  *   <section data-code><h2>Code</h2></section>                             → tabs + copy
  *
  * Token convention (demo CSS): tokens on :root with a trailing comment become spec rows.
@@ -58,6 +59,9 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
   /** Demo sources; read in boot() because this script runs before <body> is parsed. */
   let src = { html: '', css: '', js: '', pin: '' };
   const title = () => Site.here.concept?.title ?? document.title;
+  /** The concept's icon library (catalog `icons`, default Lucide) and its registry entry. */
+  const iconSet = () => Site.here.concept?.icons ?? 'lucide';
+  const iconLib = () => window.ICON_LIBRARIES.libraries[iconSet()];
 
   /* ---- Document assembly --------------------------------------------------- */
 
@@ -72,7 +76,7 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
    */
   function buildDoc({ scheme, pin = true, inert = false } = {}) {
     const forced = scheme ? ` style="color-scheme: ${scheme}"` : '';
-    const sprite = Icons.spriteFor(src.html);
+    const sprite = Icons.spriteFor(src.html, iconSet());
     return [
       '<!doctype html>',
       `<html lang="en"${forced}>`,
@@ -180,9 +184,10 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
     panel.tabIndex = 0;
     const note = document.createElement('p');
     note.className = 'code-note';
+    const icons = `Icons are from ${iconLib().name}, in an inline SVG sprite`;
     note.textContent = src.js
-      ? 'Icons are Lucide symbols in an inline SVG sprite. “Copy as one file” includes the sprite and base styles.'
-      : 'No JavaScript: everything above is HTML attributes and CSS. Icons are Lucide symbols in an inline SVG sprite; “Copy as one file” includes it.';
+      ? `${icons}. “Copy as one file” includes the sprite and base styles.`
+      : `No JavaScript: everything above is HTML attributes and CSS. ${icons}; “Copy as one file” includes it.`;
     const base = document.createElement('details');
     base.className = 'base';
     base.innerHTML = `<summary>Base styles every demo shares</summary><pre class="code-panel"><code>${highlight(DEMO_BASE, 'css')}</code></pre>`;
@@ -354,9 +359,16 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
   /** Inline `code` in token descriptions. */
   const descHtml = d => esc(d).replace(/`([^`]+)`/g, '<code>$1</code>');
 
+  /** Credit for the demo's icons, shown at the end of Specs (just above Behavior). */
+  function iconCredit() {
+    const id = iconSet(), lib = iconLib();
+    return `<p class="icon-credit">Icons used in this page are from <a href="${lib.url}">${esc(lib.name)}</a> (${esc(lib.license)}). `
+      + `More information on our <a href="${Site.url('icons.html')}#${id}">icon library page</a>.</p>`;
+  }
+
   function renderSpec(section, wins) {
     const tokens = parseTokens(src.css);
-    if (!tokens.length) { section.remove(); return; }
+    if (!tokens.length) { section.innerHTML = iconCredit(); return; }
     const [light, dark] = wins;
     let group = null, rows = '';
     for (const t of tokens) {
@@ -375,7 +387,8 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
         <thead><tr><th>Token</th><th>Light</th><th>Dark</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
-      <p class="spec-note">Read live from the demo’s CSS custom properties in each theme. Colors are sRGB hex with opacity; shadows read x y blur spread.</p>`);
+      <p class="spec-note">Read live from the demo’s CSS custom properties in each theme. Colors are sRGB hex with opacity; shadows read x y blur spread.</p>
+      ${iconCredit()}`);
   }
 
   /* ---- Boot ---------------------------------------------------------------- */

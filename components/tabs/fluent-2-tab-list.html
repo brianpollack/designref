@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluent 2 Tab List</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/tabs/fluent-2-tab-list">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <h1 class="app-title">My files</h1>
+
+  <div class="fl-tabs">
+    <div class="fl-tablist" role="tablist" aria-label="Files">
+      <button class="fl-tab" role="tab" id="t-recent" aria-controls="p-recent" aria-selected="true">
+        <svg class="icon fl-regular" aria-hidden="true"><use href="#i-clock_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-clock_20_filled"/></svg>
+        <span class="fl-tab-text" data-text="Recent">Recent</span>
+      </button>
+      <button class="fl-tab" role="tab" id="t-shared" aria-controls="p-shared" aria-selected="false" tabindex="-1">
+        <svg class="icon fl-regular" aria-hidden="true"><use href="#i-people_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-people_20_filled"/></svg>
+        <span class="fl-tab-text" data-text="Shared">Shared</span>
+      </button>
+      <button class="fl-tab" role="tab" id="t-favorites" aria-controls="p-favorites" aria-selected="false" tabindex="-1">
+        <svg class="icon fl-regular" aria-hidden="true"><use href="#i-star_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-star_20_filled"/></svg>
+        <span class="fl-tab-text" data-text="Favorites">Favorites</span>
+      </button>
+      <button class="fl-tab" role="tab" id="t-trash" aria-controls="p-trash" aria-selected="false" tabindex="-1" disabled>
+        <svg class="icon fl-regular" aria-hidden="true"><use href="#i-delete_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-delete_20_filled"/></svg>
+        <span class="fl-tab-text" data-text="Recycle bin">Recycle bin</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="panel" role="tabpanel" id="p-recent" aria-labelledby="t-recent" tabindex="0">
+    <ul><li>Budget 2026.xlsx<span>Edited today</span></li><li>Roadmap.pptx<span>Edited yesterday</span></li><li>Notes.docx<span>Edited Mon</span></li></ul>
+  </div>
+  <div class="panel" role="tabpanel" id="p-shared" aria-labelledby="t-shared" tabindex="0" hidden>
+    <ul><li>Brand kit<span>Shared by Ana</span></li><li>Q4 plan.docx<span>Shared by Luis</span></li></ul>
+  </div>
+  <div class="panel" role="tabpanel" id="p-favorites" aria-labelledby="t-favorites" tabindex="0" hidden>
+    <ul><li>Roadmap.pptx<span>Pinned</span></li></ul>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ----
+   Fluent 2 alias tokens under their own names, resolved to the web theme: light is webLightTheme,
+   dark is webDarkTheme. Sizes are the literals useTabStyles resolves for size="medium",
+   appearance="transparent". */
+:root {
+  color-scheme: light dark;
+
+  /* @group Tab */
+  --fl-tab-padding: 12px 10px;                                  /* Padding, medium: spacingVerticalM spacingHorizontalMNudge */
+  --fl-tab-gap: 6px;                                            /* Icon to label, medium: spacingHorizontalSNudge */
+  --fl-tab-radius: 4px;                                         /* Hover and focus shape · borderRadiusMedium */
+  --fl-tab-icon-size: 20px;                                     /* Icon, small and medium (large 24px) */
+  --fl-tab-font: 14px/20px "Segoe UI", system-ui, sans-serif;   /* body1: 14/20 at weight 400 */
+  --fl-tab-selected-weight: 600;                                /* body1Strong, selected label; space is reserved so tabs do not shift */
+
+  /* @group Unselected colors */
+  --colorNeutralForeground2: light-dark(#424242, #d6d6d6);                /* Label and icon at rest */
+  --colorNeutralForeground2Hover: light-dark(#242424, #ffffff);           /* Label and icon on hover */
+  --colorNeutralForeground2Pressed: light-dark(#242424, #ffffff);         /* Label and icon on press */
+  --colorNeutralForegroundDisabled: light-dark(#bdbdbd, #5c5c5c);         /* Disabled label and icon */
+
+  /* @group Selected colors */
+  --colorNeutralForeground1: light-dark(#242424, #ffffff);                /* Selected label, every state */
+  --colorCompoundBrandForeground1: light-dark(#0f6cbd, #479ef5);          /* Selected icon at rest · brand 80 / 100 */
+  --colorCompoundBrandForeground1Hover: light-dark(#115ea3, #62abf5);     /* Selected icon on hover · brand 70 / 110 */
+  --colorCompoundBrandForeground1Pressed: light-dark(#0f548c, #2886de);   /* Selected icon on press · brand 60 / 90 */
+
+  /* @group Indicator */
+  --colorCompoundBrandStroke: light-dark(#0f6cbd, #479ef5);               /* Selected indicator · brand 80 / 100 */
+  --colorCompoundBrandStrokeHover: light-dark(#115ea3, #62abf5);          /* Selected indicator on hover */
+  --colorCompoundBrandStrokePressed: light-dark(#0f548c, #2886de);        /* Selected indicator on press */
+  --colorNeutralStroke1Hover: light-dark(#c7c7c7, #757575);               /* Pending indicator under an unselected tab on hover */
+  --colorNeutralStroke1Pressed: light-dark(#b3b3b3, #6b6b6b);             /* Pending indicator on press */
+  --fl-tab-indicator-h: 3px;                                    /* Indicator, medium and large: strokeWidthThicker (small 2px) */
+  --fl-tab-indicator-inset: 12px;                               /* Indicator inset from each side of the tab, medium: spacingHorizontalM */
+  --fl-tab-indicator-radius: 10000px;                           /* Pill ends · borderRadiusCircular */
+  --fl-tab-slide: 300ms cubic-bezier(0.1, 0.9, 0.2, 1);         /* durationSlow, curveDecelerateMax; off under reduced motion */
+
+  /* @group Focus */
+  --colorStrokeFocus2: light-dark(#000000, #ffffff);                      /* Focus ring */
+  --fl-tab-focus-width: 2px;                                    /* Ring thickness · strokeWidthThick */
+  --shadow4: 0 0 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.24)), 0 2px 4px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.28));   /* Shadow under the focused tab */
+}
+
+/* ---- Component ---- */
+.fl-tabs { position: relative; }
+.fl-tablist { display: flex; position: relative; }                /* No gap: the line appearance */
+
+.fl-tab {
+  position: relative;
+  appearance: none; border: 0; margin: 0; cursor: pointer;
+  display: grid; grid-auto-flow: column; align-items: center; justify-content: center;
+  column-gap: var(--fl-tab-gap);
+  padding: var(--fl-tab-padding);
+  border-radius: var(--fl-tab-radius);
+  background: transparent;                                        /* Transparent appearance: no fill in any state */
+  font: var(--fl-tab-font);
+  color: var(--colorNeutralForeground2);
+  outline: var(--fl-tab-focus-width) solid transparent;           /* Visible in forced-colors mode */
+
+  &:enabled:hover   { color: var(--colorNeutralForeground2Hover); }
+  &:enabled:active  { color: var(--colorNeutralForeground2Pressed); }
+  &:focus-visible   { box-shadow: var(--shadow4), 0 0 0 var(--fl-tab-focus-width) var(--colorStrokeFocus2); z-index: 1; }
+  &:disabled        { color: var(--colorNeutralForegroundDisabled); cursor: default; }
+}
+
+/* Icons come in Regular and Filled; selected shows Filled in the brand color. */
+.fl-tab .icon { width: var(--fl-tab-icon-size); height: var(--fl-tab-icon-size); fill: currentColor; }
+.fl-tab .fl-filled { display: none; }
+.fl-tab[aria-selected="true"] {
+  .fl-regular { display: none; }
+  .fl-filled { display: inline; }
+  .icon { color: var(--colorCompoundBrandForeground1); }
+  &:enabled:hover .icon { color: var(--colorCompoundBrandForeground1Hover); }
+  &:enabled:active .icon { color: var(--colorCompoundBrandForeground1Pressed); }
+  .fl-tab-text { color: var(--colorNeutralForeground1); font-weight: var(--fl-tab-selected-weight); }
+}
+
+/* Reserve the bold width so the row does not shift when selection changes. */
+.fl-tab-text { padding: 0 2px; }
+.fl-tab-text::after { content: attr(data-text); display: block; height: 0; overflow: hidden; visibility: hidden; font-weight: var(--fl-tab-selected-weight); }
+
+/* Pending indicator: a pill under an unselected tab while the pointer is over it. */
+.fl-tab:not([aria-selected="true"]):enabled:hover::before,
+.fl-tab:not([aria-selected="true"]):enabled:active::before {
+  content: "";
+  position: absolute; bottom: 0;
+  left: var(--fl-tab-indicator-inset); right: var(--fl-tab-indicator-inset);
+  height: var(--fl-tab-indicator-h);
+  border-radius: var(--fl-tab-indicator-radius);
+  background: var(--colorNeutralStroke1Hover);
+}
+.fl-tab:not([aria-selected="true"]):enabled:active::before { background: var(--colorNeutralStroke1Pressed); }
+
+/* Selected indicator: one bar for the list, anchored to the selected tab. */
+.fl-tab[aria-selected="true"] { anchor-name: --fl-active; }
+.fl-tablist::after {
+  content: "";
+  position: absolute;
+  position-anchor: --fl-active;
+  left: calc(anchor(left) + var(--fl-tab-indicator-inset));
+  right: calc(anchor(right) + var(--fl-tab-indicator-inset));
+  bottom: 0;
+  height: var(--fl-tab-indicator-h);
+  border-radius: var(--fl-tab-indicator-radius);
+  background: var(--colorCompoundBrandStroke);
+  transition: left var(--fl-tab-slide), right var(--fl-tab-slide);
+}
+.fl-tablist:has([aria-selected="true"]:enabled:hover)::after  { background: var(--colorCompoundBrandStrokeHover); }
+.fl-tablist:has([aria-selected="true"]:enabled:active)::after { background: var(--colorCompoundBrandStrokePressed); }
+@media (prefers-reduced-motion: reduce) { .fl-tablist::after { transition: none; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #292929); color: light-dark(#242424, #ffffff); font: 14px/20px "Segoe UI", system-ui, sans-serif; }
+.app { max-width: 520px; margin: 0 auto; padding: 24px; }
+.app-title { margin: 0 0 8px; font-size: 20px; line-height: 28px; font-weight: 600; }
+.panel { padding: 12px 4px 0; }
+.panel:focus-visible { outline: 2px solid var(--colorStrokeFocus2); outline-offset: 2px; border-radius: 4px; }
+ul { list-style: none; margin: 0; padding: 0; }
+li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid light-dark(#e0e0e0, #3d3d3d); }
+li span { color: light-dark(#616161, #adadad); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Selection and keys. Chrome does not yet honor focusgroup="tablist", so arrows are handled
+// here. Selection follows focus; disabled tabs are skipped. Fluent's own Tab does the same
+// with automatic selection by default.
+const list = document.querySelector('[role="tablist"]');
+const tabs = [...list.querySelectorAll('[role="tab"]')];
+const enabled = () => tabs.filter(t => !t.disabled);
+
+function select(tab) {
+  for (const t of tabs) {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+  }
+}
+list.addEventListener('click', e => { const t = e.target.closest('[role="tab"]'); if (t && !t.disabled) select(t); });
+list.addEventListener('focusin', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+
+list.addEventListener('keydown', e => {
+  const set = enabled(), i = set.indexOf(document.activeElement);
+  const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: set.length - 1 }[e.key];
+  if (i < 0 || to === undefined) return;
+  e.preventDefault();
+  set[(to + set.length) % set.length].focus({ preventScroll: true });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Select "Shared" so the indicator is away from the first tab.
+document.getElementById('t-shared').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="260" data-hint="Click a tab or use the arrow keys. Hover an unselected tab to see the pending indicator; Recycle bin is disabled."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Tab list</th><td>A flex row with no gap. Each tab’s own padding makes the space between labels. Horizontal by default; <code>vertical</code> stacks it.</td></tr>
+        <tr><th>Tab</th><td>A <code>button</code> with <code>role="tab"</code>: an icon (optional) and a label, 4px corners. Sizes: small 6px × 6px padding, medium 12px × 10px (default), large 16px × 10px.</td></tr>
+        <tr><th>Label</th><td>body1, 14 / 20 at weight 400; selected, body1Strong at 600. Large tabs use body2 (16) and subtitle2. Space for the bold weight is reserved so selection never shifts the row.</td></tr>
+        <tr><th>Icon</th><td>20px (large 24px). Regular at rest, Filled when selected, in the brand color.</td></tr>
+        <tr><th>Selected indicator</th><td>A pill, 3px tall (small 2px), brand color, inset 12px from each side of the tab so it is narrower than the tab. One indicator slides between tabs.</td></tr>
+        <tr><th>Pending indicator</th><td>The same pill in a neutral stroke color, under an unselected tab on hover and press: a preview of where selection would go.</td></tr>
+        <tr><th>Appearance</th><td><code>transparent</code> (shown), <code>subtle</code> (fills on hover) and the circular appearances, which swap the indicator for a rounded fill. Only transparent is built here.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Selecting</th><td>Click, or arrow to a tab: selection follows focus.</td></tr>
+        <tr><th>Indicator</th><td>Slides over 300ms (durationSlow) on curveDecelerateMax. Fluent animates the indicator’s transform; this page animates its anchored insets, with the same duration and curve. Reduced motion jumps it.</td></tr>
+        <tr><th>Hover</th><td>Text and icon darken one step. An unselected tab also shows the pending indicator; the selected indicator darkens to the hover brand color. The tab itself never fills in the transparent appearance.</td></tr>
+        <tr><th>Press</th><td>One step darker again, on the same colors.</td></tr>
+        <tr><th>Disabled</th><td>The label and icon use the disabled foreground, no hover and no pending indicator. Arrow keys skip it.</td></tr>
+        <tr><th>Focus</th><td>A 2px ring in colorStrokeFocus2 around the whole tab plus shadow4, so it does not collide with the indicator. A transparent outline keeps it visible in forced-colors mode.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Enter the list at the selected tab, then leave it for the panel.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Previous and next enabled tab, wrapping, selecting as it goes.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last enabled tab.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>role="tablist"</code> with a label, <code>role="tab"</code> with <code>aria-selected</code> and <code>aria-controls</code>, and a labelled <code>tabpanel</code>. Fluent’s <code>TabList</code> uses the same roles.</li>
+          <li>Icons are decorative; every tab has a text label.</li>
+          <li>Selected state is shown by the bold label, the filled icon and the indicator, not color alone.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

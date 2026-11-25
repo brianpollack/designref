@@ -69,11 +69,19 @@ window.SOURCES = {
     'compose-menu':                  { site: 'material-3', title: 'Menu.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/Menu.kt' },
     'compose-expressive-motion':     { site: 'material-3', title: 'ExpressiveMotionTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ExpressiveMotionTokens.kt' },
     'mweb-focus-ring':               { site: 'material-3', title: 'Material Web focus ring tokens', url: 'https://github.com/material-components/material-web/blob/main/tokens/_md-comp-focus-ring.scss' },
+    'm3-tabs': { site: 'material-3', title: 'Tabs: specs', url: 'https://m3.material.io/components/tabs/specs' },
+    'compose-primary-tab-tokens': { site: 'material-3', title: 'PrimaryNavigationTabTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/PrimaryNavigationTabTokens.kt' },
+    'compose-secondary-tab-tokens': { site: 'material-3', title: 'SecondaryNavigationTabTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/SecondaryNavigationTabTokens.kt' },
+    'compose-tabrow': { site: 'material-3', title: 'TabRow.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/TabRow.kt' },
+    'compose-color-light-tokens': { site: 'material-3', title: 'ColorLightTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ColorLightTokens.kt' },
+    'compose-color-dark-tokens': { site: 'material-3', title: 'ColorDarkTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/ColorDarkTokens.kt' },
+    'compose-palette-tokens': { site: 'material-3', title: 'PaletteTokens.kt', url: 'https://github.com/androidx/androidx/blob/androidx-main/compose/material3/material3/src/commonMain/kotlin/androidx/compose/material3/tokens/PaletteTokens.kt' },
 
     // Apple Human Interface Guidelines
     'hig-context-menus': { site: 'apple-hig', title: 'Context menus', url: 'https://developer.apple.com/design/human-interface-guidelines/context-menus' },
     'hig-menus':         { site: 'apple-hig', title: 'Menus', url: 'https://developer.apple.com/design/human-interface-guidelines/menus' },
     'hig-materials':     { site: 'apple-hig', title: 'Materials', url: 'https://developer.apple.com/design/human-interface-guidelines/materials' },
+    'hig-tab-bars': { site: 'apple-hig', title: 'Tab bars', url: 'https://developer.apple.com/design/human-interface-guidelines/tab-bars' },
 
     // Fluent 2
     'fluent-menu': { site: 'fluent-2', title: 'Menu', url: 'https://fluent2.microsoft.design/components/web/react/core/menu/usage/' },
@@ -89,6 +97,14 @@ window.SOURCES = {
     'fluent-light-color':         { site: 'fluent-2', title: 'lightColor.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts' },
     'fluent-dark-color':          { site: 'fluent-2', title: 'darkColor.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/darkColor.ts' },
     'fluent-brand-colors':        { site: 'fluent-2', title: 'brandColors.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/brandColors.ts' },
+    'fluent-tablist': { site: 'fluent-2', title: 'TabList', url: 'https://fluent2.microsoft.design/components/web/react/core/tablist/usage' },
+    'fluent-tab-styles': { site: 'fluent-2', title: 'useTabStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabs/library/src/components/Tab/useTabStyles.styles.ts' },
+    'fluent-tablist-styles': { site: 'fluent-2', title: 'useTabListStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabs/library/src/components/TabList/useTabListStyles.styles.ts' },
+    'fluent-tab-indicator': { site: 'fluent-2', title: 'useTabAnimatedIndicator.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-tabs/library/src/components/Tab/useTabAnimatedIndicator.styles.ts' },
+    'fluent-grey-colors': { site: 'fluent-2', title: 'global/colors.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/colors.ts' },
+    'fluent-durations': { site: 'fluent-2', title: 'durations.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/durations.ts' },
+    'fluent-curves': { site: 'fluent-2', title: 'curves.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/curves.ts' },
+    'fluent-shadows': { site: 'fluent-2', title: 'utils/shadows.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts' },
 
     // Carbon
     'carbon-menu': { site: 'carbon', title: 'Menu', url: 'https://www.carbondesignsystem.com/building-blocks/core/components/menu/guidelines' },
@@ -99,6 +115,12 @@ window.SOURCES = {
     'carbon-white-theme':    { site: 'carbon', title: 'White theme tokens', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/themes/tokens/themes/white/theme.tokens.json' },
     'carbon-g100-theme':     { site: 'carbon', title: 'Gray 100 theme tokens', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/themes/tokens/themes/g100/theme.tokens.json' },
     'carbon-focus-outline':  { site: 'carbon', title: '_focus-outline.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/utilities/_focus-outline.scss' },
+    'carbon-tabs': { site: 'carbon', title: 'Tabs', url: 'https://www.carbondesignsystem.com/building-blocks/core/components/tabs/guidelines' },
+    'carbon-tabs-scss': { site: 'carbon', title: '_tabs.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/components/tabs/_tabs.scss' },
+    'carbon-tabs-vars': { site: 'carbon', title: 'tabs/_vars.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/components/tabs/_vars.scss' },
+    'carbon-tabs-tsx': { site: 'carbon', title: 'Tabs.tsx', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/react/src/components/Tabs/Tabs.tsx' },
+    'carbon-layout-scss': { site: 'carbon', title: '_layout.scss', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/styles/scss/utilities/_layout.scss' },
+    'carbon-colors-tokens': { site: 'carbon', title: 'colors.tokens.json', url: 'https://github.com/carbon-design-system/carbon/blob/v11.121.0/packages/colors/tokens/colors.tokens.json' },
 
     // Chrome for Developers
     'chrome-menu':            { site: 'chrome', title: 'Build a popup menu', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu' },
@@ -115,6 +137,9 @@ window.SOURCES = {
     'mdn-backdrop-filter':        { site: 'mdn', title: 'backdrop-filter', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter' },
     'mdn-corner-shape':           { site: 'mdn', title: 'corner-shape', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/corner-shape' },
     'mdn-reduced-transparency':   { site: 'mdn', title: 'prefers-reduced-transparency', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-transparency' },
+    'mdn-tab-role': { site: 'mdn', title: 'ARIA: tab role', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/tab_role' },
+    'mdn-scroll-target-group': { site: 'mdn', title: 'scroll-target-group', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/scroll-target-group' },
+    'mdn-target-current': { site: 'mdn', title: ':target-current', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:target-current' },
 
     // web.dev
     'webdev-trig': { site: 'web-dev', title: 'Trigonometric functions in CSS', url: 'https://web.dev/articles/css-trig-functions' },
@@ -123,6 +148,7 @@ window.SOURCES = {
     'apg-menu-button': { site: 'apg', title: 'Menu button pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/' },
     'apg-menubar':     { site: 'apg', title: 'Menu and menubar pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menubar/' },
     'apg-combobox':    { site: 'apg', title: 'Combobox pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/combobox/' },
+    'apg-tabs': { site: 'apg', title: 'Tabs pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/tabs/' },
 
     // Articles and write-ups
     'master-popover-context-menus': { site: 'master-dev', title: 'Popover context menus with anchor positioning', url: 'https://blog.master.dev/popover-context-menus-with-anchor-positioning/' },

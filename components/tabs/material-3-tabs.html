@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Material 3 Tabs</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/tabs/material-3-tabs">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="phone">
+  <!-- Primary tabs: top-level destinations. Icon above label, 64dp. -->
+  <div class="md-tabs md-primary" style="--_anchor: --md-primary">
+    <div class="md-tablist" role="tablist" aria-label="Library">
+      <button class="md-tab" role="tab" id="t-photos" aria-controls="p-photos" aria-selected="true">
+        <span class="md-tab-content"><svg class="icon" aria-hidden="true"><use href="#i-photo_library"/></svg><span>Photos</span></span>
+      </button>
+      <button class="md-tab" role="tab" id="t-albums" aria-controls="p-albums" aria-selected="false" tabindex="-1">
+        <span class="md-tab-content"><svg class="icon" aria-hidden="true"><use href="#i-photo_album"/></svg><span>Albums</span></span>
+      </button>
+      <button class="md-tab" role="tab" id="t-shared" aria-controls="p-shared" aria-selected="false" tabindex="-1">
+        <span class="md-tab-content"><svg class="icon" aria-hidden="true"><use href="#i-group"/></svg><span>Shared</span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="md-panel" role="tabpanel" id="p-photos" aria-labelledby="t-photos">
+    <!-- Secondary tabs: filter the content below. Label only, 48dp, full-width indicator. -->
+    <div class="md-tabs md-secondary" style="--_anchor: --md-secondary">
+      <div class="md-tablist" role="tablist" aria-label="Photos">
+        <button class="md-tab" role="tab" id="s-recent" aria-controls="q-recent" aria-selected="true"><span class="md-tab-content">Recent</span></button>
+        <button class="md-tab" role="tab" id="s-favorites" aria-controls="q-favorites" aria-selected="false" tabindex="-1"><span class="md-tab-content">Favorites</span></button>
+        <button class="md-tab" role="tab" id="s-archived" aria-controls="q-archived" aria-selected="false" tabindex="-1"><span class="md-tab-content">Archived</span></button>
+      </div>
+    </div>
+    <div class="md-panel" role="tabpanel" id="q-recent" aria-labelledby="s-recent" tabindex="0"><p>248 photos from the last 30 days.</p></div>
+    <div class="md-panel" role="tabpanel" id="q-favorites" aria-labelledby="s-favorites" tabindex="0" hidden><p>36 favorites.</p></div>
+    <div class="md-panel" role="tabpanel" id="q-archived" aria-labelledby="s-archived" tabindex="0" hidden><p>12 archived photos.</p></div>
+  </div>
+  <div class="md-panel" role="tabpanel" id="p-albums" aria-labelledby="t-albums" tabindex="0" hidden><p>14 albums.</p></div>
+  <div class="md-panel" role="tabpanel" id="p-shared" aria-labelledby="t-shared" tabindex="0" hidden><p>3 shared with you.</p></div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* Roboto Flex from Google Fonts; the font stack below falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..500&display=swap");
+
+/* ---- Tokens ----
+   Material 3 baseline colors by role (--md-sys-color-*), light and dark. Sizes, type and
+   state colors come from Compose's PrimaryNavigationTabTokens and SecondaryNavigationTabTokens. */
+:root {
+  color-scheme: light dark;
+
+  /* Color roles, baseline scheme */
+  --md-sys-color-primary: light-dark(#6750A4, #D0BCFF);
+  --md-sys-color-surface: light-dark(#FEF7FF, #141218);
+  --md-sys-color-on-surface: light-dark(#1D1B20, #E6E0E9);
+  --md-sys-color-on-surface-variant: light-dark(#49454F, #CAC4D0);
+  --md-sys-color-surface-variant: light-dark(#E7E0EC, #49454F);
+  --md-sys-color-secondary: light-dark(#625B71, #CCC2DC);
+
+  /* @group Container */
+  --md-tab-container-color: var(--md-sys-color-surface);                 /* Row fill · Surface */
+  --md-tab-container-height: 48px;                                       /* Row height, label only (primary and secondary) */
+  --md-tab-icon-label-height: 64px;                                      /* Row height, primary tabs with an icon above the label */
+  --md-tab-divider-color: var(--md-sys-color-surface-variant);           /* Divider under the row · SurfaceVariant */
+  --md-tab-divider-height: 1px;                                          /* Divider thickness */
+
+  /* @group Label and icon */
+  --md-tab-label-font: 500 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif;   /* TitleSmall: 14/20, Medium 500, tracking 0.1px */
+  --md-tab-label-tracking: 0.1px;                                        /* TitleSmall tracking */
+  --md-tab-icon-size: 24px;                                              /* Icon above the label */
+  --md-tab-icon-label-gap: 2px;                                          /* Space between icon and label (ours: not a published token) */
+
+  /* @group Primary state colors */
+  --md-tab-primary-active: var(--md-sys-color-primary);                  /* Selected label and icon, every state · Primary */
+  --md-tab-primary-inactive: var(--md-sys-color-on-surface-variant);     /* Unselected label and icon · OnSurfaceVariant */
+  --md-tab-primary-inactive-hover: var(--md-sys-color-on-surface);       /* Unselected on hover, focus or press · OnSurface */
+
+  /* @group Secondary state colors */
+  --md-tab-secondary-active: var(--md-sys-color-on-surface);             /* Selected label · OnSurface */
+  --md-tab-secondary-inactive: var(--md-sys-color-on-surface-variant);   /* Unselected label · OnSurfaceVariant */
+  --md-tab-secondary-inactive-hover: var(--md-sys-color-on-surface);     /* Unselected on hover, focus or press · OnSurface */
+
+  /* @group Indicator */
+  --md-tab-indicator-color: var(--md-sys-color-primary);                 /* Both indicators · Primary */
+  --md-tab-indicator-height: 3px;                                        /* Both indicators */
+  --md-tab-primary-indicator-min-width: 24px;                            /* Primary indicator is as wide as the content, at least 24dp */
+  --md-tab-primary-indicator-radius: 3px;                                /* Primary indicator shape; the secondary one is a square bar */
+  --md-tab-indicator-slide: 300ms cubic-bezier(0.2, 0, 0, 1);            /* Slide between tabs (emphasized easing); off under reduced motion */
+
+  /* @group Focus */
+  --md-focus-ring-color: var(--md-sys-color-secondary);                  /* Focus indicator · Secondary */
+  --md-focus-ring-width: 3px;                                            /* Focus indicator thickness, drawn inside the tab */
+}
+
+/* ---- Component ---- */
+.md-tabs { position: relative; background: var(--md-tab-container-color); }
+.md-tablist {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;                                                /* Fixed tabs share the row equally */
+  height: var(--md-tab-container-height);
+  border-bottom: var(--md-tab-divider-height) solid var(--md-tab-divider-color);
+}
+.md-primary .md-tablist { height: var(--md-tab-icon-label-height); }
+
+.md-tab {
+  appearance: none; background: none; border: 0; margin: 0; padding: 0;
+  display: grid; place-items: center;
+  font: var(--md-tab-label-font);
+  letter-spacing: var(--md-tab-label-tracking);
+  cursor: pointer;
+
+  &:focus-visible { outline: var(--md-focus-ring-width) solid var(--md-focus-ring-color); outline-offset: calc(var(--md-focus-ring-width) * -1); }
+}
+.md-tab-content { display: grid; justify-items: center; gap: var(--md-tab-icon-label-gap); }
+.md-tab .icon { width: var(--md-tab-icon-size); height: var(--md-tab-icon-size); }
+
+/* Primary colors: selected is Primary in every state; unselected darkens on hover, focus and press. */
+.md-primary .md-tab { color: var(--md-tab-primary-inactive); }
+.md-primary .md-tab:is(:hover, :focus-visible, :active) { color: var(--md-tab-primary-inactive-hover); }
+.md-primary .md-tab[aria-selected="true"] { color: var(--md-tab-primary-active); }
+
+.md-secondary .md-tab { color: var(--md-tab-secondary-inactive); }
+.md-secondary .md-tab:is(:hover, :focus-visible, :active) { color: var(--md-tab-secondary-inactive-hover); }
+.md-secondary .md-tab[aria-selected="true"] { color: var(--md-tab-secondary-active); }
+
+/* Indicators. Each row names its own anchor (--_anchor), so the two rows do not collide.
+   Primary hugs the tab's content; secondary spans the whole tab. */
+.md-primary .md-tab[aria-selected="true"] .md-tab-content { anchor-name: var(--_anchor); }
+.md-secondary .md-tab[aria-selected="true"] { anchor-name: var(--_anchor); }
+
+.md-tabs::after {
+  content: "";
+  position: absolute;
+  position-anchor: var(--_anchor);
+  left: anchor(left);
+  right: anchor(right);
+  bottom: 0;
+  height: var(--md-tab-indicator-height);
+  background: var(--md-tab-indicator-color);
+  transition: left var(--md-tab-indicator-slide), right var(--md-tab-indicator-slide);
+}
+.md-primary::after {
+  min-width: var(--md-tab-primary-indicator-min-width);
+  border-radius: var(--md-tab-primary-indicator-radius);
+}
+@media (prefers-reduced-motion: reduce) { .md-tabs::after { transition: none; } }
+
+.md-panel p { margin: 0; padding: 16px; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#E7E0EC, #0F0D13); font: 400 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif; color: var(--md-sys-color-on-surface); }
+.phone { max-width: 400px; margin: 20px auto; background: var(--md-sys-color-surface); border-radius: 12px; overflow: hidden; }
+svg.icon { fill: currentColor; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Selection and keys for every tab row. Chrome does not yet honor focusgroup="tablist", so
+// arrows are handled here. Selection follows focus (APG "automatic activation").
+document.querySelectorAll('[role="tablist"]').forEach(list => {
+  const tabs = [...list.querySelectorAll('[role="tab"]')];
+
+  function select(tab) {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', on);
+      t.tabIndex = on ? 0 : -1;                               // only the selected tab is in the Tab order
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    }
+  }
+  list.addEventListener('click', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+  list.addEventListener('focusin', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+
+  list.addEventListener('keydown', e => {
+    const i = tabs.indexOf(document.activeElement);
+    const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+    if (i < 0 || to === undefined) return;
+    e.preventDefault();
+    tabs[(to + tabs.length) % tabs.length].focus({ preventScroll: true });
+  });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Move both rows off their first tab: Albums on top, Favorites below it.
+document.getElementById('s-favorites').click();
+document.getElementById('t-albums').click();
+document.getElementById('t-photos').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="250" data-hint="Click a tab or use the arrow keys. The top row is primary tabs; the row inside Photos is secondary."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Primary tabs</th><td>Top-level destinations, placed at the top of the content. 48dp tall with a label only, 64dp with an icon above the label. Tabs share the row equally.</td></tr>
+        <tr><th>Secondary tabs</th><td>Filters or sub-views inside a primary tab’s content. 48dp, label only.</td></tr>
+        <tr><th>Label</th><td>TitleSmall: 14 / 20sp, Medium 500, 0.1px tracking. Selected primary labels are Primary; selected secondary labels are OnSurface; unselected are OnSurfaceVariant.</td></tr>
+        <tr><th>Icon</th><td>Material Symbols, 24dp, in the label’s color.</td></tr>
+        <tr><th>Primary indicator</th><td>3dp tall, rounded, Primary. As wide as the tab’s content (the wider of icon and label), never under 24dp, sitting on the row’s bottom edge.</td></tr>
+        <tr><th>Secondary indicator</th><td>3dp tall, square, Primary, spanning the whole tab.</td></tr>
+        <tr><th>Divider</th><td>1dp SurfaceVariant under the row. The secondary token file defines it; the primary file has no divider entry, so this page reuses that value under primary tabs, as Compose’s tab row also draws one.</td></tr>
+        <tr><th>Scrollable</th><td>For rows that do not fit: tabs keep their own width (minimum 90dp) and the row starts 52dp in from the edge. Not shown here.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Selecting</th><td>Click, or arrow to a tab: focus and selection move together because panels are already on the page.</td></tr>
+        <tr><th>Indicator</th><td>Slides between tabs over 300ms on the emphasized easing. The primary indicator resizes to each tab’s content as it goes. Reduced motion jumps it.</td></tr>
+        <tr><th>States</th><td>Hover, focus and press all use one color change: an unselected tab’s label and icon go from OnSurfaceVariant to OnSurface. A selected primary tab stays Primary in every state.</td></tr>
+        <tr><th>Ripple</th><td>Compose also draws a ripple and state layer from the platform; this page leaves them out.</td></tr>
+        <tr><th>Focus</th><td>3px Secondary ring drawn inside the tab, as for other Material controls on this site.</td></tr>
+        <tr><th>Two rows</th><td>A secondary row belongs to the primary tab above it. Each keeps its own selection; do not use both rows for the same level of choice.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Enter a row at its selected tab; the next press goes to the panel.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Previous and next tab in the row, wrapping, selecting as it goes.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last tab in the row.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Each tab has <code>role="tab"</code>, <code>aria-selected</code> and <code>aria-controls</code>; each panel has <code>aria-labelledby</code>. The two rows have their own <code>aria-label</code>.</li>
+          <li>Icons are decorative (<code>aria-hidden</code>): the label always names the tab.</li>
+          <li>Unselected label OnSurfaceVariant on Surface is 8.9:1 in the light scheme and 10.9:1 in dark, and the Primary label is 6.1:1 light and 10.9:1 dark.</li>
+          <li>Selected state is also shown by the indicator, not color alone.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

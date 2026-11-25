@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Underline Tabs</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/tabs/underline-tabs">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <h1 class="app-title">Atlas</h1>
+  <p class="app-sub">Mapping service · 12 members</p>
+
+  <div class="tabs">
+    <div class="tablist" role="tablist" aria-label="Project">
+      <button class="tab" role="tab" id="t-overview" aria-controls="p-overview" aria-selected="true">Overview</button>
+      <button class="tab" role="tab" id="t-activity" aria-controls="p-activity" aria-selected="false" tabindex="-1">Activity</button>
+      <button class="tab" role="tab" id="t-members" aria-controls="p-members" aria-selected="false" tabindex="-1">Members</button>
+      <button class="tab" role="tab" id="t-billing" aria-controls="p-billing" aria-selected="false" tabindex="-1">Billing</button>
+    </div>
+
+    <div class="panel" role="tabpanel" id="p-overview" aria-labelledby="t-overview" tabindex="0">
+      <dl>
+        <div><dt>Plan</dt><dd>Team</dd></div>
+        <div><dt>Region</dt><dd>eu-west</dd></div>
+        <div><dt>Last deploy</dt><dd>2 hours ago</dd></div>
+      </dl>
+    </div>
+    <div class="panel" role="tabpanel" id="p-activity" aria-labelledby="t-activity" tabindex="0" hidden>
+      <ul>
+        <li>Priya merged <strong>tile-cache</strong></li>
+        <li>Deploy to eu-west finished</li>
+        <li>Marcus opened <strong>route-timeouts</strong></li>
+      </ul>
+    </div>
+    <div class="panel" role="tabpanel" id="p-members" aria-labelledby="t-members" tabindex="0" hidden>
+      <dl>
+        <div><dt>Priya Raman</dt><dd>Owner</dd></div>
+        <div><dt>Marcus Webb</dt><dd>Maintainer</dd></div>
+        <div><dt>Jo Okafor</dt><dd>Reader</dd></div>
+      </dl>
+    </div>
+    <div class="panel" role="tabpanel" id="p-billing" aria-labelledby="t-billing" tabindex="0" hidden>
+      <dl>
+        <div><dt>Next invoice</dt><dd>1 Dec</dd></div>
+        <div><dt>Seats</dt><dd>12 of 15</dd></div>
+      </dl>
+    </div>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Tab */
+  --tb-pad-y: 10px;                                           /* Tab padding, top and bottom; with the 20px line the tab is 40px tall */
+  --tb-pad-x: 14px;                                           /* Tab padding, left and right */
+  --tb-gap: 4px;                                              /* Space between tabs */
+  --tb-radius: 6px;                                           /* Corner of the hover fill and focus ring */
+  --tb-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 for every state */
+
+  /* @group Tab colors */
+  --tb-text: light-dark(#5c6270, #a3a8b4);                    /* Label at rest */
+  --tb-text-selected: light-dark(#16181d, #f2f3f5);           /* Label when selected, and on hover */
+  --tb-hover: light-dark(rgb(0 0 0 / 0.05), rgb(255 255 255 / 0.07));   /* Fill on hover */
+
+  /* @group Indicator and rule */
+  --tb-accent: light-dark(#2b59e0, #8ea6ff);                  /* Indicator, and the focus ring */
+  --tb-indicator-h: 2px;                                      /* Indicator thickness, drawn over the rule */
+  --tb-rule: light-dark(#e1e4ea, #34373f);                    /* Rule under the whole row, 1px */
+  --tb-slide: 250ms cubic-bezier(0.2, 0, 0, 1);               /* Indicator slide; off under reduced motion */
+
+  /* @group Panel */
+  --tb-panel-pad: 20px;                                       /* Space between the rule and the panel content */
+}
+
+/* ---- Component ---- */
+.tablist {
+  display: flex;
+  gap: var(--tb-gap);
+  position: relative;
+  border-bottom: 1px solid var(--tb-rule);
+}
+
+.tab {
+  /* A button, reset: the role is "tab" but the element stays a real, focusable button. */
+  appearance: none; background: none; border: 0; margin: 0;
+  padding: var(--tb-pad-y) var(--tb-pad-x);
+  font: var(--tb-font);
+  color: var(--tb-text);
+  border-radius: var(--tb-radius);
+  cursor: pointer;
+
+  &:hover { background: var(--tb-hover); color: var(--tb-text-selected); }
+  &:focus-visible { outline: 2px solid var(--tb-accent); outline-offset: -2px; }
+
+  /* The selected tab names itself as the anchor. */
+  &[aria-selected="true"] { color: var(--tb-text-selected); anchor-name: --tb-active; }
+}
+
+/* One indicator for the whole row. It spans whichever tab is the anchor, so when
+   selection moves, the inset values change and the transition slides it. */
+.tablist::after {
+  content: "";
+  position: absolute;
+  position-anchor: --tb-active;
+  left: anchor(left);
+  right: anchor(right);
+  bottom: -1px;                                              /* Cover the rule */
+  height: var(--tb-indicator-h);
+  background: var(--tb-accent);
+  border-radius: var(--tb-indicator-h) var(--tb-indicator-h) 0 0;
+  transition: left var(--tb-slide), right var(--tb-slide);
+}
+@media (prefers-reduced-motion: reduce) { .tablist::after { transition: none; } }
+
+.panel { padding: var(--tb-panel-pad) 2px 0; }
+.panel:focus-visible { outline: 2px solid var(--tb-accent); outline-offset: 4px; border-radius: 4px; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f4f5f7, #141518); color: light-dark(#16181d, #f2f3f5); font: 14px/20px system-ui, sans-serif; }
+.app { max-width: 520px; margin: 0 auto; padding: 28px 24px; }
+.app-title { margin: 0; font-size: 20px; line-height: 28px; font-weight: 600; }
+.app-sub { margin: 2px 0 20px; color: light-dark(#5c6270, #a3a8b4); }
+dl { margin: 0; display: grid; gap: 10px; }
+dl div { display: flex; justify-content: space-between; max-width: 320px; }
+dt { color: light-dark(#5c6270, #a3a8b4); }
+dd { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Selection and keys. Chrome does not yet honor focusgroup="tablist", so the arrow keys are
+// handled here. Selection follows focus (APG "automatic activation": panels show instantly).
+const list = document.querySelector('[role="tablist"]');
+const tabs = [...list.querySelectorAll('[role="tab"]')];
+
+function select(tab) {
+  for (const t of tabs) {
+    const on = t === tab;
+    t.setAttribute('aria-selected', on);
+    t.tabIndex = on ? 0 : -1;                                 // only the selected tab is in the Tab order
+    document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+  }
+}
+list.addEventListener('click', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+list.addEventListener('focusin', e => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+
+// Arrow keys move focus, wrapping at the ends; Home and End jump. focusin selects.
+list.addEventListener('keydown', e => {
+  const i = tabs.indexOf(document.activeElement);
+  const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+  if (i < 0 || to === undefined) return;
+  e.preventDefault();
+  tabs[(to + tabs.length) % tabs.length].focus({ preventScroll: true });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Select "Members" so the indicator is away from the first tab.
+document.getElementById('t-members').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="340" data-hint="Click a tab, or Tab to the row and use the arrow keys. The indicator slides to the selected tab."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Tab list</th><td>One row of buttons with a 1px rule beneath. Labels sit side by side with a 4px gap; the row never wraps.</td></tr>
+        <tr><th>Tab</th><td>A <code>button</code> with <code>role="tab"</code>, 40px tall, 14px / 20px at weight 500. Only the color changes with state, so selecting never shifts the layout.</td></tr>
+        <tr><th>Indicator</th><td>A single 2px bar that spans the selected tab and slides to the next. It is the row’s <code>::after</code>, positioned against the selected tab by anchor name.</td></tr>
+        <tr><th>Panel</th><td>A <code>role="tabpanel"</code> with <code>tabindex="0"</code> so a keyboard user can reach content that has nothing focusable in it. Hidden panels use <code>hidden</code>.</td></tr>
+        <tr><th>Labels</th><td>One or two words, sentence case. If a label needs a count, put it in the label text rather than a badge.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Selecting</th><td>Click, or arrow to a tab: focus and selection move together, because the panels are already on the page.</td></tr>
+        <tr><th>Indicator</th><td>Slides over 250ms. Its edges come from <code>anchor(left)</code> and <code>anchor(right)</code> of the tab named <code>--tb-active</code>; moving that name is the only thing script does for it.</td></tr>
+        <tr><th>Tab stop</th><td>The selected tab is the only one in the Tab order. Tab enters the row at the selected tab and leaves it for the panel.</td></tr>
+        <tr><th>Hover</th><td>A soft fill and the selected text color. It never shows the indicator: that means selected.</td></tr>
+        <tr><th>Reduced motion</th><td>The indicator jumps to the new tab.</td></tr>
+        <tr><th>Use for</th><td>Switching between views of one thing. If the tabs are the site’s navigation, use links and <code>aria-current</code> instead; see Scroll-Spy Tabs for sections of one page.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Move into the row at the selected tab, then out to the panel.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Previous and next tab, wrapping at the ends, selecting as it goes.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last tab.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Chrome does not yet honor <code>focusgroup="tablist"</code>, so a short <code>keydown</code> handler supplies the arrow keys, wrapping, <kbd>Home</kbd> and <kbd>End</kbd>. Move to <code>focusgroup</code> when it ships.</li>
+          <li>Each tab names its panel with <code>aria-controls</code> and each panel names its tab with <code>aria-labelledby</code>.</li>
+          <li>Focus ring: 2px in the accent color, inside the tab. Selected state is shown by <code>aria-selected</code>, the darker text and the indicator, never by color alone.</li>
+          <li>If switching tabs has to load data, use manual activation (arrows move focus, <kbd>Enter</kbd> or <kbd>Space</kbd> selects) so each arrow press does not fire a request.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

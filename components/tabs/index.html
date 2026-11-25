@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tabs &amp; Tabbed Navigation</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+</head>
+<!-- Category page. Title, summary and the concept list come from assets/catalog.js. -->
+<body data-page="components/tabs">
+  <main>
+    <div class="page">
+      <header class="page-header" data-auto></header>
+
+      <section data-concepts></section>
+
+      <section class="ruled">
+        <h2>Choosing one</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>When the user is…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><th>Switching between a few views of one thing</th><td><a href="underline-tabs.html">Underline Tabs</a></td></tr>
+            <tr><th>Moving around a long page split into sections</th><td><a href="scroll-spy-tabs.html">Scroll-Spy Tabs</a></td></tr>
+            <tr><th>Inside an Android or Material product</th><td><a href="material-3-tabs.html">Material 3 Tabs</a></td></tr>
+            <tr><th>Inside a Microsoft 365, Teams or Windows product</th><td><a href="fluent-2-tab-list.html">Fluent 2 Tab List</a></td></tr>
+            <tr><th>In IBM software or a dense enterprise console</th><td><a href="carbon-tabs.html">Carbon Tabs</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled" data-core>
+        <h2>Core libraries</h2>
+      </section>
+
+      <section class="ruled prose">
+        <h2>The modern stack</h2>
+        <p>Tabs need less script than they used to. Most of what is left is the part the platform still cannot do.</p>
+        <ul>
+          <li><strong>Anchor positioning</strong> places one indicator against the selected tab. Name the selected tab as the anchor and the indicator’s <code>left</code> and <code>right</code> follow it; a transition on those two properties makes it slide. No measuring, no <code>ResizeObserver</code>.</li>
+          <li><strong><code>scroll-target-group</code> and <code>:target-current</code></strong> turn a row of in-page links into scroll-spy tabs with no script at all.</li>
+          <li><strong><code>:has()</code></strong> lets the row react to the state of one tab, such as darkening the shared indicator while the selected tab is hovered.</li>
+          <li><strong><code>light-dark()</code></strong> keeps both themes in one set of tokens.</li>
+        </ul>
+        <p>What still needs script: arrow keys, Home and End, and the roving <code>tabindex</code> and <code>aria-selected</code> that make a tablist a tablist. <code>focusgroup="tablist"</code> is meant to cover the keys but did nothing in Chrome 156, so each page carries a short <code>keydown</code> handler.</p>
+        <p>If the tabs are links to other pages, they are navigation, not a tablist: use links with <code>aria-current="page"</code> and none of this script.</p>
+      </section>
+
+      <section class="ruled prose" data-sources>
+        <h2>Sources</h2>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

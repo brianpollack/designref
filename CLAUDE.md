@@ -18,16 +18,20 @@ accessibility. Product context: `PRODUCT.md`. How research is done: `RESEARCH_PL
 ```
 index.html                     Home: renders the catalog
 sources.html                   Core libraries (foundations, coverage) and every cited site
+icons.html                     Icon libraries: license, style, comparison, every icon we hold
 assets/catalog.js              Single source of truth: sections, categories, concepts, FEATURES glossary
 assets/sources.js              Sites, cited pages, and core-library foundations (cited by id from the catalog)
 assets/site.js / site.css      Chrome: sidebar, splitter, theme, headers, lists, pager
 assets/concept.js              Demo harness: light/dark frames, code tabs, spec table, thumbnails
-assets/icons.js                Lucide icon set; demos reference icons as #i-<name>
+assets/icons.js                Lucide icon set and the Icons API (lookup, svg, spriteFor)
+assets/icon-libraries.js       Icon libraries we track: license, style, naming, fetch source, examples
+assets/icon-sets.js            GENERATED artwork for non-Lucide sets (scripts/fetch-icons.mjs)
+assets/icons-page.js           Renders icons.html
 components/<category>/index.html         Category page
 components/<category>/<concept>.html     Concept page
 templates/<category>/…                   Page Templates section (same layout)
 _scaffold/                     Copy-from templates for new pages
-scripts/                       new-category.sh, new-concept.sh, check.mjs, check-links.mjs, open.sh, serve.sh
+scripts/                       new-category.sh, new-concept.sh, check.mjs, check-links.mjs, fetch-icons.mjs, open.sh, serve.sh
 ```
 
 ## Adding things
@@ -50,6 +54,13 @@ scripts/                       new-category.sh, new-concept.sh, check.mjs, check
   from that library's own token source. Our own values in a library's style are
   `inspired: true`. Their foundations live in `sources.js` → `systems`; every row cites the
   page it was read from, and nothing unverified goes in.
+- **Icons:** a concept built to a core library uses that library's own icons when its
+  license allows: `icons: 'material-symbols'` / `'fluent-system-icons'` / `'carbon-icons'`
+  in the catalog (default `'lucide'`; SF Symbols can't ship, so Apple-style pages use
+  Lucide). Reference icons by the library's own name (`#i-more_vert`, `#i-trash-can`),
+  then run `node scripts/fetch-icons.mjs` to download them into `icon-sets.js`. Every
+  concept page credits its set above Behavior automatically. A new icon library goes in
+  `icon-libraries.js` with its license, style, naming and the comparison `examples`.
 - Run `node scripts/check.mjs` after any change: it cross-checks catalog, files, icons,
   feature keys and every source id. `node scripts/check-links.mjs` fetches every cited URL
   and reports dead or moved ones (run it before committing new sources).
@@ -73,8 +84,10 @@ Rules:
   spec table; group them with `/* @group Name */`. Prefix per concept (`--cm-`, `--om-`…).
   Put typography facts the table can't hold (line height, weight) in the description.
   Demo-surface styles (the fake app around the component) get no token comments.
-- **Icons:** `<svg class="icon"><use href="#i-copy"/></svg>`. Names must exist in
-  `assets/icons.js` (Lucide). Add missing ones there; the harness builds the sprite.
+- **Icons:** `<svg class="icon"><use href="#i-copy"/></svg>`. Names must exist in the
+  concept's icon set: Lucide icons are pasted into `assets/icons.js`; other sets come from
+  `scripts/fetch-icons.mjs`. The harness builds a sprite of only the icons used. Lucide
+  symbols are strokes; the other sets are filled shapes in `currentColor`.
 - **Pin scripts simulate input** (dispatch `contextmenu`, click the trigger) rather than
   calling demo internals. Any `focus()` in a demo passes `preventScroll: true`, so loading
   the page never scrolls it.
@@ -98,7 +111,8 @@ Sources (`data-sources`, auto from the concept's `refs`). Category pages add Cor
 - **Grow from the right corner:** `container-type: anchored` on the popover, then
   `@container anchored(fallback: flip-block)` etc. on its children.
 - **focusgroup:** `"menu nomemory"` handles ↑/↓ only, wraps, skips disabled. Add
-  `inline block` for ←/→ (radial, grids). Shift+Tab inside it does not move focus.
+  `inline block` for ←/→ (radial, grids). Shift+Tab inside it does not move focus. `focusgroup="tablist inline wrap"` did nothing
+  in Chrome 156, so tabs use a keydown handler.
 - **Focus never scrolls the host:** `autofocus` in a popover and `showModal()`'s initial
   focus both scroll the embedding page; use a `toggle` listener with
   `focus({ preventScroll: true })`, and give pins a no-focus path. Any focus inside a frame

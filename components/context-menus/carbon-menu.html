@@ -8,6 +8,8 @@
   <script src="../../assets/catalog.js"></script>
   <script src="../../assets/sources.js"></script>
   <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
   <script src="../../assets/site.js"></script>
   <script src="../../assets/concept.js"></script>
 </head>
@@ -56,24 +58,24 @@
       <svg class="icon"><use href="#i-copy"/></svg><span class="cds-menu-label">Copy ID</span><kbd aria-hidden="true">Ctrl+C</kbd>
     </button>
     <button type="button" class="cds-menu-item">
-      <svg class="icon"><use href="#i-pencil"/></svg><span class="cds-menu-label">Rename</span>
+      <svg class="icon"><use href="#i-edit"/></svg><span class="cds-menu-label">Rename</span>
     </button>
     <button type="button" class="cds-menu-item">
-      <svg class="icon"><use href="#i-external-link"/></svg><span class="cds-menu-label">Open logs</span>
+      <svg class="icon"><use href="#i-launch"/></svg><span class="cds-menu-label">Open logs</span>
     </button>
     <hr class="cds-menu-divider">
     <button type="button" class="cds-menu-item" role="menuitemcheckbox" aria-checked="true">
-      <svg class="icon cds-menu-check"><use href="#i-check"/></svg>
+      <svg class="icon cds-menu-check"><use href="#i-checkmark"/></svg>
       <svg class="icon"><use href="#i-pin"/></svg><span class="cds-menu-label">Pin to top</span>
     </button>
     <hr class="cds-menu-divider">
     <button type="button" class="cds-menu-item" disabled>
-      <svg class="icon"><use href="#i-refresh-cw"/></svg><span class="cds-menu-label">Restart</span>
+      <svg class="icon"><use href="#i-restart"/></svg><span class="cds-menu-label">Restart</span>
     </button>
     <hr class="cds-menu-divider">
     <!-- Danger: red fill on hover and focus. The description tells screen readers why. -->
     <button type="button" class="cds-menu-item danger" aria-describedby="danger-note">
-      <svg class="icon"><use href="#i-trash-2"/></svg><span class="cds-menu-label">Delete</span>
+      <svg class="icon"><use href="#i-trash-can"/></svg><span class="cds-menu-label">Delete</span>
       <span id="danger-note" hidden>Deletes the deployment. This cannot be undone.</span>
     </button>
   </div>
@@ -340,10 +342,9 @@ menu.addEventListener('toggle', e => {
   if (lost) row?.focus({ preventScroll: true });
 });
 
-// Demo control: change the size and reopen the menu where it was.
+// Demo control: set the row height used the next time the menu opens.
 document.querySelector('.size-switch').addEventListener('change', e => {
   menu.dataset.size = e.target.value;
-  if (row) show();
 });
 </script>
 
@@ -366,7 +367,7 @@ requestAnimationFrame(() => {
   <div class="page">
     <header class="page-header" data-auto></header>
 
-    <section data-preview data-height="480" data-hint="Right-click a row. Shift+F10 opens it from a focused row. Switch sizes at the top right."></section>
+    <section data-preview data-height="480" data-hint="Right-click a row. Shift+F10 opens it from a focused row. Pick a size at the top right, then right-click again."></section>
 
     <section class="ruled">
       <h2>Anatomy</h2>

@@ -8,7 +8,10 @@
  *   - every researched category has <section>/<category>/index.html with a matching data-page;
  *   - every concept has its .html file with a matching data-page and demo blocks;
  *   - feature keys exist in CATALOG.FEATURES;
- *   - every #i-<name> icon a page uses exists in assets/icons.js;
+ *   - every #i-<name> icon a page uses exists in that page's icon set (Lucide in icons.js,
+ *     or the concept's `icons` library in icon-sets.js);
+ *   - icon libraries: every entry in icon-libraries.js has its license and links, and every
+ *     comparison example exists (run scripts/fetch-icons.mjs if one is missing);
  *   - no concept page exists on disk without a catalog entry;
  *   - sources: every site, page, citation (refs), spec link and `system` resolves in
  *     assets/sources.js, every core library has foundations, and no page goes uncited.
@@ -25,12 +28,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Load classic browser scripts that assign to window.* */
 const sandbox = { window: {} };
 vm.createContext(sandbox);
-for (const f of ['assets/catalog.js', 'assets/sources.js', 'assets/icons.js']) {
+for (const f of ['assets/catalog.js', 'assets/sources.js', 'assets/icons.js', 'assets/icon-libraries.js', 'assets/icon-sets.js']) {
   vm.runInContext(readFileSync(join(ROOT, f), 'utf8'), sandbox, { filename: f });
 }
 const C = sandbox.window.CATALOG;
 const S = sandbox.window.SOURCES;
-const ICONS = sandbox.window.Icons.ICONS;
+const Icons = sandbox.window.Icons;
+const IL = sandbox.window.ICON_LIBRARIES;
 
 const problems = [];
 const fail = msg => problems.push(msg);
@@ -49,15 +53,20 @@ function checkRefs(where, refs, needNotes) {
   }
 }
 
-/** Read a page and check its data-page attribute and icon references. */
-function checkPage(rel, expectedPage) {
+/** Read a page and check its data-page attribute and icon references (in icon set `set`). */
+function checkPage(rel, expectedPage, set = 'lucide') {
   const path = join(ROOT, rel);
   if (!existsSync(path)) return fail(`missing file ${rel}`), null;
   const html = readFileSync(path, 'utf8');
   const page = html.match(/<body[^>]*data-page="([^"]*)"/)?.[1];
   if (page !== expectedPage) fail(`${rel}: data-page is "${page}", expected "${expectedPage}"`);
-  for (const [, name] of html.matchAll(/#i-([a-z0-9-]+)/g)) {
-    if (!ICONS[name]) fail(`${rel}: icon "${name}" is not in assets/icons.js`);
+  // Every page's sidebar reads these, so each page must load them.
+  for (const f of ['icon-libraries.js', 'icon-sets.js']) {
+    if (!html.includes(`assets/${f}"`)) fail(`${rel}: does not load assets/${f}`);
+  }
+  const where = set === 'lucide' ? 'assets/icons.js' : `icon set "${set}" (run node scripts/fetch-icons.mjs)`;
+  for (const name of new Set([...html.matchAll(/#i-([a-z0-9_-]+)/g)].map(m => m[1]))) {
+    if (!Icons.lookup(set, name)) fail(`${rel}: icon "${name}" is not in ${where}`);
   }
   return html;
 }
@@ -82,7 +91,10 @@ for (const section of C.sections) {
       concepts++;
       for (const f of k.features ?? []) if (!C.FEATURES[f]) fail(`${dir}/${k.id}: unknown feature "${f}"`);
       if (!k.summary) fail(`${dir}/${k.id}: no summary`);
-      const html = checkPage(`${dir}/${k.id}.html`, `${dir}/${k.id}`);
+      const set = k.icons ?? 'lucide';
+      const lib = IL.libraries[set];
+      if (!lib || lib.shipped === false) fail(`${dir}/${k.id}: icons "${set}" is not a shipped library in icon-libraries.js`);
+      const html = checkPage(`${dir}/${k.id}.html`, `${dir}/${k.id}`, set);
       if (!html) continue;
       if (!/data-demo="html"/.test(html)) fail(`${dir}/${k.id}: no data-demo="html" block`);
       if (!/data-demo="css"/.test(html)) fail(`${dir}/${k.id}: no data-demo="css" block`);
@@ -138,9 +150,25 @@ for (const [id, sys] of Object.entries(S.systems)) {
 }
 checkPage('sources.html', 'sources');
 
+/* ---- Icon libraries ---- */
+const libraries = Object.entries(IL.libraries);
+for (const [id, lib] of libraries) {
+  for (const f of ['name', 'owner', 'license', 'style', 'names', 'use']) if (!lib[f]) fail(`icons: "${id}" has no ${f}`);
+  for (const f of ['url', 'licenseUrl']) if (!https(lib[f])) fail(`icons: "${id}".${f} must be an https URL`);
+  if (lib.docs && !https(lib.docs)) fail(`icons: "${id}".docs must be an https URL`);
+  if (lib.system && !S.systems[lib.system]) fail(`icons: "${id}" names unknown core library "${lib.system}"`);
+  if (lib.shipped === false) { if (!lib.note) fail(`icons: "${id}" is not shipped but has no note saying why`); continue; }
+  if (id !== 'lucide' && !lib.source) fail(`icons: "${id}" has no source for fetch-icons.mjs`);
+  for (const [key, name] of Object.entries(lib.examples ?? {})) {
+    if (!IL.EXAMPLE_ROWS[key]) fail(`icons: "${id}" example "${key}" is not a row in EXAMPLE_ROWS`);
+    if (!Icons.lookup(id, name)) fail(`icons: "${id}" example "${name}" has no artwork (run node scripts/fetch-icons.mjs)`);
+  }
+}
+checkPage('icons.html', 'icons');
+
 if (problems.length) {
   console.log(problems.map(p => `✗ ${p}`).join('\n'));
   console.log(`\n${problems.length} problem(s).`);
   process.exit(1);
 }
-console.log(`✓ ${concepts} concepts, ${tokens} documented tokens, ${Object.keys(S.pages).length} cited pages, ${Object.keys(S.systems).length} core libraries (${foundations} foundation rows); all files and icons accounted for.`);
+console.log(`✓ ${concepts} concepts, ${tokens} documented tokens, ${Object.keys(S.pages).length} cited pages, ${Object.keys(S.systems).length} core libraries (${foundations} foundation rows), ${libraries.length} icon libraries; all files and icons accounted for.`);
