@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Material 3 Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/material-3-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<main class="surface">
+  <h3 class="cap">Types, small, round</h3>
+  <div class="row"><button class="m3-btn" data-type="filled" data-size="s"><span class="c">Filled</span></button><button class="m3-btn" data-type="tonal" data-size="s"><span class="c">Tonal</span></button><button class="m3-btn" data-type="elevated" data-size="s"><span class="c">Elevated</span></button><button class="m3-btn" data-type="outlined" data-size="s"><span class="c">Outlined</span></button><button class="m3-btn" data-type="text" data-size="s"><span class="c">Text</span></button></div>
+  <h3 class="cap">With an icon</h3>
+  <div class="row"><button class="m3-btn" data-type="filled" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>Filled</span></button><button class="m3-btn" data-type="tonal" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-edit"/></svg>Tonal</span></button><button class="m3-btn" data-type="elevated" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Elevated</span></button><button class="m3-btn" data-type="outlined" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-bookmark"/></svg>Outlined</span></button><button class="m3-btn" data-type="text" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Text</span></button></div>
+  <h3 class="cap">Sizes: extra small, small, medium, large, extra large</h3>
+  <div class="row"><button class="m3-btn" data-type="filled" data-size="xs"><span class="c">XS</span></button><button class="m3-btn" data-type="filled" data-size="s"><span class="c">Small</span></button><button class="m3-btn" data-type="filled" data-size="m"><span class="c">Medium</span></button><button class="m3-btn" data-type="filled" data-size="l"><span class="c">Large</span></button><button class="m3-btn" data-type="filled" data-size="xl"><span class="c">XL</span></button></div>
+  <h3 class="cap">Icon at each size</h3>
+  <div class="row"><button class="m3-btn" data-type="tonal" data-size="xs"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>XS</span></button><button class="m3-btn" data-type="tonal" data-size="s"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>Small</span></button><button class="m3-btn" data-type="tonal" data-size="m"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>Medium</span></button><button class="m3-btn" data-type="tonal" data-size="l"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>Large</span></button><button class="m3-btn" data-type="tonal" data-size="xl"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-add"/></svg>XL</span></button></div>
+  <h3 class="cap">Shape: round, square, and each pressed (held)</h3>
+  <div class="row"><button class="m3-btn" data-type="filled" data-size="s"><span class="c">Round</span></button><button class="m3-btn" data-type="filled" data-size="s" data-shape="square"><span class="c">Square</span></button><button class="m3-btn" data-type="filled" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="filled" data-size="s" data-shape="square" data-force="pressed"><span class="c">Pressed</span></button></div>
+  <div class="row"><button class="m3-btn" data-type="filled" data-size="l"><span class="c">Round</span></button><button class="m3-btn" data-type="filled" data-size="l" data-shape="square"><span class="c">Square</span></button><button class="m3-btn" data-type="filled" data-size="l" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="filled" data-size="l" data-shape="square" data-force="pressed"><span class="c">Pressed</span></button></div>
+  <h3 class="cap">Toggle: unselected, selected. Round buttons turn square; square buttons turn round</h3>
+  <div class="row">
+    <button class="m3-btn" data-type="filled" data-size="s" aria-pressed="false"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Save</span></button>
+    <button class="m3-btn" data-type="filled" data-size="s" aria-pressed="true"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Saved</span></button>
+    <button class="m3-btn" data-type="tonal" data-size="s" aria-pressed="false"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Save</span></button>
+    <button class="m3-btn" data-type="tonal" data-size="s" aria-pressed="true"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Saved</span></button>
+    <button class="m3-btn" data-type="elevated" data-size="s" aria-pressed="false"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Save</span></button>
+    <button class="m3-btn" data-type="elevated" data-size="s" aria-pressed="true"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Saved</span></button>
+    <button class="m3-btn" data-type="outlined" data-size="s" aria-pressed="false"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Save</span></button>
+    <button class="m3-btn" data-type="outlined" data-size="s" aria-pressed="true"><span class="c"><svg class="icon" aria-hidden="true"><use href="#i-favorite"/></svg>Saved</span></button>
+    <button class="m3-btn" data-type="filled" data-size="s" data-shape="square" aria-pressed="false"><span class="c">Square</span></button>
+    <button class="m3-btn" data-type="filled" data-size="s" data-shape="square" aria-pressed="true"><span class="c">Square</span></button>
+  </div>
+  <h3 class="cap">States, each forced so they can be read side by side</h3>
+  <div class="row"><span class="cap">Filled</span><button class="m3-btn" data-type="filled" data-size="s"><span class="c">Rest</span></button><button class="m3-btn" data-type="filled" data-size="s" data-force="hover"><span class="c">Hover</span></button><button class="m3-btn" data-type="filled" data-size="s" data-force="focus"><span class="c">Focus</span></button><button class="m3-btn" data-type="filled" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="filled" data-size="s" disabled><span class="c">Disabled</span></button></div>
+  <div class="row"><span class="cap">Tonal</span><button class="m3-btn" data-type="tonal" data-size="s"><span class="c">Rest</span></button><button class="m3-btn" data-type="tonal" data-size="s" data-force="hover"><span class="c">Hover</span></button><button class="m3-btn" data-type="tonal" data-size="s" data-force="focus"><span class="c">Focus</span></button><button class="m3-btn" data-type="tonal" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="tonal" data-size="s" disabled><span class="c">Disabled</span></button></div>
+  <div class="row"><span class="cap">Elevated</span><button class="m3-btn" data-type="elevated" data-size="s"><span class="c">Rest</span></button><button class="m3-btn" data-type="elevated" data-size="s" data-force="hover"><span class="c">Hover</span></button><button class="m3-btn" data-type="elevated" data-size="s" data-force="focus"><span class="c">Focus</span></button><button class="m3-btn" data-type="elevated" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="elevated" data-size="s" disabled><span class="c">Disabled</span></button></div>
+  <div class="row"><span class="cap">Outlined</span><button class="m3-btn" data-type="outlined" data-size="s"><span class="c">Rest</span></button><button class="m3-btn" data-type="outlined" data-size="s" data-force="hover"><span class="c">Hover</span></button><button class="m3-btn" data-type="outlined" data-size="s" data-force="focus"><span class="c">Focus</span></button><button class="m3-btn" data-type="outlined" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="outlined" data-size="s" disabled><span class="c">Disabled</span></button></div>
+  <div class="row"><span class="cap">Text</span><button class="m3-btn" data-type="text" data-size="s"><span class="c">Rest</span></button><button class="m3-btn" data-type="text" data-size="s" data-force="hover"><span class="c">Hover</span></button><button class="m3-btn" data-type="text" data-size="s" data-force="focus"><span class="c">Focus</span></button><button class="m3-btn" data-type="text" data-size="s" data-force="pressed"><span class="c">Pressed</span></button><button class="m3-btn" data-type="text" data-size="s" disabled><span class="c">Disabled</span></button></div>
+  <h3 class="cap">Connected button group, single choice</h3>
+  <div class="m3-conn" role="radiogroup" aria-label="Calendar view">
+    <label class="m3-conn-item"><input type="radio" name="view" value="day" id="view-day" checked><span class="c">Day</span></label>
+    <label class="m3-conn-item"><input type="radio" name="view" value="week" id="view-week"><span class="c">Week</span></label>
+    <label class="m3-conn-item"><input type="radio" name="view" value="month" id="view-month"><span class="c">Month</span></label>
+    <label class="m3-conn-item"><input type="radio" name="view" value="year" id="view-year"><span class="c">Year</span></label>
+  </div>
+  <h3 class="cap">Dialog actions: side by side, then stacked when they do not fit</h3>
+  <div class="row dialogs">
+    <div class="m3-dialog " role="group" aria-labelledby="d-wide">
+      <h4 id="d-wide">Discard draft?</h4><p>Your changes will be lost.</p>
+      <div class="m3-actions"><button class="m3-btn" data-type="text" data-size="s"><span class="c">Discard</span></button><button class="m3-btn" data-type="text" data-size="s"><span class="c">Cancel</span></button></div>
+    </div>
+    <div class="m3-dialog narrow" role="group" aria-labelledby="d-narrow">
+      <h4 id="d-narrow">Leave without saving?</h4><p>Changes on this page will be lost if you leave now.</p>
+      <div class="m3-actions"><button class="m3-btn" data-type="text" data-size="s"><span class="c">Discard and leave</span></button><button class="m3-btn" data-type="text" data-size="s"><span class="c">Keep editing</span></button></div>
+    </div>
+  </div>
+</main>
+</script>
+
+<style data-demo="css" media="not all">
+/* Roboto Flex from Google Fonts; the stack falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..500&display=swap");
+
+/* ---- Tokens ----
+   Sizes, shapes, state colors and opacities come from Compose's button token files (see Sources).
+   Color roles are the baseline scheme resolved to hex from ColorLightTokens, ColorDarkTokens and PaletteTokens. */
+:root {
+  color-scheme: light dark;
+
+  /* Color roles, baseline scheme (light, dark) */
+  --md-primary: light-dark(#6750A4, #D0BCFF);
+  --md-on-primary: light-dark(#FFFFFF, #381E72);
+  --md-secondary: light-dark(#625B71, #CCC2DC);
+  --md-on-secondary: light-dark(#FFFFFF, #332D41);
+  --md-secondary-container: light-dark(#E8DEF8, #4A4458);
+  --md-on-secondary-container: light-dark(#1D192B, #E8DEF8);
+  --md-outline-variant: light-dark(#CAC4D0, #49454F);
+  --md-surface: light-dark(#FEF7FF, #141218);
+  --md-on-surface: light-dark(#1D1B20, #E6E0E9);
+  --md-on-surface-variant: light-dark(#49454F, #CAC4D0);
+  --md-surface-container-low: light-dark(#F7F2FA, #1D1B20);
+  --md-surface-container: light-dark(#F3EDF7, #211F26);
+  --md-surface-container-high: light-dark(#ECE6F0, #2B2930);
+  --md-inverse-surface: light-dark(#322F35, #E6E0E9);
+  --md-inverse-on-surface: light-dark(#F5EFF7, #322F35);
+  --md-shadow: light-dark(rgb(0 0 0 / 0.30), rgb(0 0 0 / 0.55));          /* Shadow tint (ours: Compose uses the platform shadow) */
+
+  /* @group Size: extra small */
+  --md-btn-xs-height: 32px;                 /* Container height · ButtonXSmallTokens */
+  --md-btn-xs-pad: 12px;                    /* Leading and trailing padding */
+  --md-btn-xs-icon: 20px;                   /* Icon size */
+  --md-btn-xs-gap: 4px;                     /* Icon to label gap */
+  /* @group Size: small */
+  --md-btn-s-height: 40px;                  /* Container height · ButtonSmallTokens; the default size */
+  --md-btn-s-pad: 16px;                     /* Leading and trailing padding */
+  --md-btn-s-icon: 20px;                    /* Icon size */
+  --md-btn-s-gap: 8px;                      /* Icon to label gap */
+  /* @group Size: medium */
+  --md-btn-m-height: 56px;                  /* Container height · ButtonMediumTokens */
+  --md-btn-m-pad: 24px;                     /* Leading and trailing padding */
+  --md-btn-m-icon: 24px;                    /* Icon size */
+  --md-btn-m-gap: 8px;                      /* Icon to label gap */
+  /* @group Size: large */
+  --md-btn-l-height: 96px;                  /* Container height · ButtonLargeTokens */
+  --md-btn-l-pad: 48px;                     /* Leading and trailing padding */
+  --md-btn-l-icon: 32px;                    /* Icon size */
+  --md-btn-l-gap: 12px;                     /* Icon to label gap */
+  /* @group Size: extra large */
+  --md-btn-xl-height: 136px;                /* Container height · ButtonXLargeTokens */
+  --md-btn-xl-pad: 64px;                    /* Leading and trailing padding */
+  --md-btn-xl-icon: 40px;                   /* Icon size */
+  --md-btn-xl-gap: 16px;                    /* Icon to label gap */
+  /* @group Size: shared */
+  --md-btn-min-width: 58px;                 /* Minimum container width · ButtonDefaults.MinWidth */
+  --md-btn-target: 48px;                    /* Minimum touch target · minimumInteractiveComponentSize */
+
+  /* @group Shape: extra small (radius in px; Full is half the height) */
+  --md-btn-xs-square: 12px;                 /* Square shape · CornerMedium */
+  --md-btn-xs-pressed: 8px;                 /* Pressed shape · CornerSmall */
+  --md-btn-xs-sel-round: 12px;              /* Selected, from round · CornerMedium */
+  --md-btn-xs-sel-square: 16px;             /* Selected, from square · Full (height / 2) */
+  /* @group Shape: small */
+  --md-btn-s-square: 12px;                  /* Square shape · CornerMedium */
+  --md-btn-s-pressed: 8px;                  /* Pressed shape · CornerSmall */
+  --md-btn-s-sel-round: 12px;               /* Selected, from round · CornerMedium */
+  --md-btn-s-sel-square: 12px;              /* Selected, from square · CornerMedium (not Full, unlike every other size) */
+  /* @group Shape: medium */
+  --md-btn-m-square: 16px;                  /* Square shape · CornerLarge */
+  --md-btn-m-pressed: 12px;                 /* Pressed shape · CornerMedium */
+  --md-btn-m-sel-round: 16px;               /* Selected, from round · CornerLarge */
+  --md-btn-m-sel-square: 28px;              /* Selected, from square · Full (height / 2) */
+  /* @group Shape: large */
+  --md-btn-l-square: 28px;                  /* Square shape · CornerExtraLarge */
+  --md-btn-l-pressed: 16px;                 /* Pressed shape · CornerLarge */
+  --md-btn-l-sel-round: 28px;               /* Selected, from round · CornerExtraLarge */
+  --md-btn-l-sel-square: 48px;              /* Selected, from square · Full (height / 2) */
+  /* @group Shape: extra large */
+  --md-btn-xl-square: 28px;                 /* Square shape · CornerExtraLarge */
+  --md-btn-xl-pressed: 16px;                /* Pressed shape · CornerLarge */
+  --md-btn-xl-sel-round: 28px;              /* Selected, from round · CornerExtraLarge */
+  --md-btn-xl-sel-square: 68px;             /* Selected, from square · Full (height / 2) */
+
+  /* @group Label type */
+  --md-type-label-large: 500 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif;     /* LabelLarge, Medium; extra small and small sizes */
+  --md-type-label-large-tracking: 0.1px;    /* LabelLarge tracking */
+  --md-type-title-medium: 500 16px/24px "Roboto Flex", Roboto, system-ui, sans-serif;    /* TitleMedium, Medium; medium size */
+  --md-type-title-medium-tracking: 0.15px;  /* TitleMedium tracking */
+  --md-type-headline-small: 400 24px/32px "Roboto Flex", Roboto, system-ui, sans-serif;  /* HeadlineSmall, Regular; large size; tracking 0 */
+  --md-type-headline-large: 400 32px/40px "Roboto Flex", Roboto, system-ui, sans-serif;  /* HeadlineLarge, Regular; extra large size; tracking 0 */
+
+  /* @group Filled */
+  --md-btn-filled-container: var(--md-primary);                    /* Container · Primary */
+  --md-btn-filled-content: var(--md-on-primary);                   /* Label and icon · OnPrimary */
+  --md-btn-filled-off-container: var(--md-surface-container);      /* Toggle, unselected · SurfaceContainer */
+  --md-btn-filled-off-content: var(--md-on-surface-variant);       /* Toggle, unselected label and icon · OnSurfaceVariant */
+  /* @group Tonal */
+  --md-btn-tonal-container: var(--md-secondary-container);         /* Container · SecondaryContainer */
+  --md-btn-tonal-content: var(--md-on-secondary-container);        /* Label and icon · OnSecondaryContainer */
+  --md-btn-tonal-on-container: var(--md-secondary);                /* Toggle, selected container · Secondary */
+  --md-btn-tonal-on-content: var(--md-on-secondary);               /* Toggle, selected label and icon · OnSecondary */
+  /* @group Elevated */
+  --md-btn-elevated-container: var(--md-surface-container-low);    /* Container · SurfaceContainerLow */
+  --md-btn-elevated-content: var(--md-primary);                    /* Label and icon · Primary */
+  --md-btn-elevated-on-container: var(--md-primary);               /* Toggle, selected container · Primary */
+  --md-btn-elevated-on-content: var(--md-on-primary);              /* Toggle, selected label and icon · OnPrimary */
+  /* @group Outlined */
+  --md-btn-outlined-content: var(--md-on-surface-variant);         /* Label and icon · OnSurfaceVariant */
+  --md-btn-outlined-outline: var(--md-outline-variant);            /* Outline, every state · OutlineVariant */
+  --md-btn-outlined-on-container: var(--md-inverse-surface);       /* Toggle, selected container · InverseSurface */
+  --md-btn-outlined-on-content: var(--md-inverse-on-surface);      /* Toggle, selected label and icon · InverseOnSurface */
+  --md-btn-outline-width: 1px;              /* Outline width, extra small to medium */
+  --md-btn-outline-width-l: 2px;            /* Outline width, large */
+  --md-btn-outline-width-xl: 3px;           /* Outline width, extra large */
+  /* @group Text */
+  --md-btn-text-content: var(--md-primary);                        /* Label and icon · Primary; no container, no toggle tokens */
+
+  /* @group State layers and disabled */
+  --md-state-hover: 0.08;                   /* Hover layer opacity · StateLayerTokens */
+  --md-state-focus: 0.10;                   /* Focus layer opacity */
+  --md-state-pressed: 0.10;                 /* Pressed layer opacity */
+  --md-btn-disabled-container: color-mix(in srgb, var(--md-on-surface) 10%, transparent);   /* Disabled container · OnSurface at 0.10 */
+  --md-btn-disabled-label: color-mix(in srgb, var(--md-on-surface-variant) 38%, transparent);  /* Disabled label · OnSurfaceVariant at 0.38 (the baseline file says OnSurface) */
+  --md-btn-disabled-icon: color-mix(in srgb, var(--md-on-surface) 38%, transparent);        /* Disabled icon · OnSurface at 0.38 */
+
+  /* @group Elevation (offsets are ours; levels are tokens) */
+  --md-elev-0: 0 0 0 0 transparent;                                                           /* Level 0 · 0dp */
+  --md-elev-1: 0 1px 2px var(--md-shadow), 0 1px 3px 1px var(--md-shadow);                   /* Level 1 · 1dp: elevated rest; filled and tonal hover */
+  --md-elev-2: 0 1px 2px var(--md-shadow), 0 2px 6px 2px var(--md-shadow);                   /* Level 2 · 3dp: elevated hover */
+  --md-elev-3: 0 1px 3px var(--md-shadow), 0 4px 8px 3px var(--md-shadow);                   /* Level 3 · 6dp: dialog */
+
+  /* @group Motion and focus */
+  --md-btn-morph-time: 170ms;               /* Shape morph and layer fades; a critically damped spring (damping 1.0, stiffness 1600) settles in about this long */
+  --md-btn-morph-ease: linear(0, 0.083, 0.245, 0.416, 0.565, 0.685, 0.777, 0.844, 0.892, 0.926, 0.950, 0.966, 0.977, 0.985, 0.990, 1);   /* The same spring sampled: no overshoot, so no bounce */
+  --md-focus-ring-color: var(--md-secondary);   /* Focus indicator · Secondary (FocusIndicatorColor) */
+  --md-focus-ring-width: 3px;               /* Focus indicator thickness (ours: no width token was found) */
+
+  /* @group Connected button group */
+  --md-conn-gap: 2px;                       /* Space between items · ConnectedButtonGroupSmallTokens */
+  --md-conn-inner: 8px;                     /* Inner corner radius · CornerValueSmall */
+  --md-conn-inner-pressed: 4px;             /* Inner corner radius while pressed · CornerValueExtraSmall */
+  --md-conn-height: 40px;                   /* Item height; the outer ends and the selected item are Full */
+
+  /* @group Dialog actions */
+  --md-dialog-container: var(--md-surface-container-high);  /* Dialog container · SurfaceContainerHigh */
+  --md-dialog-radius: 28px;                 /* Dialog corner · CornerExtraLarge */
+  --md-dialog-pad: 24px;                    /* Dialog padding */
+  --md-dialog-min: 280px;                   /* Dialog minimum width (maximum 560) */
+  --md-dialog-actions-gap: 8px;             /* Space between actions, both axes · AlertDialog.kt */
+}
+
+/* ---- Component ---- */
+/* The shape is animated through a registered length, so the visible container, the focus ring and
+   the hit area all follow one number. */
+@property --r { syntax: "<length>"; inherits: true; initial-value: 0px; }
+
+.m3-btn {
+  /* Per-size working values: read the tokens above. */
+  &[data-size="xs"] { --_h: var(--md-btn-xs-height); --_pad: var(--md-btn-xs-pad); --_icon: var(--md-btn-xs-icon); --_gap: var(--md-btn-xs-gap); --_sq: var(--md-btn-xs-square); --_pr: var(--md-btn-xs-pressed); --_sr: var(--md-btn-xs-sel-round); --_ss: var(--md-btn-xs-sel-square); --_font: var(--md-type-label-large); --_track: var(--md-type-label-large-tracking); --_ow: var(--md-btn-outline-width); }
+  &[data-size="s"]  { --_h: var(--md-btn-s-height);  --_pad: var(--md-btn-s-pad);  --_icon: var(--md-btn-s-icon);  --_gap: var(--md-btn-s-gap);  --_sq: var(--md-btn-s-square);  --_pr: var(--md-btn-s-pressed);  --_sr: var(--md-btn-s-sel-round);  --_ss: var(--md-btn-s-sel-square);  --_font: var(--md-type-label-large); --_track: var(--md-type-label-large-tracking); --_ow: var(--md-btn-outline-width); }
+  &[data-size="m"]  { --_h: var(--md-btn-m-height);  --_pad: var(--md-btn-m-pad);  --_icon: var(--md-btn-m-icon);  --_gap: var(--md-btn-m-gap);  --_sq: var(--md-btn-m-square);  --_pr: var(--md-btn-m-pressed);  --_sr: var(--md-btn-m-sel-round);  --_ss: var(--md-btn-m-sel-square);  --_font: var(--md-type-title-medium); --_track: var(--md-type-title-medium-tracking); --_ow: var(--md-btn-outline-width); }
+  &[data-size="l"]  { --_h: var(--md-btn-l-height);  --_pad: var(--md-btn-l-pad);  --_icon: var(--md-btn-l-icon);  --_gap: var(--md-btn-l-gap);  --_sq: var(--md-btn-l-square);  --_pr: var(--md-btn-l-pressed);  --_sr: var(--md-btn-l-sel-round);  --_ss: var(--md-btn-l-sel-square);  --_font: var(--md-type-headline-small); --_track: 0; --_ow: var(--md-btn-outline-width-l); }
+  &[data-size="xl"] { --_h: var(--md-btn-xl-height); --_pad: var(--md-btn-xl-pad); --_icon: var(--md-btn-xl-icon); --_gap: var(--md-btn-xl-gap); --_sq: var(--md-btn-xl-square); --_pr: var(--md-btn-xl-pressed); --_sr: var(--md-btn-xl-sel-round); --_ss: var(--md-btn-xl-sel-square); --_font: var(--md-type-headline-large); --_track: 0; --_ow: var(--md-btn-outline-width-xl); }
+
+  /* Per-type colors and elevation. Toggles override below. */
+  &[data-type="filled"]   { --_bg: var(--md-btn-filled-container);   --_fg: var(--md-btn-filled-content);   --_e: var(--md-elev-0); --_eh: var(--md-elev-1); }
+  &[data-type="tonal"]    { --_bg: var(--md-btn-tonal-container);    --_fg: var(--md-btn-tonal-content);    --_e: var(--md-elev-0); --_eh: var(--md-elev-1); }
+  &[data-type="elevated"] { --_bg: var(--md-btn-elevated-container); --_fg: var(--md-btn-elevated-content); --_e: var(--md-elev-1); --_eh: var(--md-elev-2); }
+  &[data-type="outlined"] { --_bg: transparent; --_fg: var(--md-btn-outlined-content); --_line: var(--md-btn-outlined-outline); --_e: var(--md-elev-0); --_eh: var(--md-elev-0); }
+  &[data-type="text"]     { --_bg: transparent; --_fg: var(--md-btn-text-content); --_e: var(--md-elev-0); --_eh: var(--md-elev-0); }
+
+  &[data-type="filled"][aria-pressed="false"] { --_bg: var(--md-btn-filled-off-container); --_fg: var(--md-btn-filled-off-content); }
+  &[data-type="tonal"][aria-pressed="true"]     { --_bg: var(--md-btn-tonal-on-container);    --_fg: var(--md-btn-tonal-on-content); }
+  &[data-type="elevated"][aria-pressed="true"]  { --_bg: var(--md-btn-elevated-on-container); --_fg: var(--md-btn-elevated-on-content); }
+  &[data-type="outlined"][aria-pressed="true"]  { --_bg: var(--md-btn-outlined-on-container); --_fg: var(--md-btn-outlined-on-content); --_line: transparent; }
+
+  /* Shape: Full is half the height. Selected swaps to the selected shape; pressed wins over both. */
+  --r: calc(var(--_h) / 2);
+  &[data-shape="square"] { --r: var(--_sq); }
+  &[aria-pressed="true"] { --r: var(--_sr); }
+  &[data-shape="square"][aria-pressed="true"] { --r: var(--_ss); }
+  &:is(:active, [data-force="pressed"]):not(:disabled) { --r: var(--_pr); }
+
+  /* The button is the 48dp touch target and is transparent; .c inside it is the visible container.
+     --_inset is the strip of target around a container shorter than 48dp. */
+  --_inset: max(0px, calc((var(--md-btn-target) - var(--_h)) / 2));
+  appearance: none; border: 0; background: none; cursor: pointer; font: inherit; color: inherit;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: var(--_inset); margin: calc(var(--_inset) * -1);      /* grow the target without moving the visible container */
+  border-radius: calc(var(--r) + var(--_inset));                 /* so the focus ring (offset inward) follows the container's corners */
+  transition: --r var(--md-btn-morph-time) var(--md-btn-morph-ease);
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus-visible, &[data-force="focus"] {
+    outline: var(--md-focus-ring-width) solid var(--md-focus-ring-color);
+    outline-offset: calc(var(--_inset) * -1);                    /* ring starts at the container's edge and grows outward */
+  }
+  &:disabled { cursor: default; }
+}
+
+.m3-btn .c {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box;
+  height: var(--_h); min-width: var(--md-btn-min-width);
+  padding-inline: var(--_pad); gap: var(--_gap);
+  border-radius: var(--r);
+  background: var(--_bg); color: var(--_fg);
+  font: var(--_font); letter-spacing: var(--_track); white-space: nowrap;
+  box-shadow: var(--_e), inset 0 0 0 var(--_ow, 0px) var(--_line, transparent);
+  transition: box-shadow var(--md-btn-morph-time) var(--md-btn-morph-ease);
+
+  /* State layer: the content color at a fixed opacity over the container. */
+  &::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: currentColor; opacity: 0; pointer-events: none; transition: opacity var(--md-btn-morph-time) var(--md-btn-morph-ease); }
+}
+.m3-btn:is(:hover, [data-force="hover"]) .c { box-shadow: var(--_eh), inset 0 0 0 var(--_ow, 0px) var(--_line, transparent); }
+.m3-btn:is(:hover, [data-force="hover"]) .c::before { opacity: var(--md-state-hover); }
+.m3-btn:is(:focus-visible, [data-force="focus"]) .c::before { opacity: var(--md-state-focus); }
+.m3-btn:is(:active, [data-force="pressed"]) .c { box-shadow: var(--_e), inset 0 0 0 var(--_ow, 0px) var(--_line, transparent); }
+.m3-btn:is(:active, [data-force="pressed"]) .c::before { opacity: var(--md-state-pressed); }
+
+.m3-btn .icon { width: var(--_icon); height: var(--_icon); flex: none; fill: currentColor; }
+
+/* Disabled: 0.10 container, 0.38 label and icon; no shadow, no state layer. Outlined keeps OutlineVariant. */
+.m3-btn:disabled .c { background: var(--md-btn-disabled-container); color: var(--md-btn-disabled-label); box-shadow: inset 0 0 0 var(--_ow, 0px) var(--_line, transparent); }
+.m3-btn:disabled .c::before { opacity: 0; }
+.m3-btn:disabled .icon { color: var(--md-btn-disabled-icon); }
+.m3-btn:disabled:is([data-type="text"], [data-type="outlined"]):not([aria-pressed="true"]) .c { background: transparent; }
+
+/* ---- Connected button group ---- */
+.m3-conn { display: flex; width: fit-content; gap: var(--md-conn-gap); }
+.m3-conn-item {
+  position: relative; display: block; cursor: pointer;
+  padding-block: calc((var(--md-btn-target) - var(--md-conn-height)) / 2);   /* 48dp target around the 40dp item */
+  --_in: var(--md-conn-inner);
+  --_full: calc(var(--md-conn-height) / 2);
+
+  /* The radio is the real control: invisible, covering the whole item. */
+  & input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: inherit; }
+  &:active { --_in: var(--md-conn-inner-pressed); }
+  &:first-child { --_s: var(--_full); } &:last-child { --_e: var(--_full); }
+}
+.m3-conn-item .c {
+  position: relative; display: inline-flex; align-items: center; box-sizing: border-box;
+  height: var(--md-conn-height); min-width: var(--md-btn-min-width); padding-inline: var(--md-btn-s-pad);
+  background: var(--md-btn-filled-off-container); color: var(--md-btn-filled-off-content);
+  font: var(--md-type-label-large); letter-spacing: var(--md-type-label-large-tracking);
+  border-radius: var(--_s, var(--_in)) var(--_e, var(--_in)) var(--_e, var(--_in)) var(--_s, var(--_in));
+  transition: border-radius var(--md-btn-morph-time) var(--md-btn-morph-ease);
+  &::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: currentColor; opacity: 0; transition: opacity var(--md-btn-morph-time) var(--md-btn-morph-ease); }
+}
+.m3-conn-item:hover .c::before { opacity: var(--md-state-hover); }
+.m3-conn-item:has(:focus-visible) .c::before { opacity: var(--md-state-focus); }
+.m3-conn-item:active .c::before { opacity: var(--md-state-pressed); }
+.m3-conn-item:has(:focus-visible) .c { outline: var(--md-focus-ring-width) solid var(--md-focus-ring-color); }
+.m3-conn-item:has(:checked) .c { background: var(--md-btn-filled-container); color: var(--md-btn-filled-content); border-radius: var(--_full); }   /* selected: fully round */
+
+/* ---- Dialog actions ---- */
+.m3-dialog {
+  box-sizing: border-box; min-width: var(--md-dialog-min); max-width: 560px; padding: var(--md-dialog-pad);
+  background: var(--md-dialog-container); border-radius: var(--md-dialog-radius); box-shadow: var(--md-elev-3);
+  & h4 { margin: 0 0 16px; font: var(--md-type-headline-small); color: var(--md-on-surface); }
+  & p { margin: 0 0 24px; font: 400 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif; letter-spacing: 0.25px; color: var(--md-on-surface-variant); }
+}
+/* Confirm comes first in the source. row-reverse starts at the right edge, so confirm sits rightmost;
+   when the pair wraps, the second line is below it: confirm on top, dismiss under, still right-aligned. */
+.m3-actions { display: flex; flex-flow: row-reverse wrap; gap: var(--md-dialog-actions-gap); }
+.m3-dialog.narrow { width: var(--md-dialog-min); }
+
+@media (prefers-reduced-motion: reduce) {
+  .m3-btn, .m3-btn .c, .m3-btn .c::before, .m3-conn-item .c, .m3-conn-item .c::before { transition: none; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: var(--md-surface); color: var(--md-on-surface); font: 400 14px/20px "Roboto Flex", Roboto, system-ui, sans-serif; }
+.surface { display: grid; gap: 8px; padding: 24px; max-width: 760px; margin: 0 auto; }
+.cap { margin: 16px 0 0; font: 500 12px/16px "Roboto Flex", Roboto, system-ui, sans-serif; letter-spacing: 0.4px; color: var(--md-on-surface-variant); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 4px; }
+.row > .cap { margin: 0; width: 64px; }
+.dialogs { align-items: flex-start; gap: 24px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Toggle buttons: native buttons have no pressed state of their own, so flip aria-pressed on click.
+// CSS reads aria-pressed for the selected colors and shape. Everything else is CSS.
+document.addEventListener('click', e => {
+  const b = e.target.closest('.m3-btn[aria-pressed]');
+  if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// At rest: the toggles already show both states; move the connected group off its first item.
+{
+  document.getElementById('view-week').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="1000" data-hint="Hover, press and Tab through the buttons; click the toggles and the group. The states grid and the held presses are pinned for reading."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Types</th><td>Filled (high emphasis), tonal and outlined (medium), elevated (high, with a shadow) and text (low). Filled is for the one final action of a flow, such as Save or Confirm; text is for dialogs and cards.</td></tr>
+        <tr><th>Container</th><td>The visible shape. Height by size: 32, 40, 56, 96, 136. Text and outlined buttons have no fill; outlined draws a 1px (2px large, 3px extra large) OutlineVariant line.</td></tr>
+        <tr><th>Label</th><td>LabelLarge 14/20 Medium for extra small and small, TitleMedium 16/24 for medium, HeadlineSmall 24/32 for large, HeadlineLarge 32/40 for extra large. Padding each side: 12, 16, 24, 48, 64.</td></tr>
+        <tr><th>Icon</th><td>Optional, before the label: 20, 20, 24, 32, 40, with a gap of 4, 8, 8, 12, 16. The padding does not change when an icon is present.</td></tr>
+        <tr><th>Shape</th><td>Round (a pill) by default, or square (12, 12, 16, 28, 28). A toggle in its selected state takes the other shape: round becomes square, square becomes round (small stays 12).</td></tr>
+        <tr><th>State layer</th><td>The label color over the container at 0.08 hover, 0.10 focus, 0.10 pressed.</td></tr>
+        <tr><th>Touch target</th><td>48 × 48 minimum. Here the button element is the 48px target and is transparent; the container sits inside it.</td></tr>
+        <tr><th>Connected group</th><td>Items 40 tall, 2px apart. Outer ends are fully round, inner corners 8px, 4px while pressed; the selected item is fully round.</td></tr>
+        <tr><th>Dialog actions</th><td>Text buttons at the bottom right of the dialog, 8px apart, confirm on the right.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <div class="prose">
+        <p>Every size, shape, opacity and color role is a Compose token read from the files cited below; colors are the baseline scheme resolved to hex. These values are ours, because no token or number was found:</p>
+        <ul>
+          <li>Focus ring: Secondary is the token (<code>FocusIndicatorColor</code>); the 3px width and drawing it outside the container are our choice.</li>
+          <li>Disabled label color differs between files: the filled, tonal, outlined, elevated and text files say OnSurfaceVariant, the baseline file says OnSurface. This page uses OnSurfaceVariant for the label and OnSurface for the icon, both at 0.38. The outlined disabled outline is OutlineVariant at full strength, as the token reads.</li>
+          <li>Shadow offsets and blur for each elevation level (the levels 0, 1, 3, 6 dp are tokens). Compose draws a platform shadow.</li>
+          <li>Spring timing: the effects spring (damping 1.0, stiffness 1600) is read from the motion tokens; its 170ms settle time and the sampled easing curve are computed here.</li>
+          <li>Text button padding: Compose’s legacy <code>TextButtonContentPadding</code> is 12dp and its source recommends the shared padding instead; this page uses the size tokens for every type.</li>
+          <li>The group’s colors (filled toggle) are our pick; the group tokens define only shape, gap and height.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Press</th><td>The corners morph from the resting shape to the pressed shape (8, 8, 12, 16, 16) and back, using a critically damped spring: no overshoot, no bounce. Compose animates only between rounded shapes.</td></tr>
+        <tr><th>Toggle</th><td>Click flips selection. The container changes color and shape together: filled goes SurfaceContainer to Primary, tonal to Secondary, elevated to Primary, outlined to InverseSurface. Text buttons have no toggle.</td></tr>
+        <tr><th>Elevation</th><td>Filled and tonal sit at 0 and lift to 1dp on hover. Elevated rests at 1dp and lifts to 3dp. Pressed returns to rest.</td></tr>
+        <tr><th>Disabled</th><td>Container OnSurface at 0.10, label and icon at 0.38, no shadow, no state layer, not focusable.</td></tr>
+        <tr><th>Connected group</th><td>Pick one: the chosen item goes fully round and filled; pressed neighbors tighten their inner corners to 4px.</td></tr>
+        <tr><th>Dialog actions</th><td>Confirm is first in the source and rightmost on screen. When the two do not fit in the dialog’s width (minimum 280) they wrap: confirm on top, dismiss below, both right-aligned, 8px apart.</td></tr>
+        <tr><th>Reduced motion</th><td>Shape and layer transitions are removed; state still changes.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Next button; disabled buttons are skipped. The connected group is one stop.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate; the press shape shows while the key is held.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Move the choice within the connected group (native radios).</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Real <code>&lt;button&gt;</code> elements; toggles carry <code>aria-pressed</code>; the group is a <code>radiogroup</code> of native radios with a label.</li>
+          <li>Icons are decorative; the label always names the action. An icon-only button would need an <code>aria-label</code>.</li>
+          <li>Selected state is shown by shape as well as color.</li>
+          <li>Confirm precedes dismiss in tab order but sits to its right on screen, as Compose does. Screen reader order is confirm, then dismiss.</li>
+          <li>Rules check: WCAG exempts disabled controls from contrast, but the automatic check may still measure their labels; a contrast item listed for a disabled label is that, not a defect.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

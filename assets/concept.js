@@ -391,6 +391,70 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
       ${iconCredit()}`);
   }
 
+  /* ---- Rules check ---------------------------------------------------------- */
+
+  /** Load a classic script on demand (works from file://). */
+  const loadScript = url => new Promise((ok, no) => {
+    const el = document.createElement('script');
+    el.src = url; el.onload = ok; el.onerror = no;
+    document.head.append(el);
+  });
+
+  const STATE = { true: ['pass', 'Pass'], false: ['fail', 'Fail'], review: ['review', 'Review'] };
+
+  /**
+   * Run every rule in both frames and render the table after Specs. Only pages built to (or inspired
+   * by) a core library get one. A rule's state is its worst result across the two themes; a rule with
+   * no check is "Review by hand". See assets/rules.js for what each rule measures.
+   */
+  async function renderRules(specEl, wins) {
+    const concept = Site.here.concept;
+    if (!concept?.system) return;
+    if (!window.RULES) await loadScript(Site.url('assets/rules.js'));
+    const R = window.RULES, system = window.SOURCES.sites[concept.system];
+    const rules = [...R.universal, ...(R.systems[concept.system] ?? [])];
+    const host = document.createElement('section');
+    host.className = 'ruled rules'; host.dataset.rules = '';
+    specEl.after(host);
+
+    const run = () => {
+      const rank = { true: 0, review: 1, false: 2 };
+      let counts = { pass: 0, fail: 0, review: 0, manual: 0 };
+      const rows = rules.map(rule => {
+        const page = window.SOURCES.pages[rule.source];
+        let results = [];
+        if (rule.check) {
+          results = wins.map((w, i) => {
+            try { return rule.check(R.makeContext(w, ['light', 'dark'][i], concept)); }
+            catch (e) { return { pass: 'review', detail: `check failed: ${e.message}` }; }
+          });
+        }
+        const worst = results.length ? results.reduce((a, b) => rank[b.pass] > rank[a.pass] ? b : a).pass : null;
+        const [cls, word] = worst === null ? ['manual', 'Review by hand'] : STATE[worst];
+        counts[worst === null ? 'manual' : cls]++;
+        // Say which theme a problem is in only when the two differ.
+        const same = results.length > 1 && results[0].detail === results[1].detail;
+        const detail = results.map((r, i) => `${same && i ? '' : `${results.length > 1 && !same ? ['Light', 'Dark'][i] + ': ' : ''}${esc(r.detail ?? '')}`}`).filter(Boolean).join(' · ');
+        const items = [...new Set(results.flatMap(r => r.items ?? []))].slice(0, 5);
+        return `<tr class="rule-${cls}"><td class="state"><span>${word}</span></td>
+          <td>${esc(rule.text)}<span class="raw">${detail}${items.length ? ` — ${items.map(esc).join('; ')}${results.some(r => (r.items?.length ?? 0) > 5) ? '…' : ''}` : ''}</span></td>
+          <td class="src"><a href="${page.url}">${esc(page.title)}</a></td></tr>`;
+      }).join('');
+      const measured = counts.pass + counts.fail + counts.review;
+      host.innerHTML = `
+        <h2>Rules check</h2>
+        <p class="rules-summary">${counts.pass} of ${measured} measurable rules pass${counts.fail ? `, <strong>${counts.fail} fail</strong>` : ''}${counts.review ? `, ${counts.review} to review` : ''}; ${counts.manual} more are for a person.
+          <button class="ghost" data-act="rules">Run again</button></p>
+        <table class="kv rules-table"><thead><tr><th>Result</th><th>Rule</th><th>From</th></tr></thead><tbody>${rows}</tbody></table>
+        <p class="spec-note">Measured in the demo above, in both themes, with ${esc(system.short ?? system.name)} and WCAG 2.2 rules.
+          A pass means the rule held in this demo as drawn; it does not mean the page meets ${esc(system.short ?? system.name)}, which also asks for judgment no script can make.
+          ${concept.inspired ? `This page is inspired by ${esc(system.short ?? system.name)}, not built to it, so read the results as information.` : ''}
+          ${concept.platform ? `Sizes use ${esc(concept.platform)} thresholds, with 1pt taken as 1 CSS px.` : ''}</p>`;
+    };
+    run();
+    host.addEventListener('click', e => { if (e.target.closest('[data-act="rules"]')) run(); });
+  }
+
   /* ---- Boot ---------------------------------------------------------------- */
 
   function boot() {
@@ -410,7 +474,7 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
     if (previewEl) {
       const ready = renderPreview(previewEl, ['light', 'dark']);
       const specEl = $('[data-spec]');
-      if (specEl) ready.then(wins => renderSpec(specEl, wins));
+      if (specEl) ready.then(wins => { renderSpec(specEl, wins); renderRules(specEl, wins); });
     }
   }
 

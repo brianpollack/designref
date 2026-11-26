@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Action Pairs</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/action-pairs">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="sheet" data-order="last">
+  <!-- The one switch: where does the main action go? Platforms disagree, so the demo flips them all. -->
+  <div class="pick" role="group" aria-label="Main action position">
+    <span>Main action</span>
+    <button aria-pressed="true" data-order="last">Last</button>
+    <button aria-pressed="false" data-order="first">First</button>
+  </div>
+
+  <!-- Markup order is always: dismissing action first, main action last. CSS places them; reading-flow
+       keeps Tab order equal to what you see. -->
+  <section class="dialog" aria-labelledby="t1">
+    <h2 id="t1">Discard changes?</h2>
+    <p>Your edits to “Q4 plan” will be lost.</p>
+    <div class="actions"><button class="btn" data-variant="secondary">Keep editing</button><button class="btn" data-variant="primary">Discard</button></div>
+  </section>
+
+  <section class="dialog" aria-labelledby="t2">
+    <h2 id="t2">Delete “Q4 plan”?</h2>
+    <p>This can’t be undone.</p>
+    <div class="actions"><button class="btn" data-variant="secondary">Cancel</button><button class="btn" data-variant="danger">Delete</button></div>
+  </section>
+
+  <section class="dialog" aria-labelledby="t3">
+    <h2 id="t3">Save changes to “Q4 plan”?</h2>
+    <p>Choose what happens to your edits.</p>
+    <div class="actions"><button class="btn" data-variant="tertiary">Don’t save</button><button class="btn" data-variant="secondary">Cancel</button><button class="btn" data-variant="primary">Save</button></div>
+  </section>
+
+  <!-- Narrow: the same buttons stack, main action on top, each full width. -->
+  <section class="dialog narrow" aria-labelledby="t4">
+    <h2 id="t4">Stacked when narrow</h2>
+    <p>Under 300px the pair becomes a column.</p>
+    <div class="actions"><button class="btn" data-variant="secondary">Cancel</button><button class="btn" data-variant="primary">Continue</button></div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Footer */
+  --ap-gap: 8px;                                              /* Space between buttons in a row or a stack (Fluent and Material use 8; Carbon 16) */
+  --ap-stack-below: 300px;                                    /* Footer width under which a row becomes a stack */
+  --ap-pad: 20px;                                             /* Dialog padding; the footer sits 20px under the text */
+  --ap-radius: 12px;                                          /* Dialog corner */
+  --ap-min-w: 88px;                                           /* Narrowest button, so two short labels still look like a pair */
+
+  /* @group Button */
+  --ap-h: 40px;                                               /* Button height; every button in a footer is the same size */
+  --ap-btn-radius: 8px;                                       /* Button corner */
+  --ap-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 */
+
+  /* @group Color */
+  --ap-accent: light-dark(#2b59e0, #8ea6ff);                  /* Main action fill */
+  --ap-on-accent: light-dark(#ffffff, #101218);               /* Label on the main action: 5.8:1 light, 8.1:1 dark */
+  --ap-danger: light-dark(#c4262e, #ff8a8f);                  /* Destructive main action fill */
+  --ap-on-danger: light-dark(#ffffff, #1a0b0c);               /* Label on the destructive fill */
+  --ap-surface: light-dark(#eef0f4, #2a2c33);                 /* Secondary fill */
+  --ap-rule: light-dark(#c9ced8, #444853);                    /* Secondary border */
+  --ap-card: light-dark(#ffffff, #202227);                    /* Dialog fill */
+  --ap-card-rule: light-dark(#dfe2e8, #34373f);               /* Dialog border */
+  --ap-text: light-dark(#1c1d21, #ececef);                    /* Text */
+  --ap-muted: light-dark(#5d6169, #a0a4ae);                   /* Supporting text */
+}
+
+/* ---- Component: the footer ---- */
+.actions { display: flex; justify-content: flex-end; gap: var(--ap-gap); margin-top: 20px; }
+/* A footer cannot query its own width, so the dialog is the container. 340px of dialog is 300px of footer. */
+.dialog { container-type: inline-size; }
+
+/* "First": the main action is the leftmost button. The markup order does not change, so row-reverse
+   flips the visual order, and reading-flow makes Tab follow the visual order. */
+[data-order="first"] .actions { flex-direction: row-reverse; justify-content: flex-start; reading-flow: flex-visual; }
+
+/* Narrow: a column with the main action on top and every button full width. column-reverse for both
+   conventions, because in markup order the main action is last. */
+@container (width < 340px) {
+  .actions, [data-order="first"] .actions { flex-direction: column-reverse; justify-content: normal; reading-flow: flex-visual; }
+  .actions .btn { width: 100%; }
+}
+
+
+.btn {
+  --_bg: var(--ap-surface); --_fg: var(--ap-text); --_bd: var(--ap-rule);
+  min-width: var(--ap-min-w); height: var(--ap-h); padding: 0 16px;
+  border: 1px solid var(--_bd); border-radius: var(--ap-btn-radius); background: var(--_bg); color: var(--_fg);
+  font: var(--ap-font); cursor: pointer; transition: background-color 120ms, transform 80ms;
+  &[data-variant="primary"] { --_bg: var(--ap-accent); --_fg: var(--ap-on-accent); --_bd: transparent; }
+  &[data-variant="danger"] { --_bg: var(--ap-danger); --_fg: var(--ap-on-danger); --_bd: transparent; }
+  &[data-variant="tertiary"] { --_bg: transparent; --_fg: var(--ap-accent); --_bd: transparent; }
+  &:hover { background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 12%); }
+  &[data-variant="tertiary"]:hover { background: color-mix(in oklab, var(--ap-accent) 12%, transparent); }
+  &:active { transform: translateY(1px); background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 22%); }
+  &:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 2px; }
+}
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+@media (forced-colors: active) { .btn { border-color: ButtonText; } .btn:focus-visible { outline-color: Highlight; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f1f2f5, #141518); color: var(--ap-text); font: 14px/20px system-ui, sans-serif; }
+.sheet { padding: 12px 14px 16px; display: grid; gap: 12px; }
+.dialog { padding: var(--ap-pad); border: 1px solid var(--ap-card-rule); border-radius: var(--ap-radius); background: var(--ap-card); }
+  .dialog.narrow { max-width: 260px; margin-inline: auto; width: 100%; }   /* The demo's narrow card forces the stacked layout */
+.dialog h2 { margin: 0 0 4px; font: 600 16px/24px system-ui, sans-serif; }
+.dialog p { margin: 0; color: var(--ap-muted); }
+.pick { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ap-muted); }
+.pick span { margin-inline-end: 4px; }
+.pick button { height: 28px; padding: 0 12px; border: 1px solid var(--ap-rule); border-radius: 14px; background: none; color: var(--ap-text); font: 13px/16px system-ui, sans-serif; cursor: pointer; }
+.pick button[aria-pressed="true"] { background: var(--ap-accent); border-color: transparent; color: var(--ap-on-accent); }
+.pick button:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 2px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// The only script: the demo's own switch. Real products pick one convention and never flip it.
+const sheet = document.querySelector('.sheet');
+document.querySelector('.pick').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  sheet.dataset.order = b.dataset.order;
+  document.querySelectorAll('.pick button').forEach(x => x.setAttribute('aria-pressed', x === b));
+});
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="700" data-hint="Flip “Main action” between Last and First to see the two conventions. Tab through a footer: focus follows what you see."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Footer</th><td>A flex row under the dialog text, aligned to the end edge, 8px between buttons. Every button the same height and style family; only fill and color rank them.</td></tr>
+        <tr><th>Main action</th><td>The one that does what the title asked. Solid primary, or solid destructive when the dialog is about deleting. Its label repeats the verb in the title.</td></tr>
+        <tr><th>Dismissing action</th><td>Cancel, Keep editing, Close. Secondary or tertiary. “Cancel” stops and discards; “Close” changes nothing about the task (Fluent).</td></tr>
+        <tr><th>Third action</th><td>An alternative outcome, such as “Don’t save”. It is tertiary, because it is a different answer, not the main one. More than three buttons belong in a different pattern: Fluent allows up to three, Carbon says more than three go in a menu.</td></tr>
+        <tr><th>Stack</th><td>Under about 300px of footer width the row becomes a column with the main action on top and every button full width.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled">
+      <h2>Where the main action goes</h2>
+      <p class="spec-note">Platforms disagree, and the disagreement is documented. Follow the platform your users are on; if you do not know, choose one and use it everywhere (NN/g: platform convention matters more than optimizing one dialog).</p>
+      <table class="kv long-keys">
+        <thead><tr><th>Source</th><th>Row</th><th>Stacked</th></tr></thead>
+        <tbody>
+          <tr><th>Apple (alerts)</th><td>Default button on the trailing side; Cancel on the leading side.</td><td>Default on top; Cancel at the bottom.</td></tr>
+          <tr><th>Material 3 (AlertDialog)</th><td>Text buttons at the end edge; the confirm button is rightmost, dismiss to its left. 8px apart.</td><td>Confirm on top, dismiss below, 8px apart.</td></tr>
+          <tr><th>Carbon (modals)</th><td>Secondary on the left, primary on the right; two buttons are 50% each and full bleed. Three: 25% each, right-aligned, only the far right can be primary. Full-page left-aligned groups put the primary on the left.</td><td>Primary on top, 16px gap.</td></tr>
+          <tr><th>Fluent 2</th><td>Primary first in markup, so left of the secondary; the pair is end-aligned. Fluent’s button guidance: primary goes on top of or to the left of other actions.</td><td>Below 480px: column, primary on top.</td></tr>
+          <tr><th>NN/g</th><td>Windows puts OK first and Apple puts it last. Match the platform; for a web app on mixed platforms either is fine if consistent.</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Our own values. The systems’ own numbers are on their button pages; gaps shown here (8px) are Material’s and Fluent’s, Carbon uses 16px.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Labels</th><td>Name the outcome: “Delete file” and “Cancel”, not “OK” and “Cancel”. Fluent: in dialogs labels respond to the title; one or two words. Apple: avoid “Yes” and “No”; use one or two words; never explain the buttons with extra text. NN/g: use specific labels (Save, not OK).</td></tr>
+        <tr><th>Destructive</th><td>The destructive button is red but still sits where the main action does. Apple: never give the primary role to a destructive action and always include Cancel. NN/g: restate the specific item, label by outcome, avoid a default “Yes”, and offer undo; for the worst cases require something deliberate such as typing a word (see <a href="async-buttons.html">Loading and Confirming Buttons</a>).</td></tr>
+        <tr><th>Default focus</th><td>Focus the main action unless it is destructive; then focus the safe one. A dialog with no inputs focuses its primary button (Carbon). Fluent returns focus to the trigger on close.</td></tr>
+        <tr><th>Visual order equals Tab order</th><td>The markup order is dismissing then main. <code>reading-flow: flex-visual</code> on the flex container makes keyboard focus follow the visual order after <code>row-reverse</code> or <code>column-reverse</code>, so reversing never splits what you see from what Tab does.</td></tr>
+        <tr><th>Equal width</th><td>Within a footer buttons share a height; Carbon also fixes the width of a group by its longest label. Here <code>min-width</code> keeps short labels from making a ragged pair.</td></tr>
+        <tr><th>Stack</th><td>A container query on the footer, not the window, so the same footer is correct in a modal, a side panel and a card.</td></tr>
+        <tr><th>Wizards</th><td>Carbon’s progress modal puts Cancel (ghost) at the far left and Previous and Next grouped on the right. Fluent says Next and Previous, not Continue and Back.</td></tr>
+        <tr><th>Reduced motion</th><td>Button transitions stop.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <div class="prose">
+        <ul>
+          <li>The dialog is named by its heading (<code>aria-labelledby</code>); in a real <code>dialog</code>, focus moves in on open and returns to the trigger on close.</li>
+          <li>Fluent’s alert dialog, used for destructive confirmation, is dismissed only by one of its footer buttons.</li>
+          <li>Tab order matches visual order in both conventions. Without <code>reading-flow</code> a reversed row would focus the dismissing button first on the left and the main action last on the left, the opposite of what is shown.</li>
+          <li>Never rely on color for the destructive meaning: the label names the action.</li>
+          <li>Buttons are 40px high with 8px between them, over WCAG 2.2’s 24px minimum.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

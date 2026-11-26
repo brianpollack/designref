@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+</head>
+<!-- Category page. Title, summary and the concept list come from assets/catalog.js. -->
+<body data-page="components/buttons">
+  <main>
+    <div class="page">
+      <header class="page-header" data-auto></header>
+
+      <section data-concepts></section>
+
+<section class="ruled">
+        <h2>Choosing one</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>You need…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><th>One button that ranks correctly among others, in every state</th><td><a href="button-styles.html">Button Styles</a></td></tr>
+            <tr><th>To match Material, Fluent, Carbon or Apple exactly</th><td><a href="material-3-buttons.html">Material 3</a>, <a href="fluent-2-buttons.html">Fluent 2</a>, <a href="carbon-buttons.html">Carbon</a>, <a href="apple-style-buttons.html">Apple-style</a></td></tr>
+            <tr><th>A button with character, and you can afford the motion</th><td><a href="expressive-effects.html">Expressive CSS Buttons</a></td></tr>
+            <tr><th>Two or three buttons that answer one question (Accept, Cancel)</th><td><a href="action-pairs.html">Action Pairs</a></td></tr>
+            <tr><th>Four, five or more buttons side by side</th><td><a href="button-rows.html">Button Rows</a></td></tr>
+            <tr><th>One default action with a few variations</th><td><a href="split-button.html">Split Button</a></td></tr>
+            <tr><th>To choose one of a few, or switch several on</th><td><a href="segmented-toggle.html">Segmented and Toggle Buttons</a></td></tr>
+            <tr><th>A control with no room for a label, or one main action on a screen</th><td><a href="icon-buttons.html">Icon Buttons and FAB</a></td></tr>
+            <tr><th>An action that takes time or can’t be undone</th><td><a href="async-buttons.html">Loading and Confirming Buttons</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled">
+        <h2>How many, and which</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>Question</th><th>What the systems say</th></tr></thead>
+          <tbody>
+            <tr><th>How many loud buttons?</th><td>One. Apple: one or two prominent buttons per view. Fluent: one primary per layout. Carbon: one primary per page, and a modal’s one primary. Material: the more important the action, the higher its emphasis.</td></tr>
+            <tr><th>Several equal actions?</th><td>Make them all quiet. Fluent: with more than two equal buttons use neutral backgrounds. Carbon: with more than three, tertiary or ghost, or a menu button or toolbar.</td></tr>
+            <tr><th>Where does the main action go?</th><td>They disagree: last (Apple, Material, Carbon dialogs) or first (Fluent, Windows). Pick one for the product and keep it. <a href="action-pairs.html">Action Pairs</a> shows both.</td></tr>
+            <tr><th>How many in a dialog?</th><td>Up to three (Apple, Fluent). Carbon fixes layouts for one, two and three.</td></tr>
+            <tr><th>Which labels?</th><td>A verb for the outcome: “Delete file”, not “OK”. Fluent and Carbon use sentence case; Apple asks for title-style capitalization.</td></tr>
+            <tr><th>How big?</th><td>At least 24px (WCAG 2.2 minimum); 44px for touch (Apple, WCAG enhanced); 48dp for Material.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled" data-core>
+        <h2>Core libraries</h2>
+      </section>
+
+      <section class="ruled prose">
+        <h2>The modern stack</h2>
+        <p>A button needs no library. These platform features replace what used to be scripts and extra markup.</p>
+        <ul>
+          <li><strong>Nesting and custom properties</strong> let one component set three private colors per variant, so every state rule reads the same properties and never repeats a hex.</li>
+          <li><strong><code>color-mix()</code></strong> derives hover and pressed from the base color, in both themes, with <code>light-dark()</code> choosing whether to mix toward black or white.</li>
+          <li><strong><code>:has()</code></strong> styles a segment from its own checked input, so segmented controls and toggles need no script, and groups of bubbles or buttons join up from their siblings.</li>
+          <li><strong>Container queries</strong> make a button row stack, wrap or fold into icons by the space it has, not the window’s.</li>
+          <li><strong>Popover, <code>commandfor</code> and anchor positioning</strong> open a split button’s menu, close it, and place it, with no script.</li>
+          <li><strong><code>interestfor</code></strong> shows a tooltip on hover and keyboard focus.</li>
+          <li><strong><code>@property</code>, <code>linear()</code>, <code>corner-shape</code> and <code>backdrop-filter</code></strong> make the expressive effects possible in CSS alone.</li>
+          <li><strong><code>reading-flow</code></strong> keeps keyboard order equal to visual order when a row is reversed for a platform convention.</li>
+        </ul>
+        <p>What still needs script: a toggle button’s <code>aria-pressed</code>, the roving keys of a toolbar, blocking a click on an <code>aria-disabled</code> button, timers for loading and hold-to-confirm, and anything that talks to the network. Every page also carries a Rules check that measures target size, contrast, names, focus and reduced motion in both themes.</p>
+      </section>
+
+      <section class="ruled prose" data-sources>
+        <h2>Sources</h2>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

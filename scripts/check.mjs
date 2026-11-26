@@ -28,7 +28,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Load classic browser scripts that assign to window.* */
 const sandbox = { window: {} };
 vm.createContext(sandbox);
-for (const f of ['assets/catalog.js', 'assets/sources.js', 'assets/icons.js', 'assets/icon-libraries.js', 'assets/icon-sets.js']) {
+for (const f of ['assets/catalog.js', 'assets/sources.js', 'assets/rules.js', 'assets/icons.js', 'assets/icon-libraries.js', 'assets/icon-sets.js']) {
   vm.runInContext(readFileSync(join(ROOT, f), 'utf8'), sandbox, { filename: f });
 }
 const C = sandbox.window.CATALOG;
@@ -131,6 +131,17 @@ for (const [id, site] of Object.entries(S.sites)) {
   if (!KINDS.has(site.kind)) fail(`sources: site "${id}" has unknown kind "${site.kind}"`);
   if (site.kind === 'system' && !S.systems[id]) fail(`sources: core library "${id}" has no systems entry`);
 }
+// Rules check: every rule cites a real page, and that counts as citing it.
+const RULES = sandbox.window.RULES;
+for (const [where, list] of [['universal', RULES.universal], ...Object.entries(RULES.systems)]) {
+  if (where !== 'universal' && !S.systems[where]) fail(`rules: unknown core library "${where}"`);
+  for (const r of list) {
+    if (!r.id || !r.text) fail(`rules(${where}): a rule has no id or text`);
+    if (!S.pages[r.source]) fail(`rules(${where}): "${r.id}" cites unknown page "${r.source}"`);
+    cited.add(r.source);
+  }
+}
+
 for (const [id, page] of Object.entries(S.pages)) {
   if (!S.sites[page.site]) fail(`sources: page "${id}" names unknown site "${page.site}"`);
   if (!page.title || !https(page.url)) fail(`sources: page "${id}" needs a title and an https url`);

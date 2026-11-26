@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apple-Style Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/apple-style-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- One button component, shown as a short catalog: treatments, content, sizes, states, glass, arrangement. -->
+<div class="sheet">
+
+  <section aria-labelledby="h-styles">
+    <h3 id="h-styles">Treatments and shapes</h3>
+    <small>Capsule</small>
+    <div class="row">
+      <button class="btn filled" type="button">Prominent</button>
+      <button class="btn tinted" type="button">Tinted</button>
+      <button class="btn gray" type="button">Gray</button>
+      <button class="btn plain" type="button">Plain</button>
+    </div>
+    <small>Rounded rectangle</small>
+    <div class="row">
+      <button class="btn filled rect" type="button">Prominent</button>
+      <button class="btn tinted rect" type="button">Tinted</button>
+      <button class="btn gray rect" type="button">Gray</button>
+      <button class="btn plain rect" type="button">Plain</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-content">
+    <h3 id="h-content">Content: icon and label, icon only, destructive</h3>
+    <div class="row">
+      <button class="btn filled" type="button"><svg class="icon"><use href="#i-plus"/></svg><span>Add Item</span></button>
+      <button class="btn tinted" type="button"><svg class="icon"><use href="#i-share"/></svg><span>Share</span></button>
+      <!-- Icon-only: circular, name comes from aria-label -->
+      <button class="btn gray icon-only" type="button" aria-label="Share"><svg class="icon"><use href="#i-share"/></svg></button>
+      <button class="btn tinted icon-only" type="button" aria-label="Add"><svg class="icon"><use href="#i-plus"/></svg></button>
+      <button class="btn plain icon-only" type="button" aria-label="More"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+      <!-- Destructive: system red. Never the primary role; see the alert below -->
+      <button class="btn filled danger" type="button"><svg class="icon"><use href="#i-trash-2"/></svg><span>Delete</span></button>
+      <button class="btn tinted danger" type="button">Delete</button>
+      <button class="btn plain danger" type="button">Delete</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-states">
+    <h3 id="h-states">States</h3>
+    <div class="row">
+      <button class="btn filled" type="button">Rest</button>
+      <!-- .is-pressed freezes the same look :active gives, so it can be seen without holding the mouse -->
+      <button class="btn filled is-pressed" type="button">Pressed</button>
+      <button class="btn filled" type="button" disabled>Disabled</button>
+      <button class="btn gray" type="button" disabled>Disabled</button>
+      <!-- Toggle: pressed state changes fill, label color AND icon, so color is not the only cue -->
+      <button class="btn gray" type="button" aria-pressed="false" data-toggle>
+        <svg class="icon off"><use href="#i-heart"/></svg><svg class="icon on"><use href="#i-check"/></svg><span>Favorite</span>
+      </button>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-sizes">
+    <h3 id="h-sizes">Sizes (visionOS ladder; every hit region stays 44)</h3>
+    <div class="row sizes">
+      <!-- Mini and Small draw a smaller face inside a 44px button, so the hit region never shrinks -->
+      <button class="btn gray compact" style="--vis:28px" type="button"><span class="face">Mini 28</span></button>
+      <button class="btn gray compact" style="--vis:32px" type="button"><span class="face">Small 32</span></button>
+      <button class="btn gray" type="button">Regular 44</button>
+      <button class="btn gray s-lg" type="button">Large 52</button>
+      <button class="btn gray s-xl" type="button">Extra large 64</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-glass">
+    <div class="head">
+      <h3 id="h-glass">Liquid Glass, over media only</h3>
+      <button class="btn gray" type="button" aria-pressed="true" data-dim><svg class="icon on"><use href="#i-check"/></svg><span>Dim layer 35%</span></button>
+    </div>
+    <div class="stage">
+      <!-- The photo is a CSS gradient. The dim layer is the stage's ::after; controls sit above it -->
+      <button class="btn glass icon-only" type="button" aria-label="Favorite"><svg class="icon"><use href="#i-heart"/></svg></button>
+      <button class="btn glass icon-only" type="button" aria-label="Share"><svg class="icon"><use href="#i-share"/></svg></button>
+      <button class="btn glass" type="button">Add to Library</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-arrange">
+    <h3 id="h-arrange">Arrangement: two in a row, three in a stack</h3>
+    <div class="alerts">
+      <!-- Row: Cancel leading, default trailing. Same height, same width: style ranks them, not size -->
+      <div class="alert" role="group" aria-labelledby="a1">
+        <h4 id="a1">Save Changes?</h4>
+        <p>Unsaved edits are lost when you close.</p>
+        <div class="alert-row">
+          <button class="btn gray rect" type="button">Cancel</button>
+          <button class="btn filled rect" type="button">Save</button>
+        </div>
+      </div>
+      <!-- Stack: default on top, destructive red in the middle, Cancel at the bottom -->
+      <div class="alert" role="group" aria-labelledby="a2">
+        <h4 id="a2">Discard Draft?</h4>
+        <p>You can save it to Drafts instead.</p>
+        <div class="alert-stack">
+          <button class="btn filled rect" type="button">Save Draft</button>
+          <button class="btn gray rect danger" type="button">Discard Draft</button>
+          <button class="btn gray rect" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens: our own values in the spirit of Apple's HIG. HIG gives no corner radii or push-button heights ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Color */
+  --bt-surface: light-dark(#FFFFFF, #1C1C1E);                          /* Surface the buttons sit on */
+  --bt-accent: light-dark(#0060DF, #0A63D8);                           /* Prominent fill; our blue, darker than system blue so white is 5.5:1 or more */
+  --bt-on-accent: #FFFFFF;                                             /* Label and icon on a filled button */
+  --bt-accent-text: light-dark(#0050B8, #8EC3FF);                      /* Label on tinted, gray and plain buttons */
+  --bt-tint-fill: light-dark(rgb(0 96 223 / 0.12), rgb(100 170 255 / 0.20));   /* Tinted button fill */
+  --bt-gray-fill: light-dark(#EBEBF0, #2C2C2E);                        /* Gray (bordered) button fill */
+  --bt-danger: light-dark(#D70015, #E0172B);                           /* Destructive filled button; white label is 4.9:1 or more */
+  --bt-danger-text: light-dark(#B3001A, #FF8F88);                      /* Destructive label on tinted, gray and plain */
+  --bt-danger-tint: light-dark(rgb(215 0 21 / 0.10), rgb(255 69 58 / 0.22));   /* Destructive tinted fill */
+  --bt-disabled-fill: light-dark(#F0F0F3, #2C2C2E);                    /* Disabled fill; WCAG exempts disabled controls from contrast */
+  --bt-disabled-text: light-dark(#8E8E96, #7A7A82);                    /* Disabled label and icon */
+
+  /* @group Shape */
+  --bt-radius-capsule: 999px;   /* Capsule: radius larger than half the height */
+  --bt-radius-rect: 12px;       /* Rounded rectangle corner (our value; HIG gives none) */
+
+  /* @group Size */
+  --bt-h: 44px;                 /* Regular height and the minimum hit region (HIG: 44x44 pt on iOS) */
+  --bt-h-lg: 52px;              /* Large (visionOS ladder: 52) */
+  --bt-h-xl: 64px;              /* Extra large (visionOS ladder: 64) */
+  --bt-px: 20px;                /* Side padding of a labeled button */
+  --bt-gap: 8px;                /* Icon to label */
+  --bt-icon: 20px;              /* Icon size */
+  --bt-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;   /* Typeface */
+  --bt-font-size: 17px;         /* Label size (HIG default text size on iOS is 17 pt), weight 600, line height 22px */
+
+  /* @group Press and focus */
+  --bt-press-scale: 0.96;       /* Pressed: scale down */
+  --bt-press-brightness: 0.88;  /* Pressed: darken the fill and label */
+  --bt-time: 120ms;             /* Press and toggle transition; none with reduced motion */
+  --bt-focus: light-dark(#0060DF, #6CB2FF);   /* Keyboard focus ring, 3px, 2px offset */
+
+  /* @group Liquid Glass */
+  --bt-glass-fill: light-dark(rgb(255 255 255 / 0.26), rgb(40 40 46 / 0.40));   /* Translucent tint over the blurred media */
+  --bt-glass-solid: light-dark(#5E5E66, #3A3A40);                                /* Fill when Reduce transparency is on */
+  --bt-glass-blur: 20px;                                                         /* Backdrop blur radius */
+  --bt-glass-dim: rgb(0 0 0 / 0.35);                                             /* Dim layer under glass over bright media (HIG Materials: 35%) */
+}
+
+/* ---- Component ---- */
+.btn {
+  /* Each treatment only sets these two; shape and size set --r and --h. */
+  --_bg: transparent;
+  --_fg: var(--bt-accent-text);
+  --r: var(--bt-radius-capsule);
+  --h: var(--bt-h);
+
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--bt-gap);
+  height: var(--h); min-width: var(--h);
+  padding: 0 var(--bt-px);
+  border: 0; border-radius: var(--r);
+  background: var(--_bg); color: var(--_fg);
+  font: 600 var(--bt-font-size)/22px var(--bt-font);
+  white-space: nowrap; cursor: pointer;
+  user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: scale var(--bt-time) ease-out, filter var(--bt-time) ease-out, background-color var(--bt-time) ease-out;
+}
+.btn .icon { width: var(--bt-icon); height: var(--bt-icon); flex: none; }
+
+/* Treatments */
+.filled { --_bg: var(--bt-accent); --_fg: var(--bt-on-accent); }
+.tinted { --_bg: var(--bt-tint-fill); }
+.gray   { --_bg: var(--bt-gray-fill); }
+/* plain: transparent, accent label (the defaults) */
+
+/* Shapes and sizes */
+.rect { --r: var(--bt-radius-rect); }
+.s-lg { --h: var(--bt-h-lg); }
+.s-xl { --h: var(--bt-h-xl); padding: 0 28px; font-size: 20px; }
+.icon-only { padding: 0; border-radius: 50%; }                 /* circular, width = height */
+
+/* Compact: the button is the 44px hit region; only the inner face is drawn smaller */
+.compact { background: none; padding: 0; }
+.compact .face {
+  display: inline-flex; align-items: center; height: var(--vis); padding: 0 14px;
+  border-radius: var(--r); background: var(--_bg); font-size: 15px;
+}
+
+/* Destructive: system red, label stays readable on every treatment */
+.danger.filled { --_bg: var(--bt-danger); --_fg: var(--bt-on-accent); }
+.danger:is(.tinted, .gray, .plain) { --_fg: var(--bt-danger-text); }
+.danger.tinted { --_bg: var(--bt-danger-tint); }
+
+/* Pressed: scale and darken on :active. The frozen .is-pressed example skips the scale so it still measures 44px */
+.btn:enabled:active { scale: var(--bt-press-scale); }
+.btn:enabled:active, .btn.is-pressed { filter: brightness(var(--bt-press-brightness)); }
+.plain:enabled:active, .plain.is-pressed { --_bg: var(--bt-tint-fill); }
+
+/* Disabled: dimmed, and the pointer says so */
+.btn:disabled { --_fg: var(--bt-disabled-text); cursor: not-allowed; }
+.btn:disabled:not(.plain) { --_bg: var(--bt-disabled-fill); }
+
+/* Toggle: fill, label and icon all change with aria-pressed */
+[aria-pressed="false"] .on, [aria-pressed="true"] .off { display: none; }
+.gray[aria-pressed="true"] { --_bg: var(--bt-accent); --_fg: var(--bt-on-accent); }
+
+/* Keyboard focus */
+.btn:focus-visible { outline: 3px solid var(--bt-focus); outline-offset: 2px; }
+
+/* Liquid Glass: for controls over media. Sparingly, never in the content layer */
+.glass {
+  --_bg: var(--bt-glass-fill); --_fg: #FFFFFF;
+  backdrop-filter: blur(var(--bt-glass-blur)) saturate(160%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), inset 0 0 0 1px rgb(255 255 255 / 0.16), 0 6px 18px -6px rgb(0 0 0 / 0.35);
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass { --_bg: var(--bt-glass-solid); backdrop-filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { background: var(--bt-surface); color: light-dark(#1D1D1F, #F5F5F7); font: 400 15px/20px var(--bt-font); }
+.sheet { display: grid; gap: 28px; padding: 24px 28px 32px; }
+h3 { margin: 0 0 12px; font: 600 13px/16px var(--bt-font); color: light-dark(#6E6E73, #98989D); }
+small { font-size: 12px; color: light-dark(#6E6E73, #98989D); }
+section > small { display: block; margin: 12px 0 6px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.head h3 { margin: 0; }
+
+.stage {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;
+  min-height: 150px; padding: 16px; border-radius: 20px;
+  /* A bright sunset: the case where glass needs help */
+  background:
+    radial-gradient(circle at 70% 70%, #FFF1B8 0 8%, #FFC46B 16%, transparent 40%),
+    linear-gradient(#7EC8FF, #FFD9A8 62%, #FF9A5C);
+}
+.stage::after { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--bt-glass-dim); opacity: 0; }
+.head:has([data-dim][aria-pressed="true"]) + .stage::after { opacity: 1; }
+
+.alerts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 300px)); gap: 20px; }
+.alert { padding: 18px 16px 16px; border-radius: 20px; background: light-dark(#F2F2F7, #2C2C2E); text-align: center; }
+.alert h4 { margin: 0 0 4px; font: 600 17px/22px var(--bt-font); }
+.alert p { margin: 0 0 16px; font-size: 13px; line-height: 18px; color: light-dark(#4E4E54, #C2C2C8); }
+.alert-row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }   /* equal widths, equal heights */
+.alert-stack { display: grid; gap: 8px; }
+.alert .gray { --_bg: light-dark(#FFFFFF, #3A3A3C); }   /* gray reads against the alert card */
+</style>
+
+<script type="text/plain" data-demo="js">
+// Toggle buttons: aria-pressed is the only state. CSS draws the fill, icon and the dim layer from it.
+document.addEventListener('click', e => {
+  const b = e.target.closest('button[aria-pressed]');
+  if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// At rest: Favorite switched on, so the toggle's pressed look shows. The dim layer is on by default.
+{
+  document.querySelector('[data-toggle]').setAttribute('aria-pressed', 'true');
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="1440" data-hint="Hover, press and tab through the buttons. Favorite and Dim layer toggle."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Treatments</th><td>Four, from loudest to quietest. <b>Prominent</b> (filled): accent background, white label; SwiftUI <code>.borderedProminent</code>. <b>Tinted</b>: accent at low opacity behind an accent label. <b>Gray</b> (bordered): neutral fill, accent label. <b>Plain</b>: label only.</td></tr>
+        <tr><th>Shapes</th><td>Capsule (radius above half the height) or rounded rectangle (12px here). Icon-only buttons are circles.</td></tr>
+        <tr><th>Content</th><td>An icon, a label, or both. Labels use title-style capitalization and start with a verb (“Add to Cart”). Icons are Lucide here; the SF Symbols they stand in for are listed below.</td></tr>
+        <tr><th>Icon map</th><td>Add: <code>plus</code> (Lucide plus). Delete: <code>trash</code> (trash-2). Cancel/Close: <code>xmark</code> (x). Done: <code>checkmark</code> (check). More: <code>ellipsis</code> (ellipsis). Share: <code>square.and.arrow.up</code> (share). Favorite: <code>heart</code> (heart).</td></tr>
+        <tr><th>Role</th><td>Normal, Primary, Cancel or Destructive. Primary is the filled button and answers the Return key. Destructive is system red. A destructive button is never the primary role, even when it is the likely choice.</td></tr>
+        <tr><th>Compact face</th><td>Mini (28) and Small (32) draw a smaller face inside a 44px button, so the touch target stays 44. This is our technique; Apple lists the heights only for visionOS.</td></tr>
+        <tr><th>Toggle button</th><td>A gray button with <code>aria-pressed</code>. On, it turns accent-filled and swaps the heart for a check, so the state is not carried by color alone.</td></tr>
+        <tr><th>Liquid Glass</th><td>A translucent fill over a blurred, saturated copy of the media behind it, with a lit top edge. For controls floating over photos or video only. Over bright media, a 35% dark layer under the glass keeps the white label legible; the Dim toggle shows the difference.</td></tr>
+        <tr><th>Arrangement</th><td>Alert-style groups: up to three buttons. In a row the default is trailing and Cancel leading. In a stack the default is on top and Cancel at the bottom. All buttons share one height; in a row they share one width. Style ranks the choices, not size.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="prose">What Apple states, and what we chose. Apple states: a hit region of at least 44x44 pt (60x60 in visionOS), 17 pt default and 11 pt minimum text on iOS, 4.5:1 text contrast (3:1 for bold or 18 pt), visionOS heights of 28, 32, 44, 52 and 64 pt, and one or two prominent buttons per view. Apple states no corner radii and no push-button heights for iOS or macOS, so the radii, paddings, fills, press scale and glass values below are ours, in the style of Apple, not Apple’s numbers. The blue is darker than system blue because white on #0088FF is under 4.5:1.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Press</th><td>Scales to 96% and darkens 12% on <code>:active</code>, in 120ms. Plain buttons also take a tint fill. A custom button needs a pressed state; without one it feels unresponsive.</td></tr>
+        <tr><th>Disabled</th><td>Dimmed label, light fill, not focusable, no press. Contrast is not required for disabled controls.</td></tr>
+        <tr><th>Toggle</th><td>Click or <kbd>Space</kbd>/<kbd>Enter</kbd> flips <code>aria-pressed</code>; fill, icon and label follow it.</td></tr>
+        <tr><th>Hierarchy</th><td>One or two prominent buttons per view. The page shows many only because it is a catalog. In the alert pair only Save is prominent.</td></tr>
+        <tr><th>Destructive</th><td>Red label on gray, tinted and plain; a red fill only when it is the single prominent action. In the stack it is gray with red text in the middle, so Save Draft stays the default.</td></tr>
+        <tr><th>Glass</th><td>Use sparingly, on a few controls over media, not for content. With Reduce transparency set the fill turns opaque and the blur is dropped.</td></tr>
+        <tr><th>Motion</th><td>Only the press and toggle transitions animate. They stop with reduced motion; the pressed look stays.</td></tr>
+        <tr><th>Not built</th><td>iOS 26’s springy glass morphing, the haptic tap, and the in-button activity indicator (see <a href="async-buttons.html">Async Buttons</a>).</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between buttons; each shows a 3px ring with a 2px gap in both themes.</td></tr>
+          <tr><th><kbd>Space</kbd> <kbd>Enter</kbd></th><td>Activates a button, or flips a toggle.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>All controls are native <code>&lt;button&gt;</code>. Icon-only buttons carry <code>aria-label</code>; toggles carry <code>aria-pressed</code>. The alert cards are <code>role="group"</code> named by their titles.</li>
+          <li>The Rules check below measures: every touch control is 44px or taller (compact faces sit inside a 44px button), text is at least 11px, solid-background text meets 4.5:1 in both themes, a <code>:active</code> rule exists, and animation has a reduced-motion rule.</li>
+          <li>It cannot measure the glass buttons: text over a blur or gradient is marked for review. The white label passes only with the 35% layer; check it on your own media.</li>
+          <li>It also cannot judge wording (verb first, title case, one or two words), whether Cancel and default sit where the HIG puts them, whether red is used for the right action, or whether an icon is familiar. Those need a person.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

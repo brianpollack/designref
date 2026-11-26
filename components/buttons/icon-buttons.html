@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Icon Buttons and FAB</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/icon-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="sheet">
+
+  <section>
+    <h2>Icon buttons: standard, filled, tonal, outlined</h2>
+    <div class="row">
+      <button class="ib" data-kind="standard" aria-label="Edit" interestfor="t-edit"><svg class="icon"><use href="#i-pencil"/></svg></button>
+      <button class="ib" data-kind="filled" aria-label="Share" interestfor="t-share"><svg class="icon"><use href="#i-share"/></svg></button>
+      <button class="ib" data-kind="tonal" aria-label="Delete" interestfor="t-delete"><svg class="icon"><use href="#i-trash-2"/></svg></button>
+      <button class="ib" data-kind="outlined" aria-label="Settings"><svg class="icon"><use href="#i-settings"/></svg></button>
+      <button class="ib" data-kind="standard" aria-label="Add to favorites" aria-pressed="false" data-toggle><svg class="icon"><use href="#i-star"/></svg></button>
+    </div>
+    <!-- Tooltips: interest invokers show a hint popover on hover or keyboard focus, no script. -->
+    <div class="tip" id="t-edit" popover="hint">Edit</div>
+    <div class="tip" id="t-share" popover="hint">Share</div>
+    <div class="tip" id="t-delete" popover="hint">Delete</div>
+  </section>
+
+  <section>
+    <h2>Floating action button: sizes</h2>
+    <div class="row">
+      <button class="fab" data-size="small" aria-label="Add"><svg class="icon"><use href="#i-plus"/></svg></button>
+      <button class="fab" aria-label="Add"><svg class="icon"><use href="#i-plus"/></svg></button>
+      <button class="fab" data-size="large" aria-label="Add"><svg class="icon"><use href="#i-plus"/></svg></button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Extended FAB: the label folds away as the list scrolls</h2>
+    <div class="list" tabindex="-1">
+      <ul>
+        <li>Shopping list</li><li>Packing for Lisbon</li><li>Book club picks</li><li>Garden plan</li>
+        <li>Recipe ideas</li><li>Gift ideas</li><li>Weekend projects</li><li>Reading queue</li>
+      </ul>
+      <button class="fab ext"><svg class="icon"><use href="#i-pencil"/></svg><span class="lbl"><span>Compose</span></span></button>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Icon button */
+  --ib-hit: 44px;                                             /* Hit area: the real button is 44px square so touch targets meet Apple's 44 */
+  --ib-face: 40px;                                            /* Visible circle, 4px inside the hit area; icon 24px (Material 3 small icon button: 40px, 24px icon) */
+  --ib-icon: 24px;                                            /* Icon size */
+
+  /* @group FAB (sizes from Material 3 tokens) */
+  --fab-small: 40px;                                          /* Small FAB: 40px, 12px corner, 24px icon */
+  --fab: 56px;                                                /* FAB: 56px, 16px corner, 24px icon */
+  --fab-large: 96px;                                          /* Large FAB: 96px, 28px corner, 36px icon */
+  --fab-gap: 8px;                                             /* Extended FAB: icon to label (Material 3 small extended FAB: 56px high, 16px padding, 8px gap) */
+  --fab-shadow: 0 3px 10px rgb(0 0 0 / .28), 0 1px 3px rgb(0 0 0 / .2);        /* Rest elevation, level 3 in spirit (6dp) */
+  --fab-shadow-hover: 0 5px 14px rgb(0 0 0 / .32), 0 1px 4px rgb(0 0 0 / .2);  /* Hover elevation, level 4 in spirit (8dp) */
+
+  /* @group Color */
+  --ib-accent: light-dark(#2b59e0, #8ea6ff);                  /* Filled fill, toggle on, focus ring */
+  --ib-on-accent: light-dark(#ffffff, #101218);               /* Icon on the filled style */
+  --ib-tonal: light-dark(#dfe5fb, #2e3560);                   /* Tonal fill */
+  --ib-on-tonal: light-dark(#1b2a63, #dfe5ff);                /* Icon on tonal */
+  --ib-icon-color: light-dark(#44474f, #c6c9d3);              /* Standard and outlined icon: 8.9:1 on white */
+  --ib-rule: light-dark(#a9afbb, #565a66);                    /* Outlined style border */
+  --ib-hover: light-dark(#000, #fff);                         /* Mixed into the face on hover and press */
+  --ib-tip-bg: light-dark(#2a2c33, #ececef);                  /* Tooltip fill: inverse of the page */
+  --ib-tip-fg: light-dark(#ffffff, #1c1d21);                  /* Tooltip text */
+
+  /* @group Motion */
+  --fab-collapse: 0 80px;                                     /* Scroll distance over which the extended label folds away */
+}
+
+/* ---- Component ---- */
+/* The button is the hit area; the visible circle is its ::before, so a 40px face has a 44px target. */
+.ib { --_bg: transparent; --_fg: var(--ib-icon-color); --_bd: transparent;
+  position: relative; display: grid; place-items: center; width: var(--ib-hit); height: var(--ib-hit); padding: 0; border: 0; background: none; color: var(--_fg); cursor: pointer; border-radius: 50%; }
+.ib::before { content: ""; position: absolute; inset: calc((var(--ib-hit) - var(--ib-face)) / 2); border-radius: 50%; background: var(--_bg); border: 1px solid var(--_bd); transition: background-color 120ms; }
+.ib > * { position: relative; }                                 /* Icon above the face */
+.ib[data-kind="filled"] { --_bg: var(--ib-accent); --_fg: var(--ib-on-accent); }
+.ib[data-kind="tonal"] { --_bg: var(--ib-tonal); --_fg: var(--ib-on-tonal); }
+.ib[data-kind="outlined"] { --_bd: var(--ib-rule); }
+.ib:hover::before { background: color-mix(in oklab, var(--_bg, transparent), var(--ib-hover) 10%); }
+.ib[data-kind="standard"]:hover::before, .ib[data-kind="outlined"]:hover::before { background: color-mix(in oklab, var(--ib-icon-color) 12%, transparent); }
+.ib:active::before { background: color-mix(in oklab, var(--_bg, transparent), var(--ib-hover) 20%); }
+.ib[data-kind="standard"]:active::before, .ib[data-kind="outlined"]:active::before { background: color-mix(in oklab, var(--ib-icon-color) 22%, transparent); }
+.ib:focus-visible, .fab:focus-visible { outline: 2px solid var(--ib-accent); outline-offset: 2px; }
+.ib[aria-pressed="true"] { --_fg: var(--ib-accent); }
+.ib[aria-pressed="true"]::before { background: color-mix(in oklab, var(--ib-accent) 16%, transparent); }   /* On: a tinted face and accent icon. Lucide symbols are strokes and cannot be filled through <use>, so the glyph itself does not change */
+.icon { width: var(--ib-icon); height: var(--ib-icon); flex: none; }
+
+/* FAB: a raised, filled-accent action for the screen's single main action. */
+.fab { display: inline-flex; align-items: center; justify-content: center; gap: var(--fab-gap); width: var(--fab); height: var(--fab); padding: 0; border: 0; border-radius: 16px; background: var(--ib-accent); color: var(--ib-on-accent); box-shadow: var(--fab-shadow); cursor: pointer; font: 500 14px/20px system-ui, sans-serif; transition: box-shadow 150ms, background-color 150ms; }
+.fab:hover { box-shadow: var(--fab-shadow-hover); background: color-mix(in oklab, var(--ib-accent), var(--ib-hover) 10%); }
+.fab:active { box-shadow: var(--fab-shadow); background: color-mix(in oklab, var(--ib-accent), var(--ib-hover) 20%); }
+.fab[data-size="small"] { width: var(--fab-small); height: var(--fab-small); border-radius: 12px; }
+.fab[data-size="large"] { width: var(--fab-large); height: var(--fab-large); border-radius: 28px; }
+.fab[data-size="large"] .icon { width: 36px; height: 36px; }
+.fab[data-size="small"] { width: 44px; height: 44px; }         /* The small FAB's visible 40px is raised to a 44px hit area here */
+
+/* Extended FAB: icon plus label. As the list scrolls, the label column shrinks 1fr to 0fr and the gap goes to 0,
+   leaving a 56px round FAB. Driven by the scroll position, so no script and no scroll listener. */
+.fab.ext { width: auto; padding: 0 16px; border-radius: 16px; }
+.fab .lbl { display: grid; grid-template-columns: 1fr; overflow: hidden; }
+.fab .lbl > span { min-width: 0; white-space: nowrap; }
+@keyframes fab-fold { to { grid-template-columns: 0fr; opacity: 0; } }
+@keyframes fab-gap { to { gap: 0; } }
+.fab.ext { animation: fab-gap linear both; animation-timeline: scroll(nearest block); animation-range: var(--fab-collapse); }
+.fab.ext .lbl { animation: fab-fold linear both; animation-timeline: scroll(nearest block); animation-range: var(--fab-collapse); }
+
+/* Tooltip */
+.tip { margin: 0; padding: 4px 8px; border: 0; border-radius: 6px; background: var(--ib-tip-bg); color: var(--ib-tip-fg); font: 12px/16px system-ui, sans-serif; inset: auto; position-area: top; margin-bottom: 6px; position-try-fallbacks: flip-block; }
+
+@media (prefers-reduced-motion: reduce) { .fab, .ib::before { transition: none; } .fab.ext, .fab.ext .lbl { animation: none; } }
+@media (forced-colors: active) { .ib::before { border: 1px solid ButtonText; } .fab { border: 1px solid ButtonText; } .tip { border: 1px solid CanvasText; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #17181c); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.sheet { padding: 14px 16px 20px; display: grid; gap: 18px; }
+.sheet h2 { margin: 0 0 8px; font: 600 12px/16px system-ui, sans-serif; color: light-dark(#5d6169, #a0a4ae); }
+.row { display: flex; align-items: center; gap: 12px; }
+.list { position: relative; height: 200px; overflow: auto; border: 1px solid light-dark(#dfe2e8, #34373f); border-radius: 12px; display: flex; flex-direction: column; }
+.list ul { margin: 0; padding: 0; list-style: none; }
+.list li { padding: 14px 16px; border-bottom: 1px solid light-dark(#eceef2, #2a2c33); }
+.list .fab { position: sticky; bottom: 16px; margin: 16px 16px 16px auto; flex: none; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Toggle buttons (the star): flip aria-pressed. Tooltips, the FAB fold and every state are CSS and HTML.
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-toggle]');
+  if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+{
+  // Rest state: the star is on, and the list is scrolled a little so the extended FAB is half folded.
+  document.querySelector('[data-toggle]').click();
+  document.querySelector('.list').scrollTop = 40;
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="640" data-hint="Hover or Tab to a button for its tooltip. Scroll the list to fold the extended FAB. Click the star."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Hit area</th><td>44px square, the real <code>button</code>. The visible face is a 40px circle drawn by <code>::before</code>, 2px inside, so a small-looking control still has the target Apple and WCAG’s enhanced level ask for.</td></tr>
+        <tr><th>Icon</th><td>24px, in the text color. A familiar symbol for a familiar action (Apple: plus to add, trash to delete, xmark to close, ellipsis for more, share, magnifying glass to search). Apple prefers system symbols without borders in toolbars.</td></tr>
+        <tr><th>Standard</th><td>No face until hover. For toolbars and dense rows.</td></tr>
+        <tr><th>Filled</th><td>Accent face. The one icon button that matters.</td></tr>
+        <tr><th>Tonal</th><td>Soft face. A secondary icon action.</td></tr>
+        <tr><th>Outlined</th><td>1px border. A quiet but contained icon action.</td></tr>
+        <tr><th>Toggle</th><td>An icon button with <code>aria-pressed</code>. On, the icon takes the accent color on a tinted face; the accessible name stays the same.</td></tr>
+        <tr><th>Tooltip</th><td>A <code>popover="hint"</code> linked by <code>interestfor</code>: it shows on hover or keyboard focus and names the action in words.</td></tr>
+        <tr><th>FAB</th><td>A raised accent button for the one main action on a screen. Small 40px (12px corner), regular 56px (16px), large 96px (28px, 36px icon): Material 3’s sizes.</td></tr>
+        <tr><th>Extended FAB</th><td>FAB with a label. 56px high, 16px side padding, 8px between icon and label. Its label folds away as the list scrolls.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Sizes follow Material 3’s icon-button and FAB tokens (small icon button 40px with a 24px icon; FAB 40, 56, 96px; extended FAB 56px high). Colors and the elevation shadows are ours: Material’s rest and hover levels are 6dp and 8dp, approximated here.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Name</th><td>Every icon button has an accessible name (<code>aria-label</code>) and, on hover or focus, a visible one. Apple: provide alternative text for custom icons. A tooltip is not the name; it repeats it for sighted users.</td></tr>
+        <tr><th>Tooltips</th><td><code>interestfor</code> works on a button and fires <code>interest</code> and <code>loseinterest</code>; Esc dismisses. Support is recent: Chrome 149 and later per caniuse, while an earlier intent-to-ship targeted 142, so the version is unresolved; feature-detect with <code>Object.hasOwn(HTMLButtonElement.prototype, "interestForElement")</code>.</td></tr>
+        <tr><th>Toggle</th><td>One name, <code>aria-pressed</code> for state, a tinted face and accent icon for on. APG: the label of a toggle does not change when its state changes.</td></tr>
+        <tr><th>FAB use</th><td>One per screen, for the primary action, in the same place on every screen of that kind. If a screen has no single main action it should not have a FAB.</td></tr>
+        <tr><th>Extended FAB fold</th><td><code>animation-timeline: scroll(nearest block)</code> with <code>animation-range: 0 80px</code> animates the label column from <code>1fr</code> to <code>0fr</code> and the gap to 0. It follows the scroll position exactly, forwards and back. MDN lists the property as newly available in 2026.</td></tr>
+        <tr><th>Elevation</th><td>Resting shadow rises on hover and returns on press.</td></tr>
+        <tr><th>Reduced motion</th><td>Transitions stop and the extended FAB keeps its label.</td></tr>
+        <tr><th>Forced colors</th><td>Faces and FABs get a <code>ButtonText</code> border.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <div class="prose">
+        <ul>
+          <li>Every button is 44px square or larger, over WCAG 2.2’s 24px and equal to its 44px enhanced level.</li>
+          <li>The extended FAB’s name is its label text; when the label folds away it is hidden only visually (zero-width, clipped), so the name remains in the accessibility tree.</li>
+          <li>Plain FABs and icon buttons use <code>aria-label</code> only because there is no visible text.</li>
+          <li>Toggle state is shown by <code>aria-pressed</code> and by a tinted face plus the accent icon. That is still color, so give a real product a shape change too (an outline star becomes a solid one).</li>
+          <li>Standard icon color is 8.9:1 on white; the outlined border is 2.2:1, so the icon, not the border, identifies the control.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

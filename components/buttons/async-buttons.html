@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Loading and Confirming Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/async-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <div class="gal">
+
+    <div class="cell"><p class="cap">Loading, then success</p>
+      <button class="ab" type="button" data-state="idle" data-time="1600" data-busy="Saving changes…" data-done="Changes saved.">
+        <span class="ab-l" data-s="idle" data-on>Save changes</span>
+        <span class="ab-l" data-s="loading"><svg class="icon spin" aria-hidden="true"><use href="#i-loader"/></svg>Saving…</span>
+        <span class="ab-l" data-s="success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Saved</span>
+        <span class="ab-l" data-s="failure"><svg class="icon" aria-hidden="true"><use href="#i-rotate-ccw"/></svg>Retry</span>
+      </button>
+      <p class="status" aria-live="polite"></p></div>
+
+    <div class="cell"><p class="cap">Fails once, then retries</p>
+      <button class="ab" type="button" data-state="idle" data-time="1400" data-fails="1" data-busy="Sending report…" data-done="Report sent." data-fail="Couldn’t send. Check the connection, then retry.">
+        <span class="ab-l" data-s="idle" data-on>Send report</span>
+        <span class="ab-l" data-s="loading"><svg class="icon spin" aria-hidden="true"><use href="#i-loader"/></svg>Sending…</span>
+        <span class="ab-l" data-s="success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Sent</span>
+        <span class="ab-l" data-s="failure"><svg class="icon" aria-hidden="true"><use href="#i-rotate-ccw"/></svg>Retry</span>
+      </button>
+      <p class="status" aria-live="polite"></p></div>
+
+    <div class="cell"><p class="cap">Determinate progress</p>
+      <button class="ab" type="button" data-state="idle" data-run="progress" data-busy="Exporting report…" data-done="Report exported.">
+        <span class="ab-l" data-s="idle" data-on>Export report</span>
+        <span class="ab-l" data-s="loading">Exporting <span class="pct" aria-hidden="true">0%</span></span>
+        <span class="ab-l" data-s="success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Exported</span>
+        <span class="ab-l" data-s="failure"><svg class="icon" aria-hidden="true"><use href="#i-rotate-ccw"/></svg>Retry</span>
+      </button>
+      <p class="status" aria-live="polite"></p></div>
+
+    <div class="cell"><p class="cap">Hold to confirm</p>
+      <button class="ab hd" type="button" data-state="idle">
+        <span class="ab-l" data-s="idle" data-on><svg class="icon" aria-hidden="true"><use href="#i-trash-2"/></svg>Hold to delete</span>
+        <span class="ab-l" data-s="holding"><svg class="icon" aria-hidden="true"><use href="#i-trash-2"/></svg>Keep holding…</span>
+        <span class="ab-l" data-s="success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Deleted</span>
+      </button>
+      <p class="status" aria-live="polite">Hold for 1.2 seconds. Release to cancel.</p></div>
+
+    <div class="cell"><p class="cap">Type the name</p>
+      <label class="field"><span>Type <b>atlas</b> to enable delete</span>
+        <input type="text" autocomplete="off" spellcheck="false"></label>
+      <button class="ab dg" type="button" aria-disabled="true" data-state="idle" data-name="atlas" data-time="1200" data-busy="Deleting atlas…" data-done="Atlas deleted.">
+        <span class="ab-l" data-s="idle" data-on><svg class="icon" aria-hidden="true"><use href="#i-trash-2"/></svg>Delete atlas</span>
+        <span class="ab-l" data-s="loading"><svg class="icon spin" aria-hidden="true"><use href="#i-loader"/></svg>Deleting…</span>
+        <span class="ab-l" data-s="success"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>Deleted</span>
+        <span class="ab-l" data-s="failure"><svg class="icon" aria-hidden="true"><use href="#i-rotate-ccw"/></svg>Retry</span>
+      </button>
+      <p class="status" aria-live="polite"></p></div>
+
+    <div class="cell"><p class="cap">Act now, offer undo</p>
+      <button class="ab" type="button" data-state="idle" id="archive">
+        <span class="ab-l" data-s="idle" data-on>Archive atlas</span>
+      </button>
+      <p class="status" aria-live="polite"></p>
+      <div class="ts" id="toast" popover="manual">
+        <span>Atlas archived</span>
+        <button class="ts-btn" type="button" id="undo">Undo</button>
+        <button class="ts-btn" type="button" commandfor="toast" command="hide-popover" aria-label="Dismiss"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+      </div></div>
+
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Button */
+  --ab-h: 44px;                                               /* Height, also the 44px enhanced target size */
+  --ab-pad: 0 20px;                                           /* Label padding, left and right */
+  --ab-radius: 10px;                                          /* Corner radius */
+  --ab-font: 600 15px/20px system-ui, sans-serif;             /* Label: 15px, line height 20px, weight 600 in every state */
+  --ab-bg: light-dark(#2b59e0, #8ea6ff);                      /* Idle fill */
+  --ab-text: light-dark(#ffffff, #0f1530);                    /* Idle label, 5.8:1 light and 7.7:1 dark */
+  --ab-focus: light-dark(#2b59e0, #8ea6ff);                   /* Focus ring, 2px, 3px off the edge */
+
+  /* @group Result states */
+  --ab-ok-bg: light-dark(#0f7a4f, #6fe0a8);                   /* Success fill */
+  --ab-ok-text: light-dark(#ffffff, #08210f);                 /* Success label, 5.4:1 light and 10:1 dark */
+  --ab-fail-bg: light-dark(#b42318, #ff9b92);                 /* Failure and destructive fill */
+  --ab-fail-text: light-dark(#ffffff, #2a0a07);               /* Failure label, 6.6:1 light and 9:1 dark */
+
+  /* @group Progress */
+  --ab-fill: color-mix(in oklab, var(--ab-bg), light-dark(#000, #fff) 40%);   /* Determinate fill; the label keeps 10:1 on it in both themes */
+  --ab-fill-ease: 250ms linear;                               /* Fill growth between script updates */
+  --ab-spin: 800ms;                                           /* One turn of the spinner; stopped under reduced motion */
+
+  /* @group Hold to confirm */
+  --hd-color: light-dark(#b42318, #ff9b92);                   /* Outline and label, 6.6:1 light and 8.2:1 dark on the surface */
+  --hd-tint: color-mix(in oklab, var(--hd-color) 18%, transparent);   /* Fill that grows while held; light enough to keep the label at 4.5:1 */
+  --hd-time: 1.2s;                                            /* Hold length; script waits for the fill animation to end, so this is the only value */
+
+  /* @group Undo toast */
+  --ts-bg: light-dark(#1d2330, #e8eaf0);                      /* Toast fill */
+  --ts-text: light-dark(#ffffff, #14161b);                    /* Toast text, 15:1 */
+  --ts-action: light-dark(#a9bdff, #2b59e0);                  /* Undo label, over 5:1 on the toast */
+  --ts-dur: 200ms;                                            /* Enter and exit */
+}
+
+/* ---- One button for every state ----
+   Every state's label sits in the same grid cell, so the button is as wide as the widest label and
+   never changes size. Only the current label is visible (and exposed to assistive tech). */
+.ab {
+  --edge: var(--ab-edge, var(--ab-bg));
+  display: inline-grid; position: relative; overflow: hidden; isolation: isolate;
+  min-height: var(--ab-h); padding: var(--ab-pad);
+  font: var(--ab-font); color: var(--ab-text);
+  background: var(--ab-bg); border: 2px solid var(--edge); border-radius: var(--ab-radius);
+  cursor: pointer; user-select: none;
+  transition: background-color 120ms, transform 100ms ease-out;
+
+  &:active { transform: scale(0.97); }
+  &:focus-visible { outline: 2px solid var(--ab-focus); outline-offset: 3px; }
+  &[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }   /* Still focusable; styled by hand because aria-disabled adds no UA style */
+
+  /* Progress fill: grows with --p, which script sets. Behind the label. */
+  &::before { content: ""; position: absolute; inset: 0 auto 0 0; inline-size: var(--p, 0%); z-index: -1; background: var(--ab-fill); transition: inline-size var(--ab-fill-ease); }
+}
+.ab-l {
+  grid-area: 1 / 1; visibility: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  &[data-on] { visibility: visible; }
+}
+.pct { display: inline-block; min-inline-size: 4ch; text-align: end; font-variant-numeric: tabular-nums; }   /* Digits never change the width */
+.icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.spin { animation: ab-spin var(--ab-spin) linear infinite; }
+@keyframes ab-spin { to { rotate: 360deg; } }
+
+/* Result colors */
+.ab[data-state="success"] { --ab-bg: var(--ab-ok-bg); --ab-text: var(--ab-ok-text); --ab-edge: var(--ab-ok-bg); }
+.ab[data-state="failure"], .dg { --ab-bg: var(--ab-fail-bg); --ab-text: var(--ab-fail-text); }
+.ab[data-state="failure"] { --ab-edge: var(--ab-fail-bg); }
+
+/* ---- Hold to confirm: an outline button whose fill grows while held ---- */
+.hd { --ab-bg: transparent; --ab-text: var(--hd-color); --ab-edge: var(--hd-color); --ab-fill: var(--hd-tint); touch-action: none; }
+.hd[data-state="holding"]::before { animation: hd-fill var(--hd-time) linear forwards; inline-size: 0; }
+@keyframes hd-fill { to { inline-size: 100%; } }
+.hd[data-state="success"] { --ab-bg: var(--ab-ok-bg); }
+
+/* ---- Undo toast: a manual popover that fades in with @starting-style ---- */
+.ts {
+  inset: auto auto 16px 16px; margin: 0; padding: 4px 4px 4px 16px; border: 0; overflow: visible;   /* Reset the UA popover box */
+  display: none; align-items: center; gap: 4px;
+  border-radius: 12px; background: var(--ts-bg); color: var(--ts-text); font: 14px/20px system-ui, sans-serif;
+  opacity: 0; translate: 0 12px;
+  transition: opacity var(--ts-dur), translate var(--ts-dur), overlay var(--ts-dur) allow-discrete, display var(--ts-dur) allow-discrete;
+
+  &:popover-open { display: flex; opacity: 1; translate: 0 0; }
+}
+@starting-style { .ts:popover-open { opacity: 0; translate: 0 12px; } }
+.ts-btn { min-width: 44px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 8px; background: none; color: var(--ts-action); font: 600 14px/20px system-ui, sans-serif; cursor: pointer; }
+.ts-btn:hover { background: color-mix(in oklab, var(--ts-text) 10%, transparent); }
+.ts-btn:focus-visible { outline: 2px solid var(--ts-action); outline-offset: -2px; }
+.ts-btn:active { background: color-mix(in oklab, var(--ts-text) 20%, transparent); }
+
+/* ---- Preferences ---- */
+@media (prefers-reduced-motion: reduce) {
+  .spin { animation: none; }                                  /* The label still says "Saving…" */
+  .ab, .ab::before, .ts { transition: none; }
+  .ab:active { transform: none; }
+  .hd[data-state="holding"]::before { animation-timing-function: steps(6, end); }   /* The fill is progress, not decoration, so it stays; it just steps */
+}
+@media (forced-colors: active) {
+  .ab { border-color: ButtonText; }
+  .ab[aria-disabled="true"] { border-color: GrayText; color: GrayText; }   /* MDN's suggestion for aria-disabled */
+  .ab::before { inset: auto auto 0 0; block-size: 4px; background: Highlight; forced-color-adjust: none; }   /* Backgrounds are removed, so progress becomes a bar */
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.app { padding: 20px; }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.cell { display: grid; align-content: start; justify-items: start; gap: 10px; padding: 14px; border-radius: 12px; background: light-dark(#fff, #1d1e22); }
+.cap { margin: 0; font-size: 12px; color: light-dark(#5c6270, #a3a8b4); }
+.status { margin: 0; min-height: 20px; font-size: 13px; color: light-dark(#5c6270, #a3a8b4); }   /* Always one line tall, so text appearing does not move the layout */
+.field { display: grid; gap: 6px; font-size: 13px; }
+.field input { height: 40px; padding: 0 10px; border: 1px solid light-dark(#8a90a0, #6a7088); border-radius: 8px; background: light-dark(#fff, #141518); color: inherit; font: inherit; }
+.field input:focus-visible { outline: 2px solid light-dark(#2b59e0, #8ea6ff); outline-offset: 2px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const statusOf = el => el.closest('.cell').querySelector('.status');   // Live region for this button
+
+// Show one state: swap the visible label, mirror the state on the button, and flag it busy.
+function setState(btn, state) {
+  btn.dataset.state = state;
+  btn.ariaBusy = state === 'loading' ? 'true' : 'false';
+  btn.querySelectorAll('.ab-l').forEach(l => l.toggleAttribute('data-on', l.dataset.s === state));
+}
+
+// The loading cycle. The button is never disabled: it keeps focus, and repeat clicks are ignored.
+async function run(btn) {
+  const say = t => { statusOf(btn).textContent = t; };
+  if (btn.dataset.state === 'loading') return;
+  if (btn.dataset.name && btn.getAttribute('aria-disabled') === 'true') return say(`Type “${btn.dataset.name}” to enable delete.`);
+
+  setState(btn, 'loading'); say(btn.dataset.busy);
+  if (btn.dataset.run === 'progress') {                       // Determinate: script sets --p, CSS draws it
+    for (let p = 5; p <= 100; p += 5) {
+      await wait(200);
+      btn.style.setProperty('--p', p + '%');
+      btn.querySelector('.pct').textContent = p + '%';
+      if (p % 25 === 0 && p < 100) say(`${btn.dataset.busy.replace('…', '')} ${p}%`);   // Announce quarters, not every step
+    }
+  } else await wait(+btn.dataset.time);
+
+  if (+btn.dataset.fails > 0) {                               // Demo failure: the first N tries fail
+    btn.dataset.fails--; setState(btn, 'failure'); return say(btn.dataset.fail);
+  }
+  setState(btn, 'success'); say(btn.dataset.done);
+  await wait(1800);
+  setState(btn, 'idle'); btn.style.setProperty('--p', '0%'); say('');
+  btn.dispatchEvent(new Event('reset'));
+}
+document.querySelectorAll('.ab[data-busy]').forEach(b => b.addEventListener('click', () => run(b)));
+
+// Type the name: aria-disabled until the input matches. The button stays focusable so its state is announced.
+{
+  const btn = document.querySelector('[data-name]'), input = document.querySelector('.field input');
+  const sync = () => btn.setAttribute('aria-disabled', input.value.trim() !== btn.dataset.name);
+  input.addEventListener('input', sync);
+  btn.addEventListener('reset', () => { input.value = ''; sync(); });
+}
+
+// Hold to confirm: the CSS fill animation is the timer; reaching its end confirms.
+{
+  const hd = document.querySelector('.hd'), say = t => { statusOf(hd).textContent = t; };
+  const start = () => { if (hd.dataset.state === 'idle') { setState(hd, 'holding'); say('Keep holding…'); } };
+  const stop = () => { if (hd.dataset.state === 'holding') { setState(hd, 'idle'); say('Cancelled. Hold for 1.2 seconds to delete.'); } };
+  hd.addEventListener('pointerdown', e => e.button === 0 && start());
+  ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(t => hd.addEventListener(t, stop));
+  hd.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (!e.repeat) start(); } });   // Space and Enter hold the same way
+  hd.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); stop(); } });
+  hd.addEventListener('click', e => e.preventDefault());       // A quick click does nothing
+  hd.addEventListener('animationend', async e => {
+    if (e.animationName !== 'hd-fill') return;
+    setState(hd, 'success'); say('Project deleted.');
+    await wait(2000);
+    setState(hd, 'idle'); say('Hold for 1.2 seconds. Release to cancel.');
+  });
+}
+
+// Undo toast: act now, offer a way back. The toast is dismissed by its own timer or by Undo.
+{
+  const toast = document.getElementById('toast'), say = t => { statusOf(toast).textContent = t; };
+  let timer;
+  document.getElementById('archive').addEventListener('click', () => {
+    toast.showPopover(); say('Atlas archived. Undo is available for 8 seconds.');
+    clearTimeout(timer); timer = setTimeout(() => { toast.hidePopover(); say(''); }, 8000);
+  });
+  document.getElementById('undo').addEventListener('click', () => { clearTimeout(timer); toast.hidePopover(); say('Atlas restored.'); });
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="900" data-hint="Click each button. Hold the delete button with the mouse, or hold Space or Enter. Type “atlas” to enable the last delete."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Button</th><td>A native <code>button</code>, 44px tall, with every state’s label stacked in one grid cell. The widest label sets the width, so idle, loading, success and retry never move the layout. Only the current label is visible and exposed to assistive tech.</td></tr>
+        <tr><th>Spinner</th><td>An icon left of the label, turning at 800ms. NN/g’s button-states article puts the spinner left of the label and says the button may turn into a check mark on success.</td></tr>
+        <tr><th>Fill</th><td>Determinate progress is a layer behind the label whose width is the <code>--p</code> custom property. Script sets <code>--p</code>; CSS animates between updates. The percentage text carries the value, so color is not the only signal.</td></tr>
+        <tr><th>Status line</th><td>A <code>p</code> with <code>aria-live="polite"</code>, present and empty before anything happens. It is the visible caption and the announcement in one. MDN’s <code>aria-live</code> page recommends polite for “Saving…” and “Saved”, and an existing empty region.</td></tr>
+        <tr><th>Hold to confirm</th><td>An outline button in the destructive color. While held, a tint fills it over 1.2s; reaching the end confirms, releasing cancels. The CSS animation is the timer, so there is no second value to keep in step.</td></tr>
+        <tr><th>Type the name</th><td>An input and a delete button that stays <code>aria-disabled</code> until the text matches. NN/g: for the most dangerous operations, require a nonstandard action such as typing a word.</td></tr>
+        <tr><th>Undo toast</th><td>A <code>popover="manual"</code> with Undo and Dismiss. Dismiss is an invoker button, <code>commandfor</code> with <code>command="hide-popover"</code>, so it needs no script. It fades in with <code>@starting-style</code> and leaves with <code>display</code> and <code>overlay</code> transitions using <code>allow-discrete</code>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Which pattern</th><td>NN/g (confirmation dialogs): confirm only serious or irreversible actions, since routine confirmations train people to click through. Where an action can be undone, offer undo instead. Where it cannot, use hold or typed confirmation, and name the specific item.</td></tr>
+        <tr><th>Feedback timing</th><td>NN/g (response times): 0.1s feels instant, so show nothing. Past about 1s, show that work is happening. Past about 10s, show percent-done and a way to cancel. When progress is unknown, a spinner is the last resort. The progress demo shows percent because it knows it.</td></tr>
+        <tr><th>Repeat clicks</th><td>While loading, the button is not disabled: it keeps focus and its state is announced. Script returns early on any click that arrives during loading.</td></tr>
+        <tr><th>Success</th><td>Check and “Saved” for 1.8s, then idle. The status line says it too.</td></tr>
+        <tr><th>Failure</th><td>The button becomes Retry in the failure color and the status line says what went wrong. It stays until the next click; it does not time out.</td></tr>
+        <tr><th>Hold</th><td>Pointer down or <kbd>Space</kbd> / <kbd>Enter</kbd> down starts the fill. Release, leaving the button, losing focus, or touch cancel stops it and the fill resets. A quick click does nothing. This hold pattern is our design: none of the sources read for this page describe it, and NN/g’s confirmation page lists typed confirmation and undo as alternatives.</td></tr>
+        <tr><th>Reduced motion</th><td>The spinner stops (the label still says what is happening) and transitions are off. The hold fill stays, because it is progress, but moves in six steps.</td></tr>
+        <tr><th>Forced colors</th><td>Backgrounds are removed, so the fill becomes a 4px <code>Highlight</code> bar along the bottom, and the aria-disabled button gets <code>GrayText</code>, as MDN suggests.</td></tr>
+        <tr><th>Why script sets the fill</th><td><code>animation-timeline</code> was read on MDN for <code>scroll()</code> and <code>view()</code> timelines only, so it suits a scroll-progress fill, not a time or upload one. Work-driven progress needs a value from script.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Reaches every button, including the one that is aria-disabled and the one that is loading.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate (APG button pattern). On the hold button they must be held for 1.2s.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><strong>aria-disabled or disabled.</strong> MDN: <code>aria-disabled</code> only exposes the state; it does not change focusability or suppress anything, so script must block the action, and it adds no styling. Native <code>disabled</code> removes the control from the tab order and the form. NN/g’s button-states article recommends <code>aria-disabled="true"</code> so the button stays reachable and is announced as inactive. This page uses it for the typed-name button, with an explanatory status line when clicked early.</li>
+          <li><strong>Loading.</strong> Use a polite live region for the message. MDN documents <code>aria-busy</code> for live regions and widgets, as a way to hold announcements until several updates finish; the button here sets it too, but how each screen reader treats it on a button is not covered by the page, so test with your target tools. The accessible name follows the state, so a focused button reads “Saving…” then “Saved”.</li>
+          <li><strong>Progress.</strong> The region is updated at quarters, not every 5%, to avoid a stream of announcements.</li>
+          <li><strong>Hold is never the only path.</strong> Pair it with the typed-name or undo pattern for people who cannot hold a control, and say how long on the page.</li>
+          <li>Targets are 44px (WCAG 2.5.8 asks 24px; 2.5.5, AAA, asks 44px). Focus ring is 2px, 3px off the edge. Every state’s label is 4.5:1 or better on its fill.</li>
+          <li>The toast times out after 8 seconds in this demo. Timed content needs a way to keep it; a production version should pause the timer on hover and focus.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

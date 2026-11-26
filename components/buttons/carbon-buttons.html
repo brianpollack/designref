@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carbon Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/carbon-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <h1 class="app-title">Buttons</h1>
+
+  <!-- Kinds. The label is left-aligned and the icon sits at the inline end. -->
+  <section class="group" aria-labelledby="g-kind">
+    <h2 class="cap" id="g-kind">Kinds</h2>
+    <div class="row">
+      <button class="cds-btn cds-btn--primary" type="button"><span>Create cluster</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--secondary" type="button"><span>Cancel</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-close"/></svg></button>
+      <button class="cds-btn cds-btn--tertiary" type="button"><span>Edit cluster</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-edit"/></svg></button>
+      <button class="cds-btn cds-btn--ghost" type="button"><span>Download log</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-download"/></svg></button>
+    </div>
+    <div class="row">
+      <button class="cds-btn cds-btn--danger" type="button"><span>Delete cluster</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-trash-can"/></svg></button>
+      <button class="cds-btn cds-btn--danger-tertiary" type="button"><span>Remove node</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-trash-can"/></svg></button>
+      <button class="cds-btn cds-btn--danger-ghost" type="button"><span>Remove access</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-trash-can"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Disabled: one of each, to show the three disabled treatments. -->
+  <section class="group" aria-labelledby="g-disabled">
+    <h2 class="cap" id="g-disabled">Disabled</h2>
+    <div class="row">
+      <button class="cds-btn cds-btn--primary" type="button" disabled><span>Primary</span></button>
+      <button class="cds-btn cds-btn--tertiary" type="button" disabled><span>Tertiary</span></button>
+      <button class="cds-btn cds-btn--ghost" type="button" disabled><span>Ghost</span></button>
+      <button class="cds-btn cds-btn--danger-tertiary" type="button" disabled><span>Danger</span></button>
+    </div>
+  </section>
+
+  <!-- Sizes: heights 24, 32, 40, 48, 64, 80. xl and 2xl are for buttons that bleed to an edge. -->
+  <section class="group" aria-labelledby="g-size">
+    <h2 class="cap" id="g-size">Sizes: xs 24, sm 32, md 40, lg 48 (default), xl 64, 2xl 80</h2>
+    <div class="row row--bottom">
+      <button class="cds-btn cds-btn--primary cds-btn--xs" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--primary cds-btn--sm" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--primary cds-btn--md" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--primary" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--primary cds-btn--xl" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--primary cds-btn--2xl" type="button"><span>Button</span><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Icon only: square at the size's height, icon centered. -->
+  <section class="group" aria-labelledby="g-icon">
+    <h2 class="cap" id="g-icon">Icon only</h2>
+    <div class="row row--bottom">
+      <button class="cds-btn cds-btn--primary cds-btn--icon-only" type="button" aria-label="Add node"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-add"/></svg></button>
+      <button class="cds-btn cds-btn--tertiary cds-btn--icon-only" type="button" aria-label="Edit cluster"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-edit"/></svg></button>
+      <button class="cds-btn cds-btn--ghost cds-btn--icon-only cds-btn--xs" type="button" aria-label="Settings"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <button class="cds-btn cds-btn--ghost cds-btn--icon-only cds-btn--sm" type="button" aria-label="Settings"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <button class="cds-btn cds-btn--ghost cds-btn--icon-only cds-btn--md" type="button" aria-label="Settings"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <button class="cds-btn cds-btn--ghost cds-btn--icon-only" type="button" aria-label="Settings"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-settings"/></svg></button>
+      <button class="cds-btn cds-btn--danger-ghost cds-btn--icon-only" type="button" aria-label="Delete cluster"><svg class="icon cds-btn__icon" aria-hidden="true"><use href="#i-trash-can"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Groups with fixed 16px gaps. Equal widths; the primary is outermost. -->
+  <section class="group" aria-labelledby="g-set">
+    <h2 class="cap" id="g-set">Groups, 16px apart: full page (primary left), wizard (primary right), three buttons, stacked</h2>
+    <div class="sets">
+      <div class="cds-btn-group" role="group" aria-label="Page actions">
+        <button class="cds-btn cds-btn--primary" type="button"><span>Save changes</span></button>
+        <button class="cds-btn cds-btn--secondary" type="button"><span>Cancel</span></button>
+      </div>
+      <div class="cds-btn-group cds-btn-group--end" role="group" aria-label="Wizard actions">
+        <button class="cds-btn cds-btn--secondary" type="button"><span>Previous</span></button>
+        <button class="cds-btn cds-btn--primary" type="button"><span>Next</span></button>
+      </div>
+      <div class="cds-btn-group" role="group" aria-label="Cluster actions">
+        <button class="cds-btn cds-btn--primary" type="button"><span>Create cluster</span></button>
+        <button class="cds-btn cds-btn--secondary" type="button"><span>Cancel</span></button>
+        <button class="cds-btn cds-btn--tertiary" type="button"><span>Import</span></button>
+      </div>
+      <div class="cds-btn-group cds-btn-group--stacked" role="group" aria-label="Sign in">
+        <button class="cds-btn cds-btn--primary" type="button"><span>Log in</span></button>
+        <button class="cds-btn cds-btn--secondary" type="button"><span>Create account</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fluid sets: flush, with a 1px separator. Full-bleed modal footers at xl. -->
+  <section class="group" aria-labelledby="g-modal">
+    <h2 class="cap" id="g-modal">Modal footers: 50 / 50, three at 25%, danger, progress</h2>
+    <div class="modals">
+      <section class="modal" aria-labelledby="m1">
+        <h3 class="modal__title" id="m1">Rename cluster</h3>
+        <p class="modal__body">Names must be unique in the account.</p>
+        <div class="cds-modal-footer"><button class="cds-btn cds-btn--secondary cds-btn--xl" type="button"><span>Cancel</span></button><button class="cds-btn cds-btn--primary cds-btn--xl" type="button"><span>Rename</span></button></div>
+      </section>
+      <section class="modal" aria-labelledby="m2">
+        <h3 class="modal__title" id="m2">Delete cluster</h3>
+        <p class="modal__body">This removes all 3 nodes and cannot be undone.</p>
+        <div class="cds-modal-footer"><button class="cds-btn cds-btn--secondary cds-btn--xl" type="button"><span>Cancel</span></button><button class="cds-btn cds-btn--danger cds-btn--xl" type="button"><span>Delete</span></button></div>
+      </section>
+      <section class="modal" aria-labelledby="m3">
+        <h3 class="modal__title" id="m3">Save changes</h3>
+        <p class="modal__body">Three actions, only the far right is primary.</p>
+        <div class="cds-modal-footer"><button class="cds-btn cds-btn--secondary cds-btn--xl" type="button"><span>Discard</span></button><button class="cds-btn cds-btn--secondary cds-btn--xl" type="button"><span>Save draft</span></button><button class="cds-btn cds-btn--primary cds-btn--xl" type="button"><span>Publish</span></button></div>
+      </section>
+      <section class="modal" aria-labelledby="m4">
+        <h3 class="modal__title" id="m4">Add a node, step 2 of 3</h3>
+        <p class="modal__body">Cancel is ghost on the left; Previous and Next share the right half.</p>
+        <div class="cds-modal-footer"><button class="cds-btn cds-btn--ghost cds-btn--xl" type="button"><span>Cancel</span></button><button class="cds-btn cds-btn--secondary cds-btn--xl" type="button"><span>Previous</span></button><button class="cds-btn cds-btn--primary cds-btn--xl" type="button"><span>Next</span></button></div>
+      </section>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* IBM Plex Sans from Google Fonts; the stack below falls back to the system UI font. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap");
+
+/* ---- Tokens ----
+   Carbon v11 tokens under the names Carbon emits (--cds-*), White theme in light and Gray 100 in
+   dark, resolved from the theme and color token files. Sizes and spacing are the literals in
+   _button.scss, _mixins.scss and _vars.scss. */
+:root {
+  color-scheme: light dark;
+
+  /* @group Size */
+  --cds-size-xs: 1.5rem;                                      /* Height, xs: 24px */
+  --cds-size-sm: 2rem;                                        /* Height, sm: 32px */
+  --cds-size-md: 2.5rem;                                      /* Height, md: 40px */
+  --cds-size-lg: 3rem;                                        /* Height, lg: 48px, the default (expressive lg is also 48px) */
+  --cds-size-xl: 4rem;                                        /* Height, xl: 64px, for buttons that bleed to an edge */
+  --cds-size-2xl: 5rem;                                       /* Height, 2xl: 80px, for full-screen bleed */
+
+  /* @group Structure */
+  --cds-spacing-05: 16px;                                     /* Padding start, icon inset, and the gap between grouped buttons (condensed density: 8px) */
+  --cds-btn-padding-end: 63px;                                /* Padding end: 3 x 16px + 16px icon, minus the 1px border; the label has 64px of room */
+  --cds-spacing-03: 8px;                                      /* Ghost: label to icon */
+  --cds-btn-icon-size: 1rem;                                  /* Icon, 16px */
+  --cds-btn-border-width: 1px;                                /* Border and inset focus ring · $button-outline-width */
+  --cds-btn-focus-inset-width: 2px;                           /* Inner ring that separates the focus ring from the fill · $button-border-width */
+  --cds-btn-radius: 0;                                        /* Square corners · $button-border-radius */
+  --cds-btn-max-width: 20rem;                                 /* Maximum button width, 320px; longer labels wrap */
+  --cds-btn-set-max-width: 12.25rem;                          /* Button in a set, 196px */
+  --cds-btn-font: "IBM Plex Sans", system-ui, sans-serif;     /* Typeface */
+  --cds-btn-text: 400 14px/18px var(--cds-btn-font);          /* body-compact-01: 14px, weight 400. Line height 18px is assumed from the tabs page, not read */
+
+  /* @group Primary and secondary */
+  --cds-button-primary: #0f62fe;                              /* Primary fill · Blue 60 in both themes */
+  --cds-button-primary-hover: #0050e6;                        /* Primary on hover · Blue 60 hover */
+  --cds-button-primary-active: #002d9c;                       /* Primary on press · Blue 80 */
+  --cds-button-secondary: light-dark(#393939, #6f6f6f);       /* Secondary fill · Gray 80 / Gray 60 */
+  --cds-button-secondary-hover: light-dark(#474747, #5e5e5e); /* Secondary on hover · Gray 80 hover / Gray 60 hover */
+  --cds-button-secondary-active: light-dark(#6f6f6f, #393939);/* Secondary on press · Gray 60 / Gray 80 */
+  --cds-text-on-color: #ffffff;                               /* Label on a filled button · white */
+
+  /* @group Tertiary and ghost */
+  --cds-button-tertiary: light-dark(#0f62fe, #ffffff);        /* Tertiary border and label · Blue 60 / white */
+  --cds-button-tertiary-hover: light-dark(#0050e6, #f4f4f4);  /* Tertiary fill on hover · Blue 60 hover / Gray 10 */
+  --cds-button-tertiary-active: light-dark(#002d9c, #c6c6c6); /* Tertiary fill on press · Blue 80 / Gray 30 */
+  --cds-text-inverse: light-dark(#ffffff, #161616);           /* Tertiary label on its filled hover and press · white / Gray 100 */
+  --cds-link-primary: light-dark(#0f62fe, #78a9ff);           /* Ghost label · Blue 60 / Blue 40 */
+  --cds-link-primary-hover: light-dark(#0043ce, #a6c8ff);     /* Ghost label on hover and press · Blue 70 / Blue 30 */
+  --cds-icon-primary: light-dark(#161616, #f4f4f4);           /* Ghost icon · Gray 100 / Gray 10 */
+  --cds-background-hover: light-dark(rgb(141 141 141 / 0.12), rgb(141 141 141 / 0.16));    /* Ghost fill on hover · Gray 50 at 12% / 16% */
+  --cds-background-active: light-dark(rgb(141 141 141 / 0.5), rgb(141 141 141 / 0.4));     /* Ghost fill on press · Gray 50 at 50% / 40% */
+
+  /* @group Danger */
+  --cds-button-danger-primary: #da1e28;                       /* Danger fill · Red 60 */
+  --cds-button-danger-secondary: light-dark(#da1e28, #fa4d56);/* Danger tertiary and ghost border and label · Red 60 / Red 50 */
+  --cds-button-danger-hover: #b81921;                         /* Danger on hover, every style */
+  --cds-button-danger-active: #750e13;                        /* Danger on press, every style · Red 80 */
+
+  /* @group Disabled */
+  --cds-button-disabled: light-dark(#c6c6c6, rgb(141 141 141 / 0.3));          /* Disabled fill and border · Gray 30 / Gray 50 at 30% */
+  --cds-text-on-color-disabled: light-dark(#8d8d8d, rgb(255 255 255 / 0.25));  /* Disabled label on a filled button · Gray 50 / white at 25% */
+  --cds-text-disabled: light-dark(rgb(22 22 22 / 0.25), rgb(244 244 244 / 0.25)); /* Disabled tertiary and ghost label · text at 25% */
+
+  /* @group Button sets */
+  --cds-button-separator: light-dark(#e0e0e0, #161616);       /* 1px line between flush buttons in a fluid set · Gray 20 / Gray 100 */
+  --cds-background: light-dark(#ffffff, #161616);             /* Page, and the inner focus ring · white / Gray 100 */
+
+  /* @group Focus and motion */
+  --cds-focus: light-dark(#0f62fe, #ffffff);                  /* Focus ring, 1px inset, plus the border · Blue 60 / white */
+  --cds-duration-fast-01: 70ms;                               /* Fill, border and shadow transitions */
+  --cds-motion-entrance-productive: cubic-bezier(0, 0, 0.38, 0.9);   /* Easing for those transitions */
+}
+
+/* ---- Component ---- */
+.cds-btn {
+  /* Each kind sets these six values; base, hover, focus and active rules read them. */
+  --_h: var(--cds-size-lg);
+  --_bg: var(--cds-button-primary); --_bd: transparent; --_fg: var(--cds-text-on-color);
+  --_bg-h: var(--cds-button-primary-hover); --_bg-a: var(--cds-button-primary-active);
+  --_fg-h: var(--cds-text-on-color);
+  /* Padding-block is capped at what lg uses, so xl and 2xl keep their text near the top edge. */
+  --_pad-block: min(calc((var(--_h) - 18px) / 2 - 1px), calc((var(--cds-size-lg) - 18px) / 2 - 1px));
+
+  position: relative; display: inline-flex; justify-content: space-between; flex-shrink: 0;
+  box-sizing: border-box; margin: 0; vertical-align: top; cursor: pointer; outline: none;
+  inline-size: max-content; max-inline-size: var(--cds-btn-max-width);
+  min-block-size: var(--_h);
+  padding-block: var(--_pad-block);
+  padding-inline: calc(var(--cds-spacing-05) - 1px) var(--cds-btn-padding-end);
+  border: var(--cds-btn-border-width) solid var(--_bd);
+  border-radius: var(--cds-btn-radius);
+  background: var(--_bg); color: var(--_fg);
+  font: var(--cds-btn-text); letter-spacing: 0.16px; text-align: start; text-decoration: none;
+  transition: background var(--cds-duration-fast-01) var(--cds-motion-entrance-productive),
+              box-shadow var(--cds-duration-fast-01) var(--cds-motion-entrance-productive),
+              border-color var(--cds-duration-fast-01) var(--cds-motion-entrance-productive),
+              outline var(--cds-duration-fast-01) var(--cds-motion-entrance-productive);
+
+  @media (any-hover: hover) { &:hover { background: var(--_bg-h); } }
+  &:hover { color: var(--_fg-h); }
+  &:active { background: var(--_bg-a); }
+  /* Carbon styles :focus, not :focus-visible, so the ring also shows after a click. */
+  &:focus { border-color: var(--cds-focus); box-shadow: inset 0 0 0 var(--cds-btn-border-width) var(--cds-focus), inset 0 0 0 var(--cds-btn-focus-inset-width) var(--cds-background); }
+}
+@media (prefers-reduced-motion: reduce) { .cds-btn { transition: none; } }   /* Ours: Carbon's button has no reduced-motion rule */
+
+/* Sizes. Only the height changes; the label stays at the top-left of xl and 2xl. */
+.cds-btn--xs  { --_h: var(--cds-size-xs); }
+.cds-btn--sm  { --_h: var(--cds-size-sm); }
+.cds-btn--md  { --_h: var(--cds-size-md); }
+.cds-btn--xl  { --_h: var(--cds-size-xl); }
+.cds-btn--2xl { --_h: var(--cds-size-2xl); }
+.cds-btn--xs:not(.cds-btn--icon-only) { padding-block-start: 1.5px; }   /* Nudge the xs label, as _button.scss does */
+
+/* Icon: absolutely placed at the inline end, so the label can use the full padding. */
+.cds-btn__icon {
+  position: absolute; flex-shrink: 0; fill: currentColor;
+  inline-size: var(--cds-btn-icon-size); block-size: var(--cds-btn-icon-size);
+  inset-inline-end: var(--cds-spacing-05);
+  inset-block-start: min(calc((var(--_h) - 16px) / 2 - 1px), calc((var(--cds-size-lg) - 18px) / 2 - 1px));
+  margin-block-start: 1px;
+}
+:is(.cds-btn--xs, .cds-btn--sm, .cds-btn--md):not(.cds-btn--icon-only) .cds-btn__icon { margin-block-start: 0; }
+
+/* Kinds. */
+.cds-btn--secondary { --_bg: var(--cds-button-secondary); --_bg-h: var(--cds-button-secondary-hover); --_bg-a: var(--cds-button-secondary-active); }
+.cds-btn--tertiary  {
+  --_bg: transparent; --_bd: var(--cds-button-tertiary); --_fg: var(--cds-button-tertiary);
+  --_bg-h: var(--cds-button-tertiary-hover); --_bg-a: var(--cds-button-tertiary-active); --_fg-h: var(--cds-text-inverse);
+  &:focus { background: var(--cds-button-tertiary); color: var(--cds-text-inverse); }
+  &:active { border-color: transparent; color: var(--cds-text-inverse); }
+}
+.cds-btn--ghost {
+  --_bg: transparent; --_fg: var(--cds-link-primary);
+  --_bg-h: var(--cds-background-hover); --_bg-a: var(--cds-background-active); --_fg-h: var(--cds-link-primary-hover);
+  padding-inline-end: calc(var(--cds-spacing-05) - 1px);
+  &:active { color: var(--cds-link-primary-hover); }
+  &:enabled .cds-btn__icon { fill: var(--cds-icon-primary); }
+  .cds-btn__icon { position: static; align-self: center; margin-inline-start: var(--cds-spacing-03); margin-block-start: 0; }
+}
+.cds-btn--danger { --_bg: var(--cds-button-danger-primary); --_bg-h: var(--cds-button-danger-hover); --_bg-a: var(--cds-button-danger-active); }
+.cds-btn--danger-tertiary {
+  --_bg: transparent; --_bd: var(--cds-button-danger-secondary); --_fg: var(--cds-button-danger-secondary);
+  --_bg-h: var(--cds-button-danger-hover); --_bg-a: var(--cds-button-danger-active); --_fg-h: var(--cds-text-on-color);
+  &:hover { border-color: var(--cds-button-danger-hover); }
+  &:focus { background: var(--cds-button-danger-primary); color: var(--cds-text-on-color); }
+  &:active { border-color: var(--cds-button-danger-active); color: var(--cds-text-on-color); }
+}
+.cds-btn--danger-ghost {
+  --_bg: transparent; --_fg: var(--cds-button-danger-secondary);
+  --_bg-h: var(--cds-button-danger-hover); --_bg-a: var(--cds-button-danger-active); --_fg-h: var(--cds-text-on-color);
+  padding-inline-end: calc(var(--cds-spacing-05) - 1px);
+  &:active { color: var(--cds-text-on-color); }
+  .cds-btn__icon { position: static; margin-inline-start: var(--cds-spacing-03); margin-block-start: 0; }
+}
+
+/* Icon only: a square at the size's height, icon centered. */
+.cds-btn--icon-only { align-items: center; justify-content: center; padding: 0; inline-size: var(--_h); block-size: var(--_h); }
+.cds-btn--icon-only .cds-btn__icon { position: static; margin: 0; }
+.cds-btn--icon-only.cds-btn--ghost:focus { box-shadow: inset 0 0 0 var(--cds-btn-border-width) var(--cds-focus); }   /* Ghost icon-only: the ring has no inner line */
+
+/* Disabled. Filled kinds keep a gray fill; tertiary and ghost stay transparent. */
+.cds-btn:disabled, .cds-btn:disabled:hover, .cds-btn:disabled:focus {
+  border-color: var(--cds-button-disabled); background: var(--cds-button-disabled); box-shadow: none;
+  color: var(--cds-text-on-color-disabled); cursor: not-allowed;
+}
+:is(.cds-btn--tertiary, .cds-btn--danger-tertiary, .cds-btn--ghost, .cds-btn--danger-ghost):disabled { background: transparent; color: var(--cds-text-disabled); }
+:is(.cds-btn--ghost, .cds-btn--danger-ghost):disabled { border-color: transparent; }
+
+/* Groups with fixed gaps (design guidance, not built into Carbon): 16px apart, equal widths.
+   Grid columns of 1fr give every button the width of the widest label. */
+.cds-btn-group { display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--cds-spacing-05); }
+.cds-btn-group .cds-btn { inline-size: 100%; }
+.cds-btn-group--end { justify-self: end; }
+.cds-btn-group--stacked { grid-auto-flow: row; inline-size: 14rem; }   /* Primary on top */
+
+/* Fluid sets (the real .cds-btn-set): flush, 1px separator on the leading edge of every button but
+   the first, buttons share the row. Two buttons take 50% each; ghost grows to fill. */
+.cds-modal-footer { display: flex; justify-content: flex-end; }
+.cds-modal-footer .cds-btn { flex: 0 1 25%; max-inline-size: none; inline-size: 100%; padding-inline-end: var(--cds-spacing-05); }
+.cds-modal-footer:has(> :nth-child(2):last-child) .cds-btn { flex-basis: 50%; }
+.cds-modal-footer .cds-btn--ghost { flex: 1 1 25%; padding-inline-start: 2rem; }
+.cds-modal-footer .cds-btn:not(:focus) { box-shadow: -1px 0 0 0 var(--cds-button-separator); }
+.cds-modal-footer .cds-btn:first-of-type:not(:focus) { box-shadow: none; }
+.cds-modal-footer .cds-btn:focus + .cds-btn { box-shadow: none; }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: var(--cds-background); color: light-dark(#161616, #f4f4f4); font: var(--cds-btn-text); }
+.app { max-width: 680px; margin: 0 auto; padding: 20px 24px 32px; }
+.app-title { margin: 0 0 8px; font: 400 20px/28px var(--cds-btn-font); }
+.group { margin-top: 24px; }
+.cap { margin: 0 0 12px; font: 400 12px/16px var(--cds-btn-font); color: light-dark(#525252, #c6c6c6); }
+.row { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+.row--bottom { align-items: flex-end; }
+.sets { display: grid; gap: 24px; justify-items: start; }
+.sets .cds-btn-group--end { justify-self: stretch; justify-content: end; }
+.modals { display: grid; gap: 16px; }
+.modal { max-inline-size: 480px; background: light-dark(#f4f4f4, #262626); }
+.modal__title { margin: 0; padding: 16px 16px 0; font: 400 20px/28px var(--cds-btn-font); }
+.modal__body { margin: 8px 0 24px; padding: 0 16px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Nothing needs script: Carbon's button is plain CSS and native <button> behavior.
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Focus the first primary so the 1px inset ring and the inner line are visible at rest.
+{ document.querySelector('.cds-btn--primary').focus({ preventScroll: true }); }
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="1990" data-hint="Hover, press and Tab through the buttons; every button shows Carbon’s inset focus ring, including after a click. The last four panels are modal footers."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Button</th><td>A <code>button</code> with a label left-aligned in the container and an optional 16px icon at the inline end. 1px border, square corners, 14px label at weight 400. Padding is 16px at the start and 64px at the end, so the label has room for the icon.</td></tr>
+        <tr><th>Primary</th><td>Blue fill, white label. The principal action; one per screen.</td></tr>
+        <tr><th>Secondary</th><td>Gray fill (Gray 80 on White, Gray 60 on Gray 100). Pairs with a primary as its “negative” action: Cancel, Back.</td></tr>
+        <tr><th>Tertiary</th><td>Transparent with a 1px blue (white on Gray 100) border and label; fills on hover. Can stand alone.</td></tr>
+        <tr><th>Ghost</th><td>No fill or border; a blue label. Padding is 16px each side and the icon sits 8px after the label. The least prominent kind.</td></tr>
+        <tr><th>Danger</th><td>Three styles: primary (red fill), tertiary (red border) and ghost (red label). For destructive actions.</td></tr>
+        <tr><th>Sizes</th><td>xs 24, sm 32, md 40, lg 48 (default), xl 64, 2xl 80px. Expressive lg (16px label, 20px icon) is also 48px and is not built. xl and 2xl are for buttons that bleed to the edge of a modal, side panel or tearsheet. Do not mix sizes in a group.</td></tr>
+        <tr><th>Icon only</th><td>A square at the size’s height with the icon centered. It has no label, so it needs an <code>aria-label</code>; Carbon wraps it in a tooltip, which is not built here.</td></tr>
+        <tr><th>Button set</th><td>Fixed groups sit 16px apart at equal widths. Fluid sets (modal footers) are flush with a 1px <code>$button-separator</code> and take 50% each (two buttons) or 25% each (three or more), right-aligned.</td></tr>
+        <tr><th>Ours, not Carbon’s</th><td>The 16px fixed-group gap and equal-width grid are design guidance, not built into the component. The page chrome, modal card and panel text are demo surface. The reduced-motion rule is ours. Body-compact-01’s 18px line height is taken from the Carbon Tabs page, not from a type file read here, so label heights are unverified. Selected icon-only buttons, expressive sizes, skeleton, loading and the stacked fluid set are not built.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Primary count</th><td>One primary button per screen, not counting the application header, a modal dialog or a side panel. A temporary flow that opens its own primary (a side panel over a data table) may show two. Not every page needs one: use tertiary and ghost buttons when the page is mostly content.</td></tr>
+        <tr><th>Placement</th><td>On full-page designs the primary is on the left of the group and the group is left-aligned. In wizards and dialogs it is on the right. Carbon notes this guidance changed from keeping the primary on the right in a left-aligned group. In a stacked group the primary is on top, 16px above the rest.</td></tr>
+        <tr><th>Modal footers</th><td>Two buttons: secondary left, primary right, 50% each and full bleed. Three: 25% each, right-aligned, only the rightmost may be primary; if all three weigh the same, make them all secondary. Single button: right, 50%. Danger modal: the primary becomes a danger primary. Progress: Cancel is ghost at the left; Previous (secondary) and Next (primary) share the right half; the last step’s Next takes the final action’s name.</td></tr>
+        <tr><th>Hover</th><td>Filled kinds go to their Hover token. Tertiary fills and its label turns <code>$text-inverse</code>. Ghost fills with <code>$background-hover</code> and the label turns <code>$link-primary-hover</code>. Danger tertiary and ghost fill red and turn white. Hover rules apply only on devices that hover.</td></tr>
+        <tr><th>Press</th><td>Filled kinds go to their Active token; ghost to <code>$background-active</code>. Tertiary loses its border.</td></tr>
+        <tr><th>Focus</th><td>Carbon styles <code>:focus</code>: the border and a 1px inset ring in <code>$focus</code>, then a 2px inner line in <code>$background</code>. Ghost icon-only buttons use the 1px ring only. Tertiary fills with its own color on focus.</td></tr>
+        <tr><th>Disabled</th><td>Filled kinds: gray fill and border, label <code>$text-on-color-disabled</code>. Tertiary and ghost: transparent, label <code>$text-disabled</code>. <code>cursor: not-allowed</code>, no hover or ring.</td></tr>
+        <tr><th>Motion</th><td>Fill, shadow, border and outline ease over 70ms (<code>duration-fast-01</code>) on the productive entrance curve.</td></tr>
+        <tr><th>Labels</th><td>Verb plus noun, sentence case, left-aligned; common actions (Done, Close, Cancel, Add, Delete) may stand alone. Never a noun alone. Long labels wrap to a second line instead of truncating. Modal buttons name the task (Add, Delete, Save); avoid Done or OK.</td></tr>
+      </tbody></table>
+
+      <h3 class="subhead">Group combinations</h3>
+      <table class="kv">
+        <thead><tr><th>Buttons</th><th>Recommended with a primary</th></tr></thead>
+        <tbody>
+          <tr><th>Two</th><td>Primary and secondary · primary and tertiary · primary and ghost · primary and danger tertiary · danger primary and secondary · danger primary and ghost.</td></tr>
+          <tr><th>Three</th><td>Primary, secondary and tertiary · primary, secondary and ghost · primary and two secondary · primary and two tertiary · primary, tertiary and danger tertiary.</td></tr>
+          <tr><th>No primary</th><td>Two: two tertiary, tertiary and ghost, two ghost. Three: three tertiary, or two tertiary and a danger tertiary.</td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="subhead">Avoid</h3>
+      <table class="kv">
+        <thead><tr><th>Don’t</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><th>Two high-emphasis buttons in a group</th><td>The hierarchy is lost; a layout should have a single high-emphasis button.</td></tr>
+          <tr><th>Secondary with a non-primary button</th><td>Secondary is only the partner of a primary, and never used alone or for a positive action.</td></tr>
+          <tr><th>Tertiary with danger tertiary</th><td>Two outlined buttons that differ only by color.</td></tr>
+          <tr><th>Primary with danger ghost</th><td>Listed under combinations to avoid; use danger tertiary or a danger primary pair instead.</td></tr>
+          <tr><th>Tertiary with danger ghost</th><td>Listed under combinations to avoid.</td></tr>
+          <tr><th>Different sizes or widths in one group</th><td>Groups read as one object; the longest label sets every width, and sizes are not mixed.</td></tr>
+          <tr><th>More than three buttons</th><td>Too many calls to action overwhelm. Group related actions in a menu button, or use a toolbar.</td></tr>
+          <tr><th>A tertiary button in a fluid set</th><td>Fluid sets use primary, secondary and (in a modal) ghost.</td></tr>
+          <tr><th>A button that navigates</th><td>Use a link when the action takes the user to a new page.</td></tr>
+          <tr><th>Truncated or centered labels</th><td>Wrap long labels; keep them left-aligned even in a wide button.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between buttons in DOM order, which is also the visual order: primary first in a left-aligned group, last in a wizard or dialog.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activates the focused button.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>In a dialog with no form field the primary button takes initial focus; on a form, <kbd>Enter</kbd> activates the primary when focus is on a control that does not use it.</li>
+          <li>Icon-only buttons carry an <code>aria-label</code>; icons next to a label are decorative. A group has <code>role="group"</code> and a name.</li>
+          <li>The 1px separator between fluid buttons gives the 3:1 distinction between adjacent controls that Carbon recommends.</li>
+          <li>xs (24px) and the icon-only xs button meet the WCAG 2.2 24px minimum, not the 44px recommendation; sm (32px) is also below it. The rules table below measures size, contrast, names, focus style and reduced motion. It cannot judge how well the focus ring reads against every neighbor, or label wording.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

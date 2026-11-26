@@ -440,3 +440,15 @@ html.thumb .preview iframe { height: 100%; border-radius: 0; box-shadow: none; }
   .splitter { display: none; }
   [id] { scroll-margin-top: 64px; }   /* Clear the sticky nav bar */
 }
+
+
+/* ---- Rules check (concept.js → renderRules) ---- */
+.rules-summary { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.rules-table td.state { width: 7.5em; white-space: nowrap; font-weight: 600; }
+.rules-table td.src { width: 12em; font-size: 13px; }
+.rules-table .raw { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.rule-pass td.state span::before { content: "✓ "; }
+.rule-fail td.state { color: light-dark(#b3261e, #ff8a80); }
+.rule-fail td.state span::before { content: "✗ "; }
+.rule-review td.state span::before { content: "○ "; }
+.rule-manual td.state { color: var(--muted); font-weight: 400; }

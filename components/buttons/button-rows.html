@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Button Rows</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/button-rows">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="sheet">
+
+  <section>
+    <h2>Three peers: equal width</h2>
+    <div class="grid" role="group" aria-label="Quick actions">
+      <button class="btn">Reply</button><button class="btn">Forward</button><button class="btn">Archive</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Five peers: icon over label, equal width</h2>
+    <div class="grid bar" role="group" aria-label="Message actions">
+      <button class="btn stack"><svg class="icon"><use href="#i-reply"/></svg>Reply</button>
+      <button class="btn stack"><svg class="icon"><use href="#i-forward"/></svg>Forward</button>
+      <button class="btn stack"><svg class="icon"><use href="#i-share"/></svg>Share</button>
+      <button class="btn stack"><svg class="icon"><use href="#i-pin"/></svg>Pin</button>
+      <button class="btn stack"><svg class="icon"><use href="#i-trash-2"/></svg>Delete</button>
+    </div>
+  </section>
+
+  <section>
+    <h2>Steps: cancel apart, back and next together</h2>
+    <div class="steps">
+      <button class="btn" data-variant="ghost">Cancel</button>
+      <span class="pair"><button class="btn">Back</button><button class="btn" data-variant="primary">Next</button></span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Toolbar: groups with a divider</h2>
+    <div class="toolbar" role="toolbar" aria-label="Text formatting">
+      <button class="ib" aria-label="Bold" aria-pressed="false"><svg class="icon"><use href="#i-bold"/></svg></button>
+      <button class="ib" aria-label="Italic" aria-pressed="false" tabindex="-1"><svg class="icon"><use href="#i-italic"/></svg></button>
+      <span class="sep" role="separator" aria-orientation="vertical"></span>
+      <button class="ib" aria-label="Link" tabindex="-1"><svg class="icon"><use href="#i-link"/></svg></button>
+      <button class="ib" aria-label="Code" tabindex="-1"><svg class="icon"><use href="#i-code"/></svg></button>
+      <button class="ib" aria-label="Bulleted list" tabindex="-1"><svg class="icon"><use href="#i-list"/></svg></button>
+    </div>
+  </section>
+
+  <!-- Drag the bottom-right corner: the rows below respond to the width of this box, not the window. -->
+  <section>
+    <h2>Drag the corner to narrow the box</h2>
+    <div class="resizer">
+
+      <p class="cap">Wraps</p>
+      <div class="wrap"><button class="btn">Export</button><button class="btn">Duplicate</button><button class="btn">Move</button><button class="btn">Archive</button><button class="btn">Share</button></div>
+
+      <p class="cap">Labels give way to icons</p>
+      <div class="collapse" role="group" aria-label="File actions">
+        <button class="btn"><svg class="icon"><use href="#i-download"/></svg><span class="lbl">Download</span></button>
+        <button class="btn"><svg class="icon"><use href="#i-copy"/></svg><span class="lbl">Copy</span></button>
+        <button class="btn"><svg class="icon"><use href="#i-share"/></svg><span class="lbl">Share</span></button>
+        <button class="btn"><svg class="icon"><use href="#i-bookmark"/></svg><span class="lbl">Save</span></button>
+      </div>
+
+      <p class="cap">Least important move into More</p>
+      <div class="overflow" role="group" aria-label="Document actions">
+        <button class="btn" data-variant="primary">Publish</button>
+        <button class="btn" data-p="1">Preview</button>
+        <button class="btn" data-p="2">Duplicate</button>
+        <button class="btn" data-p="3">Move</button>
+        <button class="btn" data-p="4">Archive</button>
+        <button class="btn more" popovertarget="more" aria-label="More actions"><svg class="icon"><use href="#i-ellipsis"/></svg></button>
+        <ul class="menu" id="more" popover role="menu" aria-label="More actions">
+          <li role="none"><button role="menuitem" data-p="4">Archive</button></li>
+          <li role="none"><button role="menuitem" data-p="3">Move</button></li>
+          <li role="none"><button role="menuitem" data-p="2">Duplicate</button></li>
+          <li role="none"><button role="menuitem" data-p="1">Preview</button></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Rhythm */
+  --br-gap: 8px;                                              /* Space between buttons: one value for every row, so rows read as one family */
+  --br-h: 40px;                                               /* Button height; buttons in a row are always the same height */
+  --br-radius: 8px;                                           /* Corner */
+  --br-bar-h: 64px;                                           /* Icon-over-label button height: 24px icon, 4px gap, 16px label, 10px padding */
+  --br-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 */
+
+  /* @group Breakpoints (container width of the resizable box) */
+  --br-hide-p4: 460px;                                        /* Below this width, priority-4 action moves into More; written out in the container queries */
+  --br-hide-p3: 400px;                                        /* Priority 3 moves */
+  --br-hide-p2: 340px;                                        /* Priority 2 moves */
+  --br-hide-p1: 280px;                                        /* Priority 1 moves; Publish and More remain */
+  --br-icons-below: 360px;                                    /* Labels collapse to icons below this width */
+
+  /* @group Color */
+  --br-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill, pressed toggles, focus ring */
+  --br-on-accent: light-dark(#ffffff, #101218);               /* Label on the primary fill */
+  --br-surface: light-dark(#eef0f4, #2a2c33);                 /* Secondary fill */
+  --br-rule: light-dark(#c9ced8, #444853);                    /* Secondary border, divider, box edge */
+  --br-text: light-dark(#1c1d21, #ececef);                    /* Label */
+  --br-muted: light-dark(#5d6169, #a0a4ae);                   /* Captions */
+}
+
+/* ---- Component ---- */
+/* One button, reused by every row. */
+.btn {
+  --_bg: var(--br-surface); --_fg: var(--br-text); --_bd: var(--br-rule);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--br-h); padding: 0 14px; border: 1px solid var(--_bd); border-radius: var(--br-radius);
+  background: var(--_bg); color: var(--_fg); font: var(--br-font); white-space: nowrap; cursor: pointer;
+  transition: background-color 120ms, transform 80ms;
+  &[data-variant="primary"] { --_bg: var(--br-accent); --_fg: var(--br-on-accent); --_bd: transparent; }
+  &[data-variant="ghost"] { --_bg: transparent; --_fg: var(--br-accent); --_bd: transparent; }
+  &:hover { background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 12%); }
+  &[data-variant="ghost"]:hover { background: color-mix(in oklab, var(--br-accent) 12%, transparent); }
+  &:active { transform: translateY(1px); background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 22%); }
+  &:focus-visible { outline: 2px solid var(--br-accent); outline-offset: 2px; }
+}
+.ib:focus-visible { outline: 2px solid var(--br-accent); outline-offset: 2px; }
+.icon { width: 18px; height: 18px; flex: none; }
+
+/* Equal width: a grid of 1fr columns. The row is as wide as its container and every button the same width,
+   whatever the label length. Right for 3 to 5 peers with short labels. */
+.grid { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--br-gap); }
+.grid .btn { min-width: 0; padding-inline: 8px; }
+.bar .btn { flex-direction: column; gap: 4px; height: var(--br-bar-h); font-size: 12px; line-height: 16px; }
+
+/* Steps: one dismissing action far left, the forward pair together on the right. */
+.steps { display: flex; justify-content: space-between; align-items: center; gap: var(--br-gap); }
+.pair { display: flex; gap: var(--br-gap); }
+
+/* Toolbar: icon buttons, 40px squares, 2px apart, groups split by a 1px divider with 8px each side. */
+.toolbar { display: inline-flex; align-items: center; gap: 2px; padding: 4px; border: 1px solid var(--br-rule); border-radius: 10px; }
+.ib { display: grid; place-items: center; width: var(--br-h); height: var(--br-h); padding: 0; border: 0; border-radius: 6px; background: none; color: var(--br-text); cursor: pointer; }
+.ib:hover { background: var(--br-surface); }
+.ib[aria-pressed="true"] { background: color-mix(in oklab, var(--br-accent) 18%, transparent); color: var(--br-accent); }
+.sep { align-self: stretch; width: 1px; margin: 6px 8px; background: var(--br-rule); }
+
+/* The resizable box is the query container for the rows inside it. */
+.resizer { container-type: inline-size; resize: horizontal; overflow: auto; min-width: 220px; max-width: 100%; padding: 12px; border: 1px dashed var(--br-rule); border-radius: 10px; }
+.cap { margin: 10px 0 6px; font-size: 12px; color: var(--br-muted); }
+.cap:first-child { margin-top: 0; }
+
+/* Wrapping: natural widths, the same gap down as across. */
+.wrap { display: flex; flex-wrap: wrap; gap: var(--br-gap); }
+
+/* Labels give way to icons: the label is visually hidden, not removed, so every button keeps its name. */
+.collapse { display: flex; gap: var(--br-gap); }
+@container (width < 360px) {
+  .collapse .lbl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .collapse .btn { width: var(--br-h); padding: 0; }
+}
+
+/* Priority overflow: lowest priority leaves the row first and appears in the More menu. The row and the
+   menu hold the same items; container queries show each one in exactly one place. */
+.overflow { display: flex; gap: var(--br-gap); }
+.overflow .more { display: none; width: var(--br-h); padding: 0; }
+.menu { margin: 0; padding: 4px; border: 1px solid var(--br-rule); border-radius: 10px; background: light-dark(#fff, #25272d); color: var(--br-text); list-style: none; inset: auto; position-anchor: --more; }
+.menu button { display: none; width: 100%; height: 36px; padding: 0 12px; border: 0; border-radius: 6px; background: none; color: inherit; font: var(--br-font); text-align: start; cursor: pointer; }
+.menu button:hover, .menu button:focus-visible { background: var(--br-surface); outline: none; }
+.more { anchor-name: --more; }
+.menu { top: anchor(bottom); left: anchor(left); margin-top: 4px; }
+@container (width < 460px) { .overflow [data-p="4"].btn { display: none; } .menu [data-p="4"] { display: block; } .overflow .more { display: inline-flex; } }
+@container (width < 400px) { .overflow [data-p="3"].btn { display: none; } .menu [data-p="3"] { display: block; } }
+@container (width < 340px) { .overflow [data-p="2"].btn { display: none; } .menu [data-p="2"] { display: block; } }
+@container (width < 280px) { .overflow [data-p="1"].btn { display: none; } .menu [data-p="1"] { display: block; } }
+
+@media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+@media (forced-colors: active) { .btn, .ib { border: 1px solid ButtonText; } .ib[aria-pressed="true"] { background: Highlight; color: HighlightText; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #17181c); color: var(--br-text); font: 14px/20px system-ui, sans-serif; }
+.sheet { padding: 14px 16px 20px; display: grid; gap: 16px; }
+.sheet h2 { margin: 0 0 6px; font: 600 12px/16px system-ui, sans-serif; color: var(--br-muted); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Toolbar keys (APG toolbar pattern): one tab stop, arrows move between buttons, Home and End jump.
+// focusgroup="tablist" did nothing in Chrome 156 and the toolbar value was not tested, so the roving tabindex is done here.
+const bar = document.querySelector('.toolbar'), items = [...bar.querySelectorAll('.ib')];
+bar.addEventListener('keydown', e => {
+  const i = items.indexOf(document.activeElement);
+  const to = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: items.length - 1 }[e.key];
+  if (i < 0 || to === undefined) return;
+  e.preventDefault();
+  items.forEach(b => b.tabIndex = -1);
+  const next = items[(to + items.length) % items.length];
+  next.tabIndex = 0; next.focus({ preventScroll: true });
+});
+// Toggle buttons (bold, italic) flip aria-pressed; the others are plain actions.
+bar.addEventListener('click', e => {
+  const b = e.target.closest('.ib[aria-pressed]');
+  if (b) b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+});
+bar.addEventListener('focusin', e => { items.forEach(b => b.tabIndex = b === e.target ? 0 : -1); });
+</script>
+
+<script type="text/plain" data-demo="pin">
+{
+  // Rest state: bold is on.
+  document.querySelector('.ib[aria-label="Bold"]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="780" data-hint="Drag the dashed box’s bottom-right corner to narrow it. Tab into the toolbar and use the arrow keys."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Equal-width row</th><td>A CSS grid of <code>1fr</code> columns. Every button is the same width, whatever its label, and the row fills its container. For three to five peers with short labels, such as message actions.</td></tr>
+        <tr><th>Icon-over-label bar</th><td>The same grid with a column button: 24px-ish icon over a 12px label. It lets five peers fit a narrow width and keeps each one a large target.</td></tr>
+        <tr><th>Steps row</th><td>The dismissing action alone at one end; the forward pair (Back, Next) together at the other. Carbon’s progress modal does this: Cancel far left, Previous and Next on the right.</td></tr>
+        <tr><th>Toolbar</th><td>Icon buttons in one bordered strip, 2px apart, with a divider between groups. One tab stop for the whole strip; arrow keys move inside it. APG advises <code>role="toolbar"</code> for three or more controls.</td></tr>
+        <tr><th>Wrapping row</th><td><code>flex-wrap</code> with one <code>gap</code> for both directions. Buttons keep their natural width and drop to a second line when they run out of room.</td></tr>
+        <tr><th>Collapsing row</th><td>At a narrow container width labels become visually hidden and buttons become square icons. The label stays in the DOM, so the name does not disappear.</td></tr>
+        <tr><th>Overflow row</th><td>Items have a priority. As the container narrows the lowest priority leaves the row and appears in a More menu, one item in exactly one place. The primary action never leaves.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled">
+      <h2>Making many buttons look good</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>One height, one gap</th><td>Every button in a row shares a height, and one spacing value is used across and down. Apple: same-size buttons signal a coherent set, and style, not size, ranks them.</td></tr>
+        <tr><th>One loud button</th><td>Even among five, only one gets the primary fill. Fluent: with more than two buttons of equal priority give all of them neutral backgrounds. Carbon: do not use two high-emphasis buttons in a group, and with more than three actions prefer tertiary or ghost.</td></tr>
+        <tr><th>Group by meaning</th><td>Separate the destructive or dismissing action from the forward ones (the steps row), and divide unrelated tool groups with a divider, not extra space alone.</td></tr>
+        <tr><th>Too many?</th><td>Carbon: more than three actions belong in a menu button or a toolbar. A toolbar of icons is for frequent, well-known actions; Apple asks for familiar symbols and a text label on every icon for assistive technology.</td></tr>
+        <tr><th>Short labels</th><td>One word where you can. A long label breaks equal widths first.</td></tr>
+        <tr><th>Size</th><td>Rows of 40px buttons clear WCAG 2.2’s 24px minimum; for touch use 44px or more (Apple and WCAG’s enhanced level) or Material’s 48dp.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Our own values. The breakpoints are container widths of the dashed box, so the same row is correct in a window, a panel or a card.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Container, not window</th><td>The dashed box is a <code>container-type: inline-size</code> box, so <code>@container</code> rules respond to the space the row actually has. A browser-width query would be wrong inside a narrow side panel.</td></tr>
+        <tr><th>Overflow menu</th><td>The More button and its menu are shown only when something has moved. The menu is a <code>popover</code> anchored to the button with CSS anchor positioning; the button needs no script.</td></tr>
+        <tr><th>Toolbar keys</th><td>Left and Right move, with wrap; Home and End jump; Tab leaves the strip. Toggle buttons (bold, italic) use <code>aria-pressed</code> and keep the same label whether on or off.</td></tr>
+        <tr><th>Equal widths</th><td>Grid columns share the row equally, so a long label widens the whole row’s buttons, not just one. Keep labels short or use the wrapping row.</td></tr>
+        <tr><th>Reduced motion</th><td>Hover and press transitions stop.</td></tr>
+        <tr><th>Forced colors</th><td>Every button gets a visible <code>ButtonText</code> border; a pressed toggle uses <code>Highlight</code>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves into the toolbar at the last-used button, then out.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd></th><td>Previous and next button in the toolbar, with wrap.</td></tr>
+          <tr><th><kbd>Home</kbd> <kbd>End</kbd></th><td>First and last button.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate; in the More menu the popover closes on <kbd>Esc</kbd>.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>A row of related buttons is a <code>group</code> with a name; a toolbar is <code>role="toolbar"</code> with a name and a roving tab stop. <code>focusgroup</code> did nothing for tabs in Chrome 156 and was not tested for toolbars, so the keys are scripted.</li>
+          <li>Icon-only and icon-collapsed buttons keep an accessible name: the label stays in the DOM, visually hidden.</li>
+          <li>The More menu is a simple popover of buttons. It is marked <code>role="menu"</code> for the demo; a full menu needs the arrow-key behavior from <a href="../context-menus/overflow-menu.html">Overflow Action Menu</a>.</li>
+          <li>Toggle buttons keep one label and change only <code>aria-pressed</code>, as APG’s button pattern requires; changing the label as well would double the signal.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

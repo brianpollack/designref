@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Button Styles</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/button-styles">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="sheet">
+  <!-- Each row is one variant in its five states. The state classes only exist so the demo can show
+       :hover and :active at rest; real buttons need none of them. -->
+  <section>
+    <h2>Primary</h2>
+    <div class="row">
+      <button class="btn" data-variant="primary" data-size="sm">Save</button>
+      <button class="btn is-hover" data-variant="primary" data-size="sm">Hover</button>
+      <button class="btn is-active" data-variant="primary" data-size="sm">Pressed</button>
+      <button class="btn is-focus" data-variant="primary" data-size="sm">Focus</button>
+      <button class="btn" data-variant="primary" data-size="sm" disabled>Disabled</button>
+    </div>
+  </section>
+  <section>
+    <h2>Secondary</h2>
+    <div class="row">
+      <button class="btn" data-variant="secondary" data-size="sm">Save</button>
+      <button class="btn is-hover" data-variant="secondary" data-size="sm">Hover</button>
+      <button class="btn is-active" data-variant="secondary" data-size="sm">Pressed</button>
+      <button class="btn is-focus" data-variant="secondary" data-size="sm">Focus</button>
+      <button class="btn" data-variant="secondary" data-size="sm" disabled>Disabled</button>
+    </div>
+  </section>
+  <section>
+    <h2>Tertiary</h2>
+    <div class="row">
+      <button class="btn" data-variant="tertiary" data-size="sm">Save</button>
+      <button class="btn is-hover" data-variant="tertiary" data-size="sm">Hover</button>
+      <button class="btn is-active" data-variant="tertiary" data-size="sm">Pressed</button>
+      <button class="btn is-focus" data-variant="tertiary" data-size="sm">Focus</button>
+      <button class="btn" data-variant="tertiary" data-size="sm" disabled>Disabled</button>
+    </div>
+  </section>
+  <section>
+    <h2>Destructive</h2>
+    <div class="row">
+      <button class="btn" data-variant="danger" data-size="sm">Delete</button>
+      <button class="btn is-hover" data-variant="danger" data-size="sm">Hover</button>
+      <button class="btn is-active" data-variant="danger" data-size="sm">Pressed</button>
+      <button class="btn is-focus" data-variant="danger" data-size="sm">Focus</button>
+      <button class="btn" data-variant="danger" data-size="sm" disabled>Disabled</button>
+    </div>
+  </section>
+  <section>
+    <h2>Link</h2>
+    <div class="row">
+      <a class="btn" data-variant="link" href="#">Learn more</a>
+      <a class="btn is-hover" data-variant="link" href="#">Hover</a>
+      <a class="btn is-active" data-variant="link" href="#">Pressed</a>
+      <a class="btn is-focus" data-variant="link" href="#">Focus</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sizes</h2>
+    <div class="row">
+      <button class="btn" data-variant="primary" data-size="sm">Small</button>
+      <button class="btn" data-variant="primary">Medium</button>
+      <button class="btn" data-variant="primary" data-size="lg">Large</button>
+    </div>
+  </section>
+  <section>
+    <h2>With an icon</h2>
+    <div class="row">
+      <button class="btn" data-variant="primary"><svg class="icon"><use href="#i-plus"/></svg>New project</button>
+      <button class="btn" data-variant="secondary">Open<svg class="icon"><use href="#i-arrow-up-right"/></svg></button>
+      <button class="btn" data-variant="secondary" data-icon-only aria-label="Delete"><svg class="icon"><use href="#i-trash-2"/></svg></button>
+    </div>
+  </section>
+  <section>
+    <h2>Loading</h2>
+    <div class="row">
+      <button class="btn" data-variant="primary" aria-busy="true">Saving</button>
+      <button class="btn" data-variant="secondary" aria-busy="true">Saving</button>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Color */
+  --bs-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill, tertiary and link text, focus ring */
+  --bs-on-accent: light-dark(#ffffff, #101218);               /* Label on the primary fill: 5.8:1 light, 8.1:1 dark */
+  --bs-danger: light-dark(#c4262e, #ff8a8f);                  /* Destructive fill */
+  --bs-on-danger: light-dark(#ffffff, #1a0b0c);               /* Label on the destructive fill */
+  --bs-surface: light-dark(#eef0f4, #2a2c33);                 /* Secondary fill */
+  --bs-text: light-dark(#1c1d21, #ececef);                    /* Secondary label */
+  --bs-rule: light-dark(#c9ced8, #444853);                    /* Secondary border: 1.6:1 against white (1.9:1 in dark), so the fill and label carry the shape */
+  --bs-state: light-dark(#000000, #ffffff);                   /* Color mixed in for hover and pressed: darken in light, lighten in dark */
+  --bs-disabled-bg: light-dark(#eceef2, #25272c);             /* Disabled fill, all variants */
+  --bs-disabled-fg: light-dark(#80858f, #7a7f89);             /* Disabled label; disabled controls are exempt from contrast rules */
+
+  /* @group Shape and type */
+  --bs-radius: 8px;                                           /* Corner */
+  --bs-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 in every state */
+  --bs-gap: 8px;                                              /* Icon to label */
+
+  /* @group Sizes (height / side padding) */
+  --bs-h-sm: 32px;                                            /* Small: 32px high, 12px side padding, 13px label */
+  --bs-h: 40px;                                               /* Medium (default): 40px high, 16px side padding */
+  --bs-h-lg: 48px;                                            /* Large: 48px high, 20px side padding, 16px label */
+
+  /* @group States */
+  --bs-hover: 12%;                                            /* Share of --bs-state mixed in on hover */
+  --bs-press: 22%;                                            /* Share mixed in while pressed, with a 1px nudge down */
+  --bs-focus-w: 2px;                                          /* Focus ring width; 2px offset from the edge */
+  --bs-t: 120ms ease-out;                                     /* Color transition; off under reduced motion */
+}
+
+/* ---- Component ---- */
+.btn {
+  /* Each variant sets only three private properties; the states below never repeat a color. */
+  --_bg: transparent; --_fg: var(--bs-text); --_bd: transparent;
+  --_h: var(--bs-h); --_px: 16px; --_fs: 14px;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--bs-gap);
+  height: var(--_h); padding: 0 var(--_px);
+  border: 1px solid var(--_bd); border-radius: var(--bs-radius);
+  background: var(--_bg); color: var(--_fg);
+  font: var(--bs-font); font-size: var(--_fs);
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+  transition: background-color var(--bs-t), border-color var(--bs-t), color var(--bs-t), transform 80ms;
+
+  &[data-size="sm"] { --_h: var(--bs-h-sm); --_px: 12px; --_fs: 13px; }
+  &[data-size="lg"] { --_h: var(--bs-h-lg); --_px: 20px; --_fs: 16px; }
+  &[data-icon-only] { width: var(--_h); padding: 0; }
+
+  /* Variants */
+  &[data-variant="primary"]   { --_bg: var(--bs-accent); --_fg: var(--bs-on-accent); }
+  &[data-variant="secondary"] { --_bg: var(--bs-surface); --_fg: var(--bs-text); --_bd: var(--bs-rule); }
+  &[data-variant="tertiary"]  { --_fg: var(--bs-accent); }
+  &[data-variant="danger"]    { --_bg: var(--bs-danger); --_fg: var(--bs-on-danger); }
+  &[data-variant="link"]      { --_fg: var(--bs-accent); height: auto; padding: 2px 0; border-radius: 4px; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Hover and pressed come from one base color. Filled variants mix toward --bs-state;
+     transparent ones fill with a wash of their own color. */
+  &:is(:hover, .is-hover):not(:disabled, [aria-disabled="true"], [aria-busy="true"]) {
+    &[data-variant="primary"], &[data-variant="danger"], &[data-variant="secondary"] { background: color-mix(in oklab, var(--_bg), var(--bs-state) var(--bs-hover)); }
+    &[data-variant="tertiary"] { background: color-mix(in oklab, var(--bs-accent) 12%, transparent); }
+    &[data-variant="link"] { text-decoration-thickness: 2px; }
+  }
+  &:is(:active, .is-active):not(:disabled, [aria-disabled="true"], [aria-busy="true"]) {
+    transform: translateY(1px);
+    &[data-variant="primary"], &[data-variant="danger"], &[data-variant="secondary"] { background: color-mix(in oklab, var(--_bg), var(--bs-state) var(--bs-press)); }
+    &[data-variant="tertiary"] { background: color-mix(in oklab, var(--bs-accent) 22%, transparent); }
+  }
+  &:is(:focus-visible, .is-focus) { outline: var(--bs-focus-w) solid var(--bs-accent); outline-offset: 2px; }
+
+  /* Disabled: native `disabled` for plain buttons. aria-disabled keeps the button focusable (and so
+     explainable); it needs script to stop the click, which this page does not have. */
+  &:disabled, &[aria-disabled="true"] { background: var(--bs-disabled-bg); color: var(--bs-disabled-fg); border-color: transparent; cursor: not-allowed; }
+  &[data-variant="tertiary"]:is(:disabled, [aria-disabled="true"]), &[data-variant="link"]:is(:disabled, [aria-disabled="true"]) { background: none; }
+
+  /* Loading: the label stays, so the width does not jump; a spinner leads it. */
+  &[aria-busy="true"]::before { content: ""; width: 14px; height: 14px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: bs-spin .8s linear infinite; }
+  &[aria-busy="true"] { cursor: progress; }
+}
+@keyframes bs-spin { to { rotate: 1turn; } }
+.icon { width: 18px; height: 18px; }
+
+/* Windows high-contrast mode drops backgrounds and shadows; give every variant a border there. */
+@media (forced-colors: active) {
+  .btn { border-color: ButtonText; }
+  .btn:is(:disabled, [aria-disabled="true"]) { border-color: GrayText; color: GrayText; }
+  .btn:is(:focus-visible, .is-focus) { outline-color: Highlight; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  .btn[aria-busy="true"]::before { animation: none; border-right-color: currentColor; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #17181c); color: light-dark(#1c1d21, #ececef); }
+.sheet { padding: 14px 16px 18px; display: grid; gap: 14px; }
+.sheet h2 { margin: 0 0 6px; font: 600 12px/16px system-ui, sans-serif; color: light-dark(#5d6169, #a0a4ae); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+</style>
+
+<!-- No JavaScript: every state is a CSS selector, and the demo shows hover, pressed and focus at rest with classes. -->
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="640" data-hint="Hover and press the live buttons; Tab to see focus. The Hover, Pressed and Focus columns are fixed copies of those states."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Container</th><td>A <code>button</code> (or an <code>a</code> that navigates). 40px high by default, 8px corner, 1px border that is transparent except on secondary. Sized by height and side padding, never by a fixed width, so a longer label never clips.</td></tr>
+        <tr><th>Label</th><td>14px, line height 20px, weight 500 in every state, so a state change never reflows. One or two words; a verb for the outcome (“Save”, “Delete”).</td></tr>
+        <tr><th>Icon</th><td>18px, 8px from the label, on the leading side for creating or adding and the trailing side for going somewhere. An icon-only button is square and needs an <code>aria-label</code>.</td></tr>
+        <tr><th>Primary</th><td>Solid accent fill. The one thing to do here. One per view or per dialog.</td></tr>
+        <tr><th>Secondary</th><td>Neutral fill and a border. The other things to do.</td></tr>
+        <tr><th>Tertiary</th><td>No fill; accent text that gains a wash on hover. For minor actions in dense places, and for several equal actions side by side.</td></tr>
+        <tr><th>Destructive</th><td>Solid red fill. Only for an action that deletes or cannot be undone, and never the first thing a keyboard user lands on by default.</td></tr>
+        <tr><th>Link</th><td>Underlined accent text with no box. For navigation that sits in a sentence or a footer, not for actions.</td></tr>
+        <tr><th>States</th><td>Rest, hover, pressed, focus, disabled and loading. Hover and pressed are the base color mixed with black (light) or white (dark) by 12% and 22%, so one token set yields every state.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">These are our own values. Compare each design system’s own numbers on its page: <a href="material-3-buttons.html">Material 3</a>, <a href="fluent-2-buttons.html">Fluent 2</a>, <a href="carbon-buttons.html">Carbon</a> and <a href="apple-style-buttons.html">Apple-style</a>.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Hierarchy</th><td>Rank by style, not size. Every major system says to keep the loudest style rare: Apple, one or two prominent buttons per view; Fluent, one primary per layout; Carbon, one primary per page. Material’s rule is the same idea: the more important the action, the higher its emphasis.</td></tr>
+        <tr><th>Equal-priority actions</th><td>Fluent: with more than two buttons of equal weight, give all of them neutral backgrounds. Carbon: more than three actions, prefer tertiary or ghost. See <a href="button-rows.html">Button Rows</a>.</td></tr>
+        <tr><th>Labels</th><td>Sentence case, active verb, no end punctuation (Fluent). Apple asks for title-style capitalization. They disagree: pick one for the product. Say what happens: “Delete file” beats “OK”.</td></tr>
+        <tr><th>Hover</th><td>A slight darkening. NN/g suggests starting it after a short delay (150–200ms); here it is a 120ms color transition. Hover is never the only way to find an action.</td></tr>
+        <tr><th>Pressed</th><td>A deeper tone and a 1px nudge, within about 100–150ms. Apple: always include a press state on a custom button.</td></tr>
+        <tr><th>Focus</th><td>A 2px accent ring 2px off the edge, for keyboard focus only (<code>:focus-visible</code>). The offset keeps it clear of the fill so it reads on every variant.</td></tr>
+        <tr><th>Disabled</th><td>Use native <code>disabled</code> when the control should leave the Tab order. Use <code>aria-disabled="true"</code> when it should stay focusable so a tooltip can explain why; you must then stop the click yourself, because <code>aria-disabled</code> changes nothing about behavior.</td></tr>
+        <tr><th>Loading</th><td>Keep the label and enabled look (NN/g), add a spinner before it, and keep the width. Ignore repeat clicks in script; the button itself stays focusable. See <a href="async-buttons.html">Loading and Confirming Buttons</a>.</td></tr>
+        <tr><th>Size and spacing</th><td>WCAG 2.2 requires at least 24px; its enhanced level and Apple say 44px; Material says 48dp. The small size is 32px high, so give touch layouts the medium or large size.</td></tr>
+        <tr><th>Forced colors</th><td>Backgrounds disappear, so every variant gets a <code>ButtonText</code> border and disabled becomes <code>GrayText</code>.</td></tr>
+        <tr><th>Reduced motion</th><td>Transitions and the spinner stop; the spinner stays as a static ring.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate. A native <code>button</code> does this with no script; an <code>a</code> only responds to Enter.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Move to the next button. Native <code>disabled</code> buttons are skipped.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Use a real <code>button</code> for actions and an <code>a</code> for navigation. Inside a form a <code>button</code> defaults to <code>type="submit"</code>; set <code>type="button"</code> for anything else.</li>
+          <li>Text contrast is at least 4.5:1 on every fill, both themes. Disabled controls are exempt. The secondary border is only 1.6:1, which WCAG 1.4.11’s 3:1 would flag if the border were the only thing marking the button; here the fill and label do that, so keep the label contrast high and do not rely on the border.</li>
+          <li>State is never color alone: focus adds an outline, loading adds a spinner, disabled changes the cursor and the label.</li>
+          <li>Icon-only buttons need a name (<code>aria-label</code>). A destructive action should say what it deletes.</li>
+          <li><code>aria-busy</code> on its own does not announce anything; pair a loading button with a polite live region (see the loading page).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

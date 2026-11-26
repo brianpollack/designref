@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fluent 2 Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/fluent-2-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <h1 class="app-title">Buttons</h1>
+
+  <!-- Appearances: secondary is the default; one primary per layout. -->
+  <section class="group" aria-labelledby="g-appearance">
+    <h2 class="cap" id="g-appearance">Appearance</h2>
+    <div class="row">
+      <button class="fl-btn" data-appearance="primary" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">Primary</span></button>
+      <button class="fl-btn" data-appearance="secondary" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">Secondary</span></button>
+      <button class="fl-btn" data-appearance="outline" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">Outline</span></button>
+      <button class="fl-btn" data-appearance="subtle" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">Subtle</span></button>
+      <button class="fl-btn" data-appearance="transparent" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">Transparent</span></button>
+    </div>
+  </section>
+
+  <!-- Sizes: small 24, medium 32 (default), large 40. Large uses the 24px icon. -->
+  <section class="group" aria-labelledby="g-size">
+    <h2 class="cap" id="g-size">Size</h2>
+    <div class="row">
+      <button class="fl-btn" data-appearance="secondary" data-size="small" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-edit_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-edit_20_filled"/></svg></span><span class="fl-btn__label">Small</span></button>
+      <button class="fl-btn" data-appearance="secondary" data-size="medium" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-edit_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-edit_20_filled"/></svg></span><span class="fl-btn__label">Medium</span></button>
+      <button class="fl-btn" data-appearance="secondary" data-size="large" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-edit_24_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-edit_24_filled"/></svg></span><span class="fl-btn__label">Large</span></button>
+      <button class="fl-btn" data-appearance="secondary" data-size="small" type="button"><span class="fl-btn__label">Small</span></button>
+      <button class="fl-btn" data-appearance="secondary" data-size="medium" type="button"><span class="fl-btn__label">Medium</span></button>
+      <button class="fl-btn" data-appearance="secondary" data-size="large" type="button"><span class="fl-btn__label">Large</span></button>
+    </div>
+  </section>
+
+  <!-- Icon only (square) and shape: rounded, circular, square. -->
+  <section class="group" aria-labelledby="g-shape">
+    <h2 class="cap" id="g-shape">Icon only and shape</h2>
+    <div class="row">
+      <button class="fl-btn" data-appearance="subtle" data-size="small" data-icon-only type="button" aria-label="Delete"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-delete_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-delete_20_filled"/></svg></span></button>
+      <button class="fl-btn" data-appearance="subtle" data-size="medium" data-icon-only type="button" aria-label="Delete"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-delete_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-delete_20_filled"/></svg></span></button>
+      <button class="fl-btn" data-appearance="subtle" data-size="large" data-icon-only type="button" aria-label="Delete"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-delete_24_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-delete_24_filled"/></svg></span></button>
+      <button class="fl-btn" data-appearance="primary" data-shape="rounded" type="button"><span class="fl-btn__label">Rounded</span></button>
+      <button class="fl-btn" data-appearance="primary" data-shape="circular" type="button"><span class="fl-btn__label">Circular</span></button>
+      <button class="fl-btn" data-appearance="primary" data-shape="square" type="button"><span class="fl-btn__label">Square</span></button>
+      <button class="fl-btn" data-appearance="primary" data-shape="circular" data-icon-only type="button" aria-label="Add"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span></button>
+    </div>
+  </section>
+
+  <!-- Toggle: aria-pressed is the checked state. Checked buttons show the Filled icon. -->
+  <section class="group" aria-labelledby="g-toggle">
+    <h2 class="cap" id="g-toggle">Toggle</h2>
+    <div class="row">
+      <button class="fl-btn" data-appearance="secondary" aria-pressed="false" type="button" data-pin-toggle><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-text_bold_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-text_bold_20_filled"/></svg></span><span class="fl-btn__label">Bold</span></button>
+      <button class="fl-btn" data-appearance="primary" aria-pressed="true" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-star_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-star_20_filled"/></svg></span><span class="fl-btn__label">Favorite</span></button>
+      <button class="fl-btn" data-appearance="subtle" aria-pressed="true" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-star_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-star_20_filled"/></svg></span><span class="fl-btn__label">Pinned</span></button>
+      <button class="fl-btn" data-appearance="subtle" data-icon-only aria-pressed="false" type="button" aria-label="Favorite"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-star_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-star_20_filled"/></svg></span></button>
+    </div>
+  </section>
+
+  <!-- Split button: the label is the main action; the menu holds related ones, not a repeat. -->
+  <section class="group" aria-labelledby="g-split">
+    <h2 class="cap" id="g-split">Split and disabled</h2>
+    <div class="row">
+      <div class="fl-split" data-appearance="primary">
+        <button class="fl-btn" data-appearance="primary" type="button"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-add_20_regular"/></svg><svg class="icon fl-filled" aria-hidden="true"><use href="#i-add_20_filled"/></svg></span><span class="fl-btn__label">New message</span></button>
+        <button class="fl-btn" data-appearance="primary" data-icon-only type="button" aria-label="More new options" aria-haspopup="menu" popovertarget="split-menu"><span class="fl-btn__icon"><svg class="icon fl-regular" aria-hidden="true"><use href="#i-chevron_down_20_regular"/></svg></span></button>
+      </div>
+      <div class="fl-menu-shell" id="split-menu" popover>
+        <div class="fl-menu" role="menu" aria-label="New" focusgroup="menu nomemory">
+          <button class="fl-menu-item" role="menuitem" type="button" popovertarget="split-menu" popovertargetaction="hide">New event</button>
+          <button class="fl-menu-item" role="menuitem" type="button" popovertarget="split-menu" popovertargetaction="hide">New meeting</button>
+        </div>
+      </div>
+      <button class="fl-btn" data-appearance="secondary" type="button" disabled>Disabled</button>
+      <button class="fl-btn" data-appearance="primary" type="button" disabled>Disabled</button>
+      <button class="fl-btn" data-appearance="outline" type="button" disabled>Disabled</button>
+      <button class="fl-btn" data-appearance="subtle" type="button" disabled>Disabled</button>
+    </div>
+  </section>
+
+  <!-- Dialog actions: gap 8, end-aligned, primary first in DOM order so it sits left of Cancel.
+       Below 480px the row stacks and the primary is on top. -->
+  <section class="group" aria-labelledby="g-dialog">
+    <h2 class="cap" id="g-dialog">Dialog actions, wide and narrow</h2>
+    <div class="dialogs">
+      <section class="fl-dialog fl-dialog--wide" aria-labelledby="d1">
+        <h3 class="fl-dialog__title" id="d1">Delete this file?</h3>
+        <p class="fl-dialog__body">It will be removed for everyone with access.</p>
+        <div class="fl-dialog-actions">
+          <button class="fl-btn" data-appearance="primary" type="button">Delete file</button>
+          <button class="fl-btn" data-appearance="secondary" type="button">Cancel</button>
+        </div>
+      </section>
+      <section class="fl-dialog fl-dialog--narrow" aria-labelledby="d2">
+        <h3 class="fl-dialog__title" id="d2">Delete this file?</h3>
+        <p class="fl-dialog__body">It will be removed for everyone with access.</p>
+        <div class="fl-dialog-actions">
+          <button class="fl-btn" data-appearance="primary" type="button">Delete file</button>
+          <button class="fl-btn" data-appearance="secondary" type="button">Cancel</button>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ----
+   Fluent 2 alias tokens under their own names, resolved to the web theme: light is webLightTheme,
+   dark is webDarkTheme, both from the brandWeb ramp (the hex comments in lightColor.ts are an
+   older default blue and are not used). Sizes are the literals useButtonStyles resolves. */
+:root {
+  color-scheme: light dark;
+
+  /* @group Size: small */
+  --fl-btn-small-padding: 3px 8px;                      /* Padding: 3px, spacingHorizontalS. With an icon, 1px top and bottom */
+  --fl-btn-small-min-width: 64px;                       /* Minimum width */
+  --fl-btn-small-font: 400 12px/16px;                   /* fontSizeBase200, lineHeightBase200, regular. Height is 24px */
+  --fl-btn-small-icon-only: 24px;                       /* Icon-only width and height; padding 1px */
+  --fl-btn-small-icon-gap: 4px;                         /* Icon to label · spacingHorizontalXS */
+
+  /* @group Size: medium (default) */
+  --fl-btn-medium-padding: 5px 12px;                    /* Padding: 5px, spacingHorizontalM */
+  --fl-btn-medium-min-width: 96px;                      /* Minimum width */
+  --fl-btn-medium-font: 600 14px/20px;                  /* fontSizeBase300, lineHeightBase300, semibold. Height is 32px */
+  --fl-btn-medium-icon-only: 32px;                      /* Icon-only width and height; padding 5px */
+  --fl-btn-medium-icon-gap: 6px;                        /* Icon to label · spacingHorizontalSNudge */
+
+  /* @group Size: large */
+  --fl-btn-large-padding: 8px 16px;                     /* Padding: 8px, spacingHorizontalL. With an icon, 7px top and bottom */
+  --fl-btn-large-min-width: 96px;                       /* Minimum width */
+  --fl-btn-large-font: 600 16px/22px;                   /* fontSizeBase400, lineHeightBase400, semibold. Height is 40px */
+  --fl-btn-large-icon-only: 40px;                       /* Icon-only width and height; padding 7px */
+  --fl-btn-large-icon-gap: 6px;                         /* Icon to label · spacingHorizontalSNudge */
+
+  /* @group Shape and type */
+  --fl-btn-radius: 4px;                                 /* Rounded, small and medium · borderRadiusMedium */
+  --fl-btn-radius-small-focus: 2px;                     /* Focus-ring corners, small · borderRadiusSmall */
+  --fl-btn-radius-large-focus: 6px;                     /* Focus-ring corners, large · borderRadiusLarge */
+  --fl-btn-radius-circular: 10000px;                    /* Circular · borderRadiusCircular. Square is 0 */
+  --fl-btn-border: 1px;                                 /* Stroke · strokeWidthThin */
+  --fl-btn-icon-size: 20px;                             /* Icon, small and medium (large 24px) */
+  --fl-font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;   /* fontFamilyBase */
+
+  /* @group Secondary (neutral) colors */
+  --colorNeutralBackground1: light-dark(#ffffff, #292929);                 /* Fill at rest · white / grey 16 */
+  --colorNeutralBackground1Hover: light-dark(#f5f5f5, #3d3d3d);            /* Fill on hover · grey 96 / 24 */
+  --colorNeutralBackground1Pressed: light-dark(#e0e0e0, #1f1f1f);          /* Fill on press · grey 88 / 12 */
+  --colorNeutralBackground1Selected: light-dark(#ebebeb, #383838);         /* Fill when checked · grey 92 / 22 */
+  --colorNeutralStroke1: light-dark(#d1d1d1, #666666);                     /* Border at rest · grey 82 / 40 */
+  --colorNeutralStroke1Hover: light-dark(#c7c7c7, #757575);                /* Border on hover · grey 78 / 46 */
+  --colorNeutralStroke1Pressed: light-dark(#b3b3b3, #6b6b6b);              /* Border on press · grey 70 / 42 */
+  --colorNeutralForeground1: light-dark(#242424, #ffffff);                 /* Label, also Hover, Pressed and Selected · grey 14 / white */
+
+  /* @group Primary (brand) colors */
+  --colorBrandBackground: light-dark(#0f6cbd, #115ea3);                    /* Fill at rest · brand 80 / 70 */
+  --colorBrandBackgroundHover: light-dark(#115ea3, #0f6cbd);               /* Fill on hover · brand 70 / 80 */
+  --colorBrandBackgroundPressed: light-dark(#0c3b5e, #0c3b5e);             /* Fill on press · brand 40 */
+  --colorBrandBackgroundSelected: light-dark(#0f548c, #0f548c);            /* Fill when checked · brand 60 */
+  --colorNeutralForegroundOnBrand: #ffffff;                                /* Label on a brand fill · white in both themes */
+  --colorNeutralStrokeOnBrand: light-dark(#ffffff, #292929);               /* Split divider on a brand fill · white / grey 16 */
+
+  /* @group Subtle and transparent colors */
+  --colorNeutralForeground2: light-dark(#424242, #d6d6d6);                 /* Label at rest · grey 26 / 84 */
+  --colorNeutralForeground2Hover: light-dark(#242424, #ffffff);            /* Label on hover, also Pressed and Selected · grey 14 / white */
+  --colorNeutralForeground2BrandHover: light-dark(#0f6cbd, #479ef5);       /* Transparent label and subtle icon on hover, also Selected · brand 80 / 100 */
+  --colorNeutralForeground2BrandPressed: light-dark(#115ea3, #2886de);     /* Transparent label and subtle icon on press · brand 70 / 90 */
+  --colorSubtleBackgroundHover: light-dark(#f5f5f5, #383838);              /* Subtle fill on hover · grey 96 / 22 */
+  --colorSubtleBackgroundPressed: light-dark(#e0e0e0, #2e2e2e);            /* Subtle fill on press · grey 88 / 18 */
+  --colorSubtleBackgroundSelected: light-dark(#ebebeb, #333333);           /* Subtle fill when checked · grey 92 / 20 */
+
+  /* @group Disabled */
+  --colorNeutralBackgroundDisabled: light-dark(#f0f0f0, #141414);          /* Fill · grey 94 / 8 */
+  --colorNeutralStrokeDisabled: light-dark(#e0e0e0, #424242);              /* Border · grey 88 / 26 */
+  --colorNeutralForegroundDisabled: light-dark(#bdbdbd, #5c5c5c);          /* Label and icon · grey 74 / 36 */
+
+  /* @group Focus and motion */
+  --colorStrokeFocus2: light-dark(#000000, #ffffff);                       /* Focus ring · black / white */
+  --fl-btn-focus-outline: 2px;                                             /* Transparent outline, seen only in forced-colors mode · strokeWidthThick */
+  --shadow2: 0 0 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.24)), 0 1px 2px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.28));   /* Shadow under the focused primary button */
+  --fl-btn-transition: 100ms cubic-bezier(0.33, 0, 0.67, 1);               /* durationFaster, curveEasyEase; 0.01ms under reduced motion */
+
+  /* @group Dialog actions */
+  --fl-dialog-gap: 8px;                                                    /* Between actions · DIALOG_GAP */
+  --fl-dialog-padding: 24px;                                               /* Dialog surface padding · SURFACE_PADDING */
+}
+
+/* ---- Component ---- */
+.fl-btn {
+  /* Every appearance is just a different set of these nine colors; the rules below swap them. */
+  --_bg: var(--colorNeutralBackground1);   --_bg-h: var(--colorNeutralBackground1Hover);   --_bg-p: var(--colorNeutralBackground1Pressed);
+  --_bd: var(--colorNeutralStroke1);       --_bd-h: var(--colorNeutralStroke1Hover);       --_bd-p: var(--colorNeutralStroke1Pressed);
+  --_fg: var(--colorNeutralForeground1);   --_fg-h: var(--colorNeutralForeground1);        --_fg-p: var(--colorNeutralForeground1);
+  --_icon-h: currentColor;                 --_icon-p: currentColor;                         /* Icon color on hover and press */
+  --_pad: var(--fl-btn-medium-padding);
+  --_gap: var(--fl-btn-medium-icon-gap);
+
+  display: inline-flex; align-items: center; justify-content: center;
+  box-sizing: border-box; margin: 0; overflow: hidden; vertical-align: middle;
+  padding: var(--_pad);
+  min-width: var(--fl-btn-medium-min-width);
+  border: var(--fl-btn-border) solid var(--_bd);
+  border-radius: var(--fl-btn-radius);
+  background: var(--_bg); color: var(--_fg);
+  font: var(--fl-btn-medium-font) var(--fl-font-family);
+  text-decoration: none; cursor: pointer; outline: none;
+  transition: background var(--fl-btn-transition), border var(--fl-btn-transition), color var(--fl-btn-transition);
+
+  &:enabled:hover { background: var(--_bg-h); border-color: var(--_bd-h); color: var(--_fg-h); }
+  &:enabled:is(:hover:active, :active:focus-visible) { background: var(--_bg-p); border-color: var(--_bd-p); color: var(--_fg-p); }
+}
+@media (prefers-reduced-motion: reduce) { .fl-btn { transition-duration: 0.01ms; } }
+
+/* Appearances. Secondary is the base. */
+.fl-btn[data-appearance="outline"]     { --_bg: transparent; --_bg-h: transparent; --_bg-p: transparent; }
+.fl-btn[data-appearance="primary"]     {
+  --_bg: var(--colorBrandBackground); --_bg-h: var(--colorBrandBackgroundHover); --_bg-p: var(--colorBrandBackgroundPressed);
+  --_bd: transparent; --_bd-h: transparent; --_bd-p: transparent;
+  --_fg: var(--colorNeutralForegroundOnBrand); --_fg-h: var(--colorNeutralForegroundOnBrand); --_fg-p: var(--colorNeutralForegroundOnBrand);
+}
+.fl-btn[data-appearance="subtle"]      {
+  --_bg: transparent; --_bg-h: var(--colorSubtleBackgroundHover); --_bg-p: var(--colorSubtleBackgroundPressed);
+  --_bd: transparent; --_bd-h: transparent; --_bd-p: transparent;
+  --_fg: var(--colorNeutralForeground2); --_fg-h: var(--colorNeutralForeground2Hover); --_fg-p: var(--colorNeutralForeground2Hover);
+  --_icon-h: var(--colorNeutralForeground2BrandHover); --_icon-p: var(--colorNeutralForeground2BrandPressed);   /* Only the icon turns brand */
+}
+.fl-btn[data-appearance="transparent"] {
+  --_bg: transparent; --_bg-h: transparent; --_bg-p: transparent;
+  --_bd: transparent; --_bd-h: transparent; --_bd-p: transparent;
+  --_fg: var(--colorNeutralForeground2); --_fg-h: var(--colorNeutralForeground2BrandHover); --_fg-p: var(--colorNeutralForeground2BrandPressed);
+}
+
+/* Checked (ToggleButton): the same appearances with their Selected fills. */
+.fl-btn[aria-pressed="true"]                              { --_bg: var(--colorNeutralBackground1Selected); }
+.fl-btn[aria-pressed="true"][data-appearance="primary"]   { --_bg: var(--colorBrandBackgroundSelected); }
+.fl-btn[aria-pressed="true"][data-appearance="subtle"]    { --_bg: var(--colorSubtleBackgroundSelected); }
+
+/* Sizes. Small and large also change the focus-ring corners. */
+.fl-btn[data-size="small"] { --_pad: var(--fl-btn-small-padding); --_gap: var(--fl-btn-small-icon-gap); min-width: var(--fl-btn-small-min-width); font: var(--fl-btn-small-font) var(--fl-font-family); font-weight: 400; }
+.fl-btn[data-size="large"] { --_pad: var(--fl-btn-large-padding); --_gap: var(--fl-btn-large-icon-gap); font: var(--fl-btn-large-font) var(--fl-font-family); }
+.fl-btn[data-size="small"]:has(.fl-btn__icon) { padding-block: 1px; }
+.fl-btn[data-size="large"]:has(.fl-btn__icon) { padding-block: 7px; }
+
+.fl-btn[data-icon-only] { min-width: 0; padding: 5px; inline-size: var(--fl-btn-medium-icon-only); }
+.fl-btn[data-icon-only][data-size="small"] { padding: 1px; inline-size: var(--fl-btn-small-icon-only); }
+.fl-btn[data-icon-only][data-size="large"] { padding: 7px; inline-size: var(--fl-btn-large-icon-only); }
+
+/* Icons: Regular and Filled are stacked by swapping display, as in the tab list. */
+.fl-btn__icon { display: inline-flex; align-items: center; justify-content: center; inline-size: var(--fl-btn-icon-size); block-size: var(--fl-btn-icon-size); flex: none; }
+.fl-btn[data-size="large"] .fl-btn__icon { inline-size: 24px; block-size: 24px; }
+.fl-btn__icon:not(:only-child) { margin-inline-end: var(--_gap); }
+.fl-btn .icon { width: 100%; height: 100%; fill: currentColor; }
+.fl-btn .fl-filled { display: none; }
+.fl-btn:enabled:is([aria-pressed="true"], [data-appearance="subtle"]:is(:hover, :active:focus-visible), [data-appearance="transparent"]:is(:hover, :active:focus-visible)) {
+  .fl-regular { display: none; }
+  .fl-filled { display: inline; }
+}
+.fl-btn:enabled:hover .fl-btn__icon { color: var(--_icon-h); }
+.fl-btn:enabled:is(:hover:active, :active:focus-visible) .fl-btn__icon { color: var(--_icon-p); }
+
+/* Disabled: the same colors for every appearance, except which ones stay transparent. */
+.fl-btn:disabled { background: var(--colorNeutralBackgroundDisabled); border-color: var(--colorNeutralStrokeDisabled); color: var(--colorNeutralForegroundDisabled); cursor: not-allowed; }
+.fl-btn:disabled:is([data-appearance="outline"], [data-appearance="subtle"], [data-appearance="transparent"]) { background: transparent; }
+.fl-btn:disabled:is([data-appearance="primary"], [data-appearance="subtle"], [data-appearance="transparent"]) { border-color: transparent; }
+
+/* Focus: 2px transparent outline for forced-colors, the border and a 1px inset ring in colorStrokeFocus2. */
+.fl-btn:focus-visible {
+  border-color: var(--colorStrokeFocus2);
+  border-radius: var(--fl-btn-radius);
+  outline: var(--fl-btn-focus-outline) solid transparent;
+  box-shadow: inset 0 0 0 1px var(--colorStrokeFocus2);
+  z-index: 1;
+}
+.fl-btn[data-size="small"]:focus-visible { border-radius: var(--fl-btn-radius-small-focus); }
+.fl-btn[data-size="large"]:focus-visible { border-radius: var(--fl-btn-radius-large-focus); }
+/* Primary adds a shadow and a white inner ring so the ring reads against the brand fill. */
+.fl-btn[data-appearance="primary"]:focus-visible {
+  box-shadow: var(--shadow2), inset 0 0 0 1px var(--colorStrokeFocus2), inset 0 0 0 2px var(--colorNeutralForegroundOnBrand);
+  &:hover { box-shadow: var(--shadow2), inset 0 0 0 1px var(--colorStrokeFocus2); }   /* The inner ring drops on hover */
+}
+
+/* Shape. Declared after focus so a circular or square button keeps its shape while focused. */
+.fl-btn[data-shape="circular"], .fl-btn[data-shape="circular"]:focus-visible { border-radius: var(--fl-btn-radius-circular); }
+.fl-btn[data-shape="square"],   .fl-btn[data-shape="square"]:focus-visible   { border-radius: 0; }
+
+/* Split button: two buttons that share an edge. The menu button is a square icon-only button. */
+.fl-split { display: inline-flex; position: relative; vertical-align: middle; }
+.fl-split > .fl-btn:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.fl-split > .fl-btn:last-child  { border-left-width: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; min-width: 24px; }
+.fl-split[data-appearance="primary"] > .fl-btn:first-child { border-right-color: var(--colorNeutralStrokeOnBrand); }   /* Divider on a brand fill */
+
+/* Dialog actions: a flex row, 8px apart, end-aligned. At 480px and below it becomes a column. */
+.fl-dialog-actions { display: flex; justify-content: flex-end; gap: var(--fl-dialog-gap); box-sizing: border-box; height: fit-content; }
+/* Fluent uses @media (max-width: 480px). A container query lets the narrow case sit beside the wide one. */
+@container (max-width: 480px) { .fl-dialog-actions { flex-direction: column; justify-content: stretch; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: var(--colorNeutralBackground1); color: var(--colorNeutralForeground1); font: 400 14px/20px var(--fl-font-family); }
+.app { max-width: 640px; margin: 0 auto; padding: 20px 24px 32px; }
+.app-title { margin: 0 0 8px; font-size: 20px; line-height: 28px; font-weight: 600; }
+.group { margin-top: 16px; }
+.cap { margin: 0 0 8px; font-size: 12px; line-height: 16px; font-weight: 400; color: light-dark(#616161, #adadad); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dialogs { display: grid; gap: 12px; justify-items: start; overflow-x: auto; padding-bottom: 8px; }
+.fl-dialog { container-type: inline-size; box-sizing: border-box; inline-size: 100%; max-inline-size: 560px; padding: var(--fl-dialog-padding); border-radius: 8px; background: var(--colorNeutralBackground1); box-shadow: 0 0 0 1px light-dark(#e0e0e0, #3d3d3d), 0 8px 16px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.28)); }
+.fl-dialog--wide { min-inline-size: 540px; }   /* Wide enough for the row; the demo scrolls sideways in a narrow frame */
+.fl-dialog--narrow { max-inline-size: 300px; }
+.fl-dialog__title { margin: 0 0 8px; font-size: 20px; line-height: 28px; font-weight: 600; }
+.fl-dialog__body { margin: 0 0 24px; color: light-dark(#424242, #d6d6d6); }
+/* The split menu: a plain popover. Fluent's menu surface is documented on the Context Menus page. */
+.fl-menu-shell { inset: auto; margin: 4px 0 0; padding: 0; border: 0; background: none; overflow: visible; position-area: bottom span-left; }
+.fl-menu { display: grid; min-inline-size: 160px; padding: 4px; border-radius: 4px; background: var(--colorNeutralBackground1); box-shadow: 0 0 0 1px light-dark(#e0e0e0, #3d3d3d), 0 4px 8px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.28)); }
+.fl-menu-item { appearance: none; border: 0; border-radius: 4px; padding: 6px 8px; background: none; color: var(--colorNeutralForeground1); font: inherit; text-align: start; cursor: pointer; }
+.fl-menu-item:hover { background: var(--colorSubtleBackgroundHover); }
+.fl-menu-item:focus-visible { outline: 2px solid var(--colorStrokeFocus2); outline-offset: -2px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// ToggleButton: Fluent's checked state is aria-pressed, so flipping it is the whole behavior.
+document.querySelectorAll('.fl-btn[aria-pressed]').forEach(b =>
+  b.addEventListener('click', () => b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true')));
+
+// Split menu: move focus to the first item when it opens. Arrow keys come from focusgroup;
+// Esc and light dismiss come from the popover, which also returns focus to the menu button.
+const splitMenu = document.getElementById('split-menu');
+splitMenu.addEventListener('toggle', e => {
+  if (e.newState === 'open') splitMenu.querySelector('[role="menuitem"]').focus({ preventScroll: true });
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Check "Bold" so the checked state (selected fill and Filled icon) shows at rest.
+{ document.querySelector('[data-pin-toggle]').click(); }
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="1110" data-hint="Hover, press and Tab through the buttons. Bold and the stars toggle; the chevron opens the split menu. The two dialogs show the wide and stacked action rows."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv"><tbody>
+        <tr><th>Button</th><td>A <code>button</code> with an optional icon and a label, 1px border, 4px corners. Sizes: small 24px, medium 32px (default), large 40px; the height comes from padding plus line height, not a fixed value.</td></tr>
+        <tr><th>Appearance</th><td><code>secondary</code> (default, neutral fill and border), <code>primary</code> (brand fill), <code>outline</code> (transparent fill, neutral border), <code>subtle</code> (no fill or border until hover) and <code>transparent</code> (no fill ever; the label turns brand on hover).</td></tr>
+        <tr><th>Icon</th><td>20px (large 24px) before the label. Regular at rest; subtle and transparent swap to Filled on hover, and any checked toggle shows Filled. Icon-only buttons are square: 24, 32 and 40px.</td></tr>
+        <tr><th>Shape</th><td><code>rounded</code> (size radius, default), <code>circular</code> and <code>square</code>.</td></tr>
+        <tr><th>Toggle</th><td>A button with a checked state. Checked secondary and subtle take their Selected fills; checked primary takes <code>colorBrandBackgroundSelected</code>. Outline and transparent toggles are not built here.</td></tr>
+        <tr><th>Split button</th><td>A primary action beside a 24px-minimum menu button, sharing one edge. The action is not repeated in the menu, and each menu item uses the full phrase (“New event”).</td></tr>
+        <tr><th>Dialog actions</th><td>The footer row of a dialog: a flex row with an 8px gap, aligned to the end. The primary is first in the DOM, so it sits left of Cancel.</td></tr>
+        <tr><th>Not built</th><td>CompoundButton (a secondary line under the label, padding and icon values are in the sources), MenuButton, <code>disabledFocusable</code>, and the forced-colors rules.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Hierarchy</th><td>One primary button in a layout, for the most important action. With more than two buttons of equal priority, make all of them neutral. With many minor actions, use outline, subtle or transparent on all of them.</td></tr>
+        <tr><th>Placement</th><td>The primary goes on top of, or to the left of, the other actions; in right-to-left languages, to the right.</td></tr>
+        <tr><th>Hover and press</th><td>Fill, border and label each move to the Hover token, then the Pressed token. Primary keeps a transparent border; subtle and transparent show only a label (and fill, for subtle) change. Subtle turns only the icon brand; transparent turns the label and the icon.</td></tr>
+        <tr><th>Focus</th><td>Keyboard focus only: a transparent 2px outline (seen in forced-colors mode), the border and a 1px inset ring in <code>colorStrokeFocus2</code>. Primary adds <code>shadow2</code> and a 2px white inner ring, which drops on hover. Small buttons use 2px corners and large 6px while focused.</td></tr>
+        <tr><th>Disabled</th><td>Disabled fill, border and label for every appearance, except that outline, subtle and transparent stay unfilled and primary, subtle and transparent lose the border. No hover. Fluent says to show a tooltip stating what is unavailable and why.</td></tr>
+        <tr><th>Motion</th><td>Background, border and color ease over 100ms on <code>curveEasyEase</code>; under reduced motion the duration is 0.01ms.</td></tr>
+        <tr><th>Dialog actions</th><td>Alert dialogs can be dismissed only by a footer button. At 480px and below the row becomes a column and the primary stays on top. Here that is a container query on the dialog so both cases show together; Fluent uses a viewport media query.</td></tr>
+        <tr><th>Action count</th><td>Fluent’s sources disagree. The Dialog page says the footer holds up to three actions and the storybook best practices say no more than three buttons; the storybook note on <code>fluid</code> says a dialog should have no more than two. The demo shows two.</td></tr>
+        <tr><th>Labels</th><td>A single active verb, sentence case, no end punctuation. “New X” to create, “Add X” for an existing item. In a dialog, answer the title (“Delete this file?” gets Delete file and Cancel). Next and Previous, not Continue and Back. Cancel discards; Close leaves the task unchanged; never use OK to dismiss an error.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between buttons; a split button is two stops, the action then the menu button.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activates the button; on a toggle it flips <code>aria-pressed</code>; on the menu button it opens the menu.</td></tr>
+          <tr><th><kbd>↑</kbd> <kbd>↓</kbd></th><td>In the split menu, moves between items. <kbd>Esc</kbd> closes it and returns focus to the menu button.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Every icon-only button has an <code>aria-label</code>; icons inside labelled buttons are decorative.</li>
+          <li>A toggle uses <code>aria-pressed</code>. Fluent asks for a change in text, icon or color that shows both the state and the action; here the Filled icon and the fill change together.</li>
+          <li>Text must reach 4.5:1 and icons 3:1 in every state; the border has no requirement. Disabled buttons are exempt.</li>
+          <li>Small buttons are 24px and the split menu button about 31px, so they meet the WCAG 2.2 24px minimum but not the 44px recommendation. The rules table below measures size, contrast, names, focus style and reduced motion; it cannot judge whether the focus ring is visible enough against every neighbor, or whether labels follow the writing guidance.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

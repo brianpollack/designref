@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expressive CSS Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/expressive-effects">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="app">
+  <div class="gal">
+    <div class="cell"><p class="cap">Gradient border</p>
+      <button class="fx gb" type="button">Upgrade</button></div>
+    <div class="cell"><p class="cap">Spring press</p>
+      <button class="fx sp" type="button">Press me</button></div>
+    <div class="cell"><p class="cap">Shimmer</p>
+      <button class="fx sh" type="button">Get started</button></div>
+    <div class="cell stage"><p class="cap">Glass</p>
+      <button class="fx gl" type="button">Add to library</button></div>
+    <div class="cell"><p class="cap">Corner shape</p>
+      <div class="row">
+        <button class="fx cs" type="button">Squircle</button>
+        <button class="fx cs" data-shape="scoop" type="button">Scoop</button>
+        <button class="fx cs" data-shape="notch" type="button">Notch</button>
+      </div></div>
+    <div class="cell"><p class="cap">Keycap</p>
+      <button class="fx kc" type="button">Enter</button></div>
+    <div class="cell"><p class="cap">Gradient text</p>
+      <button class="fx gt" type="button">Read the changelog</button></div>
+    <div class="cell"><p class="cap">color-mix() ladder: rest, hover, pressed</p>
+      <div class="row">
+        <button class="fx cm" type="button">Save</button>
+        <button class="fx cm" data-state="hover" type="button">Save</button>
+        <button class="fx cm" data-state="pressed" type="button">Save</button>
+      </div></div>
+  </div>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Shared by every effect */
+  --fx-h: 44px;                                               /* Minimum height; also the 44px enhanced target size */
+  --fx-pad: 0 22px;                                           /* Label padding, left and right */
+  --fx-radius: 12px;                                          /* Corner radius */
+  --fx-font: 600 15px/20px system-ui, sans-serif;             /* Label: 15px, line height 20px, weight 600 */
+  --fx-focus: light-dark(#2b59e0, #8ea6ff);                   /* Focus ring, 2px, 3px off the edge */
+  --fx-text: light-dark(#16181d, #f2f3f5);                    /* Default label color, over 12:1 on the surfaces below */
+
+  /* @group Gradient border (gb) */
+  --gb-fill: light-dark(#ffffff, #1b1c21);                    /* Fill inside the border; carries the label contrast */
+  --gb-width: 2px;                                            /* Border thickness */
+  --gb-spin: 3s;                                              /* One full turn of the gradient; stopped under reduced motion */
+  --gb-c1: light-dark(#4f2bd6, #a98bff);                      /* Gradient stop 1 */
+  --gb-c2: light-dark(#d4146f, #ff8fc8);                      /* Gradient stop 2 */
+  --gb-c3: light-dark(#0b8a6f, #5fe0c0);                      /* Gradient stop 3 */
+
+  /* @group Spring press (sp) */
+  --sp-bg: light-dark(#2b59e0, #8ea6ff);                      /* Fill */
+  --sp-text: light-dark(#ffffff, #0f1530);                    /* Label, 5.9:1 light and 8:1 dark or better */
+  --sp-press: 0.9;                                            /* Scale while held down */
+  --sp-release: 600ms;                                        /* Settle time after release */
+  --sp-ease: linear(0, 0.501 7%, 0.941 14%, 1.16 21%, 1.186 29%, 1.115 36%, 1.033 43%, 0.983 50%, 0.968 57%, 0.976 64%, 0.99 71%, 1 79%, 1.005 86%, 1.005 93%, 1);   /* Damped spring: overshoots to 1.19, settles at 1 */
+
+  /* @group Shimmer (sh) */
+  --sh-bg: light-dark(#1d2330, #e8eaf0);                      /* Fill */
+  --sh-text: light-dark(#ffffff, #14161b);                    /* Label, 14:1 or better */
+  --sh-glint: light-dark(rgb(255 255 255 / 0.28), rgb(20 22 27 / 0.18));   /* Sweep band; sits behind the label */
+  --sh-dur: 700ms;                                            /* One pass of the sweep on hover or focus */
+
+  /* @group Glass (gl) */
+  --gl-bg: light-dark(rgb(255 255 255 / 0.7), rgb(18 20 28 / 0.6));   /* Translucent fill; this much opacity keeps the label legible over busy art */
+  --gl-bg-solid: light-dark(#f4f5f9, #23252d);                /* Fill when backdrop-filter is missing */
+  --gl-text: light-dark(#111318, #ffffff);                    /* Label */
+  --gl-edge: light-dark(rgb(255 255 255 / 0.8), rgb(255 255 255 / 0.25));   /* 1px edge that catches light */
+  --gl-blur: 14px;                                            /* Backdrop blur radius */
+
+  /* @group Corner shape (cs) */
+  --cs-radius: 22px;                                          /* border-radius; corner-shape does nothing without it */
+  --cs-shape: squircle;                                       /* corner-shape keyword: squircle, scoop or notch here */
+  --cs-bg: light-dark(#9db0ee, #aab4dc);                      /* Fill; at least 3:1 against the surface so the shape reads */
+  --cs-text: #16181d;                                         /* Label, over 7:1 on both fills */
+
+  /* @group Keycap (kc) */
+  --kc-face: light-dark(#f7f7f9, #565b69);                    /* Top of the key */
+  --kc-text: light-dark(#1c1d21, #f2f3f5);                    /* Legend */
+  --kc-edge: light-dark(#8a90a0, #0c0d10);                    /* Side of the key; the first layered shadow */
+  --kc-drop: light-dark(rgb(20 24 40 / 0.28), rgb(0 0 0 / 0.55));   /* Soft shadow on the desk */
+  --kc-hi: light-dark(rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.12));   /* 1px inset highlight on the top edge */
+  --kc-depth: 6px;                                            /* Key travel; the button moves down by depth minus 1px */
+
+  /* @group Gradient text (gt) */
+  --gt-fill: linear-gradient(90deg, light-dark(#4f2bd6, #a98bff), light-dark(#b0136b, #ff8fc8), light-dark(#4f2bd6, #a98bff));   /* Text fill, 200% wide; every stop is at least 6:1 on the surface */
+  --gt-line: light-dark(#7a2bb5, #c9a8ff);                    /* Underline; solid, because text-decoration ignores the clipped fill */
+  --gt-fallback: light-dark(#4f2bd6, #a98bff);                /* Label color where background-clip: text is missing */
+
+  /* @group color-mix() ladder (cm) */
+  --cm-base: light-dark(#2b59e0, #8ea6ff);                    /* The one brand color every state derives from */
+  --cm-text: light-dark(#ffffff, #0f1530);                    /* Label */
+  --cm-shade: light-dark(#000000, #ffffff);                   /* Color mixed in: black on light, white on dark, so pressed always gains label contrast */
+  --cm-hover-mix: 12%;                                        /* Share of shade mixed in on hover */
+  --cm-press-mix: 24%;                                        /* Share of shade mixed in when pressed */
+}
+
+/* ---- Shared base: every effect is a real <button> ---- */
+.fx {
+  appearance: none; border: 0; margin: 0;
+  min-height: var(--fx-h);
+  padding: var(--fx-pad);
+  font: var(--fx-font);
+  color: var(--fx-text);
+  background: none;
+  border-radius: var(--fx-radius);
+  cursor: pointer;
+  transition: transform 100ms ease-out, background-color 120ms;
+
+  &:active { transform: scale(0.97); }                        /* Every effect has a pressed state */
+  &:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: 3px; }
+}
+
+/* ---- 1. Animated gradient border ----
+   @property types --gb-angle as an <angle>, so @keyframes can animate it. An unregistered
+   custom property would flip at the halfway point instead of turning. */
+@property --gb-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.gb {
+  border: var(--gb-width) solid transparent;                  /* Transparent border shows the border-box layer */
+  background:
+    linear-gradient(var(--gb-fill), var(--gb-fill)) padding-box,
+    conic-gradient(from var(--gb-angle), var(--gb-c1), var(--gb-c2), var(--gb-c3), var(--gb-c1)) border-box;
+  animation: gb-spin var(--gb-spin) linear infinite;
+}
+@keyframes gb-spin { to { --gb-angle: 360deg; } }
+
+/* ---- 2. Spring press: linear() overshoot on release ---- */
+.sp {
+  background: var(--sp-bg); color: var(--sp-text);
+  transition: transform var(--sp-release) var(--sp-ease);     /* The spring runs when the press ends */
+
+  &:active { transform: scale(var(--sp-press)); transition: transform 80ms ease-out; }
+}
+
+/* ---- 3. Shimmer: a band sweeps across on hover or keyboard focus ---- */
+.sh {
+  position: relative; overflow: hidden; isolation: isolate;   /* isolate keeps the band behind the label */
+  background: var(--sh-bg); color: var(--sh-text);
+
+  &::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(105deg, transparent 35%, var(--sh-glint) 50%, transparent 65%);
+    translate: -100% 0;                                       /* Parked off the left edge; snaps back when interest ends */
+  }
+  &:focus-visible::before { translate: 100% 0; transition: translate var(--sh-dur) ease-out; }
+}
+@media (hover: hover) {                                       /* Touch screens have no hover, so no stuck sweep */
+  .sh:hover::before { translate: 100% 0; transition: translate var(--sh-dur) ease-out; }
+}
+
+/* ---- 4. Glass: translucent fill over a blurred backdrop ---- */
+.gl {
+  background: var(--gl-bg); color: var(--gl-text);
+  border: 1px solid var(--gl-edge);
+  backdrop-filter: blur(var(--gl-blur)) saturate(1.6);
+  box-shadow: inset 0 1px 0 var(--gl-edge), 0 6px 16px rgb(0 0 0 / 0.18);
+
+  &:hover { background: color-mix(in srgb, var(--gl-bg), var(--gl-text) 8%); }
+  &:focus-visible { outline-color: var(--gl-text); }          /* The blue ring would sit on colored art */
+}
+@supports not (backdrop-filter: blur(1px)) { .gl { background: var(--gl-bg-solid); } }
+
+/* ---- 5. Corner shape: squircle, scoop, notch ---- */
+.cs {
+  border-radius: var(--cs-radius);
+  corner-shape: var(--cs-shape);
+  background: var(--cs-bg); color: var(--cs-text);
+
+  &[data-shape="scoop"] { --cs-shape: scoop; }
+  &[data-shape="notch"] { --cs-shape: notch; }
+  &:hover { background: color-mix(in oklab, var(--cs-bg), var(--cs-text) 10%); }
+}
+
+/* ---- 6. Keycap: layered shadows are the key's side, the press removes them ---- */
+.kc {
+  background: var(--kc-face); color: var(--kc-text);
+  border-radius: 10px;
+  margin-bottom: var(--kc-depth);                             /* Reserves the room the side shadow draws in */
+  text-shadow: 0 1px 0 var(--kc-hi);
+  box-shadow: inset 0 1px 0 var(--kc-hi), 0 var(--kc-depth) 0 var(--kc-edge), 0 calc(var(--kc-depth) + 4px) 10px var(--kc-drop);
+  transition: transform 60ms ease-out, box-shadow 60ms ease-out;
+
+  &:active {
+    transform: translateY(calc(var(--kc-depth) - 1px));
+    box-shadow: inset 0 1px 0 var(--kc-hi), 0 1px 0 var(--kc-edge), 0 2px 4px var(--kc-drop);
+  }
+}
+
+/* ---- 7. Gradient text: the fill is clipped to the glyphs ---- */
+.gt {
+  background: var(--gt-fill) 0 0 / 200% 100%;
+  background-clip: text; color: transparent;                  /* Text must be transparent for the fill to show */
+  text-decoration: underline 2px var(--gt-line); text-underline-offset: 5px;
+  transition: background-position 400ms ease-out, opacity 100ms;
+
+  &:hover { background-position: 100% 0; }
+  &:active { opacity: 0.7; transform: none; }
+}
+@supports not (background-clip: text) { .gt { color: var(--gt-fallback); background: none; } }
+
+/* ---- 8. color-mix() ladder: hover and pressed are the base mixed with a shade ---- */
+.cm {
+  background: var(--cm-base); color: var(--cm-text);
+  border: 1px solid oklch(from var(--cm-base) calc(l - 0.12) c h);   /* Relative color: the base, 0.12 darker */
+
+  &:is(:hover, [data-state="hover"]) { background: color-mix(in oklab, var(--cm-base), var(--cm-shade) var(--cm-hover-mix)); }
+  &:is(:active, [data-state="pressed"]) { background: color-mix(in oklab, var(--cm-base), var(--cm-shade) var(--cm-press-mix)); }
+}
+
+/* ---- Motion and contrast preferences ---- */
+@media (prefers-reduced-motion: reduce) {
+  .fx, .sp, .kc, .gt { transition: none; }                    /* State changes still show; they just do not travel */
+  .gb { animation: none; --gb-angle: 40deg; }                 /* Static gradient */
+  .sp:active { transform: none; background: color-mix(in oklab, var(--sp-bg), var(--cm-shade) 20%); }
+  .sh::before { display: none; }
+  .sh:hover { background: color-mix(in oklab, var(--sh-bg), var(--sh-text) 14%); }
+}
+@media (forced-colors: active) {                              /* Shadows and gradients are removed, so draw an edge */
+  .fx { border: 2px solid ButtonText; }
+  .fx:focus-visible { outline-color: Highlight; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.app { padding: 20px; }
+.gal { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.cell { display: grid; align-content: start; justify-items: start; gap: 10px; padding: 14px; border-radius: 12px; background: light-dark(#fff, #1d1e22); }
+.cap { margin: 0; font-size: 12px; color: light-dark(#5c6270, #a3a8b4); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.stage { background: radial-gradient(circle at 15% 25%, #ff7a59 0 22%, transparent 23%), radial-gradient(circle at 85% 80%, #3ba7ff 0 28%, transparent 29%), light-dark(#7c5cff, #4a35a8); }
+.stage .cap { color: #fff; }
+.gal .cell:last-child { grid-column: 1 / -1; }
+</style>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="720" data-hint="Hover, press and Tab to each button. Switch the frame to reduced motion in your OS to see the static fallbacks."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv">
+        <thead><tr><th>Effect</th><th>What it needs</th><th>Support, as MDN states it</th></tr></thead>
+        <tbody>
+        <tr><th>Gradient border</th><td>A transparent border with two background layers: a solid fill clipped to <code>padding-box</code> over a <code>conic-gradient()</code> on <code>border-box</code>. The angle is a custom property registered with <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@property"><code>@property</code></a> as <code>&lt;angle&gt;</code> so keyframes can animate it. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient"><code>conic-gradient()</code></a> is an image, so it cannot set a color, and <code>border-image</code> would ignore the radius.</td><td><code>@property</code>: Baseline 2024, since Jul 2024. <code>conic-gradient()</code>: widely available since Nov 2020.</td></tr>
+        <tr><th>Spring press</th><td><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/linear"><code>linear()</code></a> interpolates between many points and allows values past 1, which is the overshoot. Points here were computed from a damped cosine; Jake Archibald’s generator, linked on that page, makes others.</td><td>Widely available since Dec 2023.</td></tr>
+        <tr><th>Shimmer</th><td>A <code>::before</code> band behind the label, moved on hover inside <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/hover"><code>@media (hover: hover)</code></a> and on <code>:focus-visible</code>. MDN: the feature describes the primary input only, so a hybrid device may report either.</td><td><code>hover</code> media feature: widely available since Dec 2018.</td></tr>
+        <tr><th>Glass</th><td>A translucent fill and <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/backdrop-filter"><code>backdrop-filter</code></a>. It only blurs up to the nearest backdrop root, so a parent with <code>opacity</code> below 1, <code>filter</code>, <code>mask</code> or <code>clip-path</code> flattens it. The fill stays 60–70% opaque to hold label contrast; <code>@supports</code> swaps in a solid fill.</td><td>Baseline 2024, since Sep 2024.</td></tr>
+        <tr><th>Corner shape</th><td><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/corner-shape"><code>corner-shape</code></a> needs a non-zero <code>border-radius</code>. <code>squircle</code> is <code>superellipse(2)</code>, <code>scoop</code> is <code>-1</code> (concave), <code>notch</code> is <code>-infinity</code>. Chrome’s own write-up, <a href="https://developer.chrome.com/blog/implementing-corner-shape">The corner cases of implementing CSS corner-shape in Blink</a>, says it shipped in 2025.</td><td>MDN: limited availability, not Baseline. Chrome blog: shipped 2025; no version number given.</td></tr>
+        <tr><th>Keycap</th><td>Layered <code>box-shadow</code>: an inset highlight, a hard shadow for the side, a soft one for the desk. Pressing moves the key down by the side’s depth and collapses the side shadow. Forced colors removes <code>box-shadow</code>, so the page adds a border there (MDN’s own fix).</td><td><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@media/forced-colors"><code>forced-colors</code></a>: widely available since Sep 2022.</td></tr>
+        <tr><th>Gradient text</th><td><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/background-clip"><code>background-clip: text</code></a> with <code>color: transparent</code>. MDN asks for a contrast check, a fallback color and an <code>@supports not</code> alternative; all three are here.</td><td><code>background-clip</code>: widely available since Jul 2015. The <code>text</code> value was not listed separately.</td></tr>
+        <tr><th>color-mix() ladder</th><td><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix"><code>color-mix(in oklab, base, shade N%)</code></a> derives hover and pressed from one base. The border uses a <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_colors/Relative_colors">relative color</a>, <code>oklch(from base calc(l - 0.12) c h)</code>. The shade is <code>light-dark()</code>, so pressed gets darker in light and lighter in dark.</td><td><code>color-mix()</code>: widely available since May 2023. Relative colors: no Baseline or version on the page.</td></tr>
+        <tr><th>Not verified</th><td>Chrome version numbers for any feature here: MDN’s compatibility tables were cut off when fetched. <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@starting-style"><code>@starting-style</code></a> was read but is not needed by these effects; the Loading and Confirming Buttons page uses it.</td><td>Check chromestatus.com or the MDN tables for exact versions.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv"><tbody>
+        <tr><th>Pressed</th><td>All eight have an <code>:active</code> state: a 3% shrink, a deeper fill, or the key travelling down. It starts on pointer down, so the button answers before release.</td></tr>
+        <tr><th>Reduced motion</th><td>The gradient stops turning, the spring and the shimmer are removed, and transitions are off. Hover and pressed still change color.</td></tr>
+        <tr><th>Forced colors</th><td>Every button gets a 2px <code>ButtonText</code> border and a <code>Highlight</code> focus ring. MDN: gradients and shadows are removed there, and <code>color</code> maps to the system color, so gradient-text labels stay readable.</td></tr>
+        <tr><th>Label contrast</th><td>Each label is checked against its own fill at 4.5:1 or better in both themes, not against the effect. The shimmer band sits behind the label and is faint; the glass fill is mostly opaque.</td></tr>
+        <tr><th>Corner shape</th><td>Chrome draws each shape from the same <code>border-radius</code>. Because it is a CSS property, there is no script and no fallback: a browser without it shows plain rounded corners.</td></tr>
+        <tr><th>Use for</th><td>One call to action, not a whole toolbar. Effects compete: pick one per view.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves to each button. The shimmer plays on focus, as on hover.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate. These are native buttons; nothing is rebuilt.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Focus ring: 2px, 3px off the edge, in <code>--fx-focus</code>. On glass it takes the label color so it reads over the art.</li>
+          <li>WCAG 1.4.3 asks for 4.5:1 on text, 3:1 for large text. Gradient text uses stops at 6:1 or better on the surface because the contrast changes along the word.</li>
+          <li>Targets are 44px tall, above the 24px minimum (2.5.8) and at the enhanced size (2.5.5, AAA).</li>
+          <li>Motion that is purely decorative is removed under <code>prefers-reduced-motion</code>; the press itself is a state change and stays.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

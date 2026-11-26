@@ -27,6 +27,7 @@ assets/icons.js                Lucide icon set and the Icons API (lookup, svg, s
 assets/icon-libraries.js       Icon libraries we track: license, style, naming, fetch source, examples
 assets/icon-sets.js            GENERATED artwork for non-Lucide sets (scripts/fetch-icons.mjs)
 assets/icons-page.js           Renders icons.html
+assets/rules.js                Rules check: WCAG + per-core-library rules, measured in the demo frames
 components/<category>/index.html         Category page
 components/<category>/<concept>.html     Concept page
 templates/<category>/…                   Page Templates section (same layout)
@@ -64,6 +65,16 @@ scripts/                       new-category.sh, new-concept.sh, check.mjs, check
 - Run `node scripts/check.mjs` after any change: it cross-checks catalog, files, icons,
   feature keys and every source id. `node scripts/check-links.mjs` fetches every cited URL
   and reports dead or moved ones (run it before committing new sources).
+
+## Rules check (assets/rules.js)
+
+Concept pages with a `system` (built to or inspired by a core library) get a "Rules check"
+table after Specs, run by `concept.js` in both theme frames: target size, contrast, accessible
+names, focus style, reduced motion, plus that library's own rules (Apple HIG hit region by
+`platform: 'ios' | 'macos' | 'visionos'`, Material 3 48dp). Each rule cites a page in
+`sources.js`; a rule with no `check` shows "Review by hand". A pass means the rule held in the demo,
+never that the page "meets" the library. Add a rule only from a page you have read. Disabled
+controls are exempt from contrast. Design demos to pass what is measurable.
 
 ## Concept page contract (read `components/context-menus/right-click-menu.html` first)
 

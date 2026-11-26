@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Segmented and Toggle Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/segmented-toggle">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<!-- Native radios and checkboxes inside labels: the browser gives arrow keys, one tab stop, and checked
+     state for free, and CSS styles the label from :has(input:checked). No JavaScript. -->
+<div class="sheet">
+
+  <section>
+    <h2>Choose one: connected, with a check</h2>
+    <fieldset class="seg" data-style="connected">
+      <legend class="sr">View</legend>
+      <label><input type="radio" name="view" checked><svg class="icon tick"><use href="#i-check"/></svg><span>List</span></label>
+      <label><input type="radio" name="view"><svg class="icon tick"><use href="#i-check"/></svg><span>Grid</span></label>
+      <label><input type="radio" name="view"><svg class="icon tick"><use href="#i-check"/></svg><span>Board</span></label>
+    </fieldset>
+  </section>
+
+  <section>
+    <h2>Choose one: track with a sliding thumb</h2>
+    <fieldset class="seg" data-style="track">
+      <legend class="sr">Range</legend>
+      <label><input type="radio" name="range"><span>Day</span></label>
+      <label><input type="radio" name="range" checked><span>Week</span></label>
+      <label><input type="radio" name="range"><span>Month</span></label>
+      <label><input type="radio" name="range"><span>Year</span></label>
+    </fieldset>
+  </section>
+
+  <section>
+    <h2>Switch several on: toggle buttons</h2>
+    <fieldset class="seg" data-style="toggles">
+      <legend class="sr">Filters</legend>
+      <label><input type="checkbox" checked><svg class="icon tick"><use href="#i-check"/></svg><span>Unread</span></label>
+      <label><input type="checkbox"><svg class="icon tick"><use href="#i-check"/></svg><span>Starred</span></label>
+      <label><input type="checkbox"><svg class="icon tick"><use href="#i-check"/></svg><span>Mine</span></label>
+    </fieldset>
+  </section>
+
+  <section>
+    <h2>One on its own: a toggle button</h2>
+    <!-- A single toggle is a button with aria-pressed. Its label never changes; only the state does. -->
+    <button class="pin" aria-pressed="false"><svg class="icon"><use href="#i-pin"/></svg>Pin to top</button>
+  </section>
+
+  <section>
+    <h2>Disabled option</h2>
+    <fieldset class="seg" data-style="connected">
+      <legend class="sr">Plan</legend>
+      <label><input type="radio" name="plan" checked><svg class="icon tick"><use href="#i-check"/></svg><span>Free</span></label>
+      <label><input type="radio" name="plan"><svg class="icon tick"><use href="#i-check"/></svg><span>Team</span></label>
+      <label><input type="radio" name="plan" disabled><svg class="icon tick"><use href="#i-check"/></svg><span>Enterprise</span></label>
+    </fieldset>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Size and type */
+  --sg-h: 40px;                                               /* Segment height; hit area is the whole label */
+  --sg-pad: 16px;                                             /* Segment side padding */
+  --sg-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 in every state, so selecting never reflows */
+  --sg-radius: 20px;                                          /* Connected: pill ends; the track style uses 10px */
+
+  /* @group Color */
+  --sg-accent: light-dark(#2b59e0, #8ea6ff);                  /* Focus ring and pressed-toggle border */
+  --sg-rule: light-dark(#a9afbb, #565a66);                    /* Outline of the connected group and dividers: 2.2:1 on white (2.6:1 in dark), so selection is also shown by fill and a check */
+  --sg-selected: light-dark(#dfe5fb, #2e3560);                /* Selected segment fill */
+  --sg-on-selected: light-dark(#1b2a63, #dfe5ff);             /* Selected label: 10.7:1 light, 9.4:1 dark on its fill */
+  --sg-text: light-dark(#1c1d21, #ececef);                    /* Unselected label */
+  --sg-hover: light-dark(rgb(0 0 0 / .06), rgb(255 255 255 / .08));   /* Hover wash on an unselected segment */
+  --sg-track: light-dark(#e6e8ee, #2a2c33);                   /* Track style: trough fill */
+  --sg-thumb: light-dark(#ffffff, #4a4d59);                   /* Track style: the sliding thumb */
+  --sg-disabled: light-dark(#80858f, #7a7f89);                /* Disabled label; disabled controls are exempt from contrast */
+
+  /* @group Motion */
+  --sg-slide: 200ms cubic-bezier(0.2, 0, 0, 1);               /* Thumb slide and fills; off under reduced motion */
+}
+
+/* ---- Component ---- */
+.seg { margin: 0; padding: 0; border: 0; min-width: 0; display: inline-flex; font: var(--sg-font); }
+.seg label { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: var(--sg-h); padding: 0 var(--sg-pad); color: var(--sg-text); cursor: pointer; transition: background-color var(--sg-slide); }
+/* The real input stays in the page, visually hidden but focusable, so native keys work. */
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: inherit; }
+.tick { width: 18px; height: 18px; display: none; }
+.seg label:has(input:checked) .tick { display: block; }
+.seg label:has(input:focus-visible) { outline: 2px solid var(--sg-accent); outline-offset: 2px; z-index: 2; }
+.seg label:has(input:disabled) { color: var(--sg-disabled); cursor: not-allowed; }
+
+/* Connected: one outline around all, shared 1px dividers, pill ends. The selected segment is filled
+   and carries a check, so it differs by more than color. */
+[data-style="connected"], [data-style="toggles"] { border: 1px solid var(--sg-rule); border-radius: var(--sg-radius); overflow: clip; }
+[data-style="connected"] label + label, [data-style="toggles"] label + label { border-inline-start: 1px solid var(--sg-rule); }
+[data-style="connected"] label:not(:has(input:disabled)):hover, [data-style="toggles"] label:hover { background: var(--sg-hover); }
+[data-style="connected"] label:has(input:checked), [data-style="toggles"] label:has(input:checked) { background: var(--sg-selected); color: var(--sg-on-selected); }
+[data-style="toggles"] { border-radius: 10px; }
+
+/* Track: a trough with one thumb. The checked label is the thumb's anchor; the thumb is one pseudo-element
+   that slides between anchors, so only the selected segment holds it. */
+[data-style="track"] { position: relative; padding: 3px; border-radius: 10px; background: var(--sg-track); }
+[data-style="track"] label { z-index: 1; min-width: 64px; border-radius: 7px; }
+[data-style="track"] label:has(input:checked) { anchor-name: --sg-on; }
+[data-style="track"]::after { content: ""; position: absolute; position-anchor: --sg-on; left: anchor(left); right: anchor(right); top: anchor(top); bottom: anchor(bottom); border-radius: 7px; background: var(--sg-thumb); box-shadow: 0 1px 3px rgb(0 0 0 / .2); transition: left var(--sg-slide), right var(--sg-slide); }
+
+/* One toggle button. */
+.pin { display: inline-flex; align-items: center; gap: 8px; height: var(--sg-h); padding: 0 var(--sg-pad); border: 1px solid var(--sg-rule); border-radius: 10px; background: none; color: var(--sg-text); font: var(--sg-font); cursor: pointer; }
+.pin:hover { background: var(--sg-hover); }
+.pin[aria-pressed="true"] { background: var(--sg-selected); color: var(--sg-on-selected); border-color: var(--sg-accent); }
+.pin:focus-visible { outline: 2px solid var(--sg-accent); outline-offset: 2px; }
+.icon { width: 18px; height: 18px; }
+
+@media (prefers-reduced-motion: reduce) { .seg label, [data-style="track"]::after { transition: none; } }
+@media (forced-colors: active) {
+  [data-style="track"] { border: 1px solid ButtonText; }
+  [data-style="track"]::after { border: 2px solid Highlight; background: none; }
+  .seg label:has(input:checked), .pin[aria-pressed="true"] { background: Highlight; color: HighlightText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #17181c); color: var(--sg-text); font: 14px/20px system-ui, sans-serif; }
+.sheet { padding: 14px 16px 20px; display: grid; gap: 18px; justify-items: start; }
+.sheet h2 { margin: 0 0 6px; font: 600 12px/16px system-ui, sans-serif; color: light-dark(#5d6169, #a0a4ae); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Only the single toggle button needs script: native radios and checkboxes already hold their own state.
+document.querySelector('.pin').addEventListener('click', e => {
+  const b = e.currentTarget;
+  b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+{
+  // Rest state: the toggle is on and one filter is on.
+  document.querySelector('.pin').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="520" data-hint="Tab into a group and use the arrow keys. Checkboxes toggle with Space."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Group</th><td>A <code>fieldset</code> with a (visually hidden) <code>legend</code> naming the choice. For radios it is the radio group; for checkboxes, the set.</td></tr>
+        <tr><th>Segment</th><td>A <code>label</code> around a native <code>input</code>. 40px high, equal padding, the same label weight selected or not. The input fills the label, hidden but focusable, so the whole segment is the hit area.</td></tr>
+        <tr><th>Selected</th><td>Filled and, in the connected styles, a check before the label (Material 3 shows a check on the selected segment). A thumb in the track style. Never color alone.</td></tr>
+        <tr><th>Connected</th><td>One outline, shared dividers, pill ends. Material’s segmented button is 40px high with a 1px outline and 12px side padding.</td></tr>
+        <tr><th>Track</th><td>A trough with one thumb that slides to the chosen segment: a single pseudo-element positioned by anchor positioning, as in the underline tabs.</td></tr>
+        <tr><th>Toggle button</th><td>One button whose pressed state is on or off, with a label that never changes. Fluent: toggle buttons suit toolbars; in a settings panel use a switch.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled">
+      <h2>Which control</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Choose exactly one of two to five</th><td>Segmented control (radios). Apple: about five to seven segments on a wide screen and no more than about five on iPhone; equal widths; text or images, not both mixed; nouns or noun phrases.</td></tr>
+        <tr><th>Choose exactly one of many</th><td>A pop-up or select. Apple: radio groups are typically two to five, and a pop-up above that.</td></tr>
+        <tr><th>Switch several on or off</th><td>Toggle buttons in a group, as filters.</td></tr>
+        <tr><th>One setting, on or off</th><td>A switch in a list or panel; a toggle button in a toolbar. Apple: the iOS switch appears only in a list row.</td></tr>
+        <tr><th>Switch between views of the same content</th><td>Tabs or a segmented control. If the change loads a different page, use links, not radios.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Our own values, near Material 3’s segmented button (40px, 1px outline, pill, check on selected). Apple’s and Fluent’s pages give no numbers for these, so none are quoted from them.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Radios</th><td>Arrow keys move and select together, wrap at the ends, and Tab enters the group at the checked one: the browser does all of this for a native radio group. APG’s radio group describes the same.</td></tr>
+        <tr><th>Checkboxes</th><td>Each is its own tab stop; Space toggles. They read as “checkbox, checked”. If you want “toggle button, pressed”, use buttons with <code>aria-pressed</code>, as the single toggle here does; choose by the meaning you want announced.</td></tr>
+        <tr><th>Toggle label</th><td>Does not change with state (APG): “Pin to top” stays, and <code>aria-pressed</code> carries on or off. If the label changes instead (“Pin” and “Unpin”), drop <code>aria-pressed</code>.</td></tr>
+        <tr><th>State is not color</th><td>Check mark, fill, and thumb position all mark selection. Apple: make the visual difference between toggle states obvious and do not rely on color alone.</td></tr>
+        <tr><th>Disabled</th><td>A disabled segment stays in the group, dimmed, and is skipped by arrow keys. Say why nearby if it matters.</td></tr>
+        <tr><th>Selection moves instantly</th><td>The segmented control changes the view at once; if choosing triggers slow work, show loading on the content, not on the control.</td></tr>
+        <tr><th>Reduced motion</th><td>The thumb jumps instead of sliding.</td></tr>
+        <tr><th>Forced colors</th><td>Selected segments use <code>Highlight</code> and <code>HighlightText</code>, and the thumb becomes a <code>Highlight</code> outline.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Into a radio group at the checked segment; out to the next control.</td></tr>
+          <tr><th><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></th><td>Previous or next radio, selecting it; wrap at the ends.</td></tr>
+          <tr><th><kbd>Space</kbd></th><td>Check the focused radio; toggle the focused checkbox or toggle button.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The selected segment’s label is 10.7:1 (light) and 9.4:1 (dark) on its fill. The connected outline is 2.2:1 on white, short of the 3:1 WCAG 1.4.11 asks for a component boundary; selection is therefore also carried by fill and a check, and the label contrast carries identification.</li>
+          <li>Each segment is 40px high and at least about 64px wide, over WCAG 2.2’s 24px minimum.</li>
+          <li>The legend names the choice for a screen reader; there is no visible heading because the buttons say it themselves.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

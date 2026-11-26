@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Split Button</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/split-button">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="sheet">
+  <!-- Divided: one container, a 1px divider between the action and the menu. -->
+  <section>
+    <h2>Divided</h2>
+    <div class="split" data-style="divided" role="group" aria-label="Save">
+      <button class="act" data-variant="primary">Save</button>
+      <button class="drop" data-variant="primary" aria-label="More save options" aria-haspopup="menu" popovertarget="m1"><svg class="icon"><use href="#i-chevron-down"/></svg></button>
+    </div>
+    <ul class="menu" id="m1" popover role="menu" aria-label="Save options" focusgroup="menu nomemory">
+      <li role="none"><button role="menuitem" commandfor="m1" command="hide-popover">Save as…</button></li>
+      <li role="none"><button role="menuitem" commandfor="m1" command="hide-popover">Save and close</button></li>
+      <li role="none"><button role="menuitem" commandfor="m1" command="hide-popover">Save a copy</button></li>
+    </ul>
+  </section>
+
+  <!-- Connected: two buttons 2px apart, outer ends round, inner corners tight, in the spirit of Material 3. -->
+  <section>
+    <h2>Connected</h2>
+    <div class="split" data-style="connected" role="group" aria-label="Reply">
+      <button class="act" data-variant="tonal"><svg class="icon"><use href="#i-reply"/></svg>Reply</button>
+      <button class="drop" data-variant="tonal" aria-label="More reply options" aria-haspopup="menu" popovertarget="m2"><svg class="icon"><use href="#i-chevron-down"/></svg></button>
+    </div>
+    <ul class="menu" id="m2" popover role="menu" aria-label="Reply options" focusgroup="menu nomemory">
+      <li role="none"><button role="menuitem" commandfor="m2" command="hide-popover">Reply all</button></li>
+      <li role="none"><button role="menuitem" commandfor="m2" command="hide-popover">Forward</button></li>
+    </ul>
+  </section>
+
+  <!-- Outlined: no fill, for a quiet action beside a primary one. -->
+  <section>
+    <h2>Outlined</h2>
+    <div class="split" data-style="divided" role="group" aria-label="Export">
+      <button class="act" data-variant="outline">Export</button>
+      <button class="drop" data-variant="outline" aria-label="More export formats" aria-haspopup="menu" popovertarget="m3"><svg class="icon"><use href="#i-chevron-down"/></svg></button>
+    </div>
+    <ul class="menu" id="m3" popover role="menu" aria-label="Export formats" focusgroup="menu nomemory">
+      <li role="none"><button role="menuitem" commandfor="m3" command="hide-popover">PDF</button></li>
+      <li role="none"><button role="menuitem" commandfor="m3" command="hide-popover">CSV</button></li>
+      <li role="none"><button role="menuitem" commandfor="m3" command="hide-popover">Image</button></li>
+    </ul>
+  </section>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Size */
+  --sb-h: 40px;                                               /* Height of both parts */
+  --sb-drop-w: 40px;                                          /* Width of the menu part: at least 1cm (about 38px) so it can be hit by touch (NN/g) */
+  --sb-radius: 8px;                                           /* Corner of the divided style; the connected style uses a pill */
+  --sb-font: 500 14px/20px system-ui, sans-serif;             /* Label: 14px, line height 20px, weight 500 */
+
+  /* @group Connected style */
+  --sb-gap: 2px;                                              /* Space between the two parts (Material 3 small split button) */
+  --sb-inner: 4px;                                            /* Corner where the two parts meet */
+  --sb-inner-hover: 12px;                                     /* That corner on hover and press: the part rounds toward a pill */
+
+  /* @group Color */
+  --sb-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill, focus ring */
+  --sb-on-accent: light-dark(#ffffff, #101218);               /* Label on primary */
+  --sb-tonal: light-dark(#dfe5fb, #2e3560);                   /* Tonal fill */
+  --sb-on-tonal: light-dark(#1b2a63, #dfe5ff);                /* Label on tonal */
+  --sb-rule: light-dark(#c9ced8, #444853);                    /* Outline and menu border */
+  --sb-text: light-dark(#1c1d21, #ececef);                    /* Outline label and menu text */
+  --sb-divider: color-mix(in oklab, currentColor 35%, transparent);   /* Divider between the parts of the divided style: always visible */
+
+  /* @group Menu */
+  --sb-menu-bg: light-dark(#ffffff, #25272d);                 /* Menu fill */
+  --sb-menu-hover: light-dark(#eef0f4, #34363e);              /* Item hover and focus fill */
+  --sb-item-h: 36px;                                          /* Menu item height */
+}
+
+/* ---- Component ---- */
+.split { display: inline-flex; }
+.act, .drop {
+  --_bg: transparent; --_fg: var(--sb-text); --_bd: var(--sb-rule);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--sb-h); border: 1px solid var(--_bd); background: var(--_bg); color: var(--_fg);
+  font: var(--sb-font); cursor: pointer; transition: background-color 120ms, border-radius 160ms;
+  &[data-variant="primary"] { --_bg: var(--sb-accent); --_fg: var(--sb-on-accent); --_bd: transparent; }
+  &[data-variant="tonal"] { --_bg: var(--sb-tonal); --_fg: var(--sb-on-tonal); --_bd: transparent; }
+  &:hover { background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 10%); }
+  &:active { background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 20%); }
+  &:focus-visible { outline: 2px solid var(--sb-accent); outline-offset: 2px; position: relative; z-index: 1; }
+}
+.act { padding: 0 16px; }
+.drop { width: var(--sb-drop-w); padding: 0; }
+.drop[aria-expanded="true"], .drop:has(+ :popover-open) { background: color-mix(in oklab, var(--_bg), light-dark(#000, #fff) 14%); }
+
+/* Divided: one rounded shape, a divider you can always see (NN/g: the arrow needs a visible divider). */
+[data-style="divided"] .act { border-radius: var(--sb-radius) 0 0 var(--sb-radius); }
+[data-style="divided"] .drop { border-radius: 0 var(--sb-radius) var(--sb-radius) 0; border-left: 1px solid var(--sb-divider); }
+[data-style="divided"] .act[data-variant="outline"] + .drop { border-left-color: var(--sb-rule); }
+
+/* Connected: a gap, pill outer ends, tight inner corners that open up on hover. */
+[data-style="connected"] { gap: var(--sb-gap); }
+[data-style="connected"] .act { border-radius: 20px var(--sb-inner) var(--sb-inner) 20px; }
+[data-style="connected"] .drop { border-radius: var(--sb-inner) 20px 20px var(--sb-inner); }
+[data-style="connected"] .act:hover, [data-style="connected"] .act:active { border-radius: 20px var(--sb-inner-hover) var(--sb-inner-hover) 20px; }
+[data-style="connected"] .drop:hover, [data-style="connected"] .drop:active { border-radius: var(--sb-inner-hover) 20px 20px var(--sb-inner-hover); }
+
+.icon { width: 18px; height: 18px; }
+
+/* Menu: a popover anchored under the whole split control. Invokers anchor implicitly; no anchor-name needed. */
+.menu { margin: 0; padding: 4px; min-width: 180px; border: 1px solid var(--sb-rule); border-radius: 10px; background: var(--sb-menu-bg); color: var(--sb-text); box-shadow: 0 6px 20px rgb(0 0 0 / .18); list-style: none; inset: auto; position-area: bottom span-right; margin-top: 4px; position-try-fallbacks: flip-block; }
+.menu button { display: block; width: 100%; height: var(--sb-item-h); padding: 0 12px; border: 0; border-radius: 6px; background: none; color: inherit; font: var(--sb-font); text-align: start; cursor: pointer; }
+.menu button:hover, .menu button:focus-visible { background: var(--sb-menu-hover); outline: none; }
+
+@media (prefers-reduced-motion: reduce) { .act, .drop { transition: none; } }
+@media (forced-colors: active) { .act, .drop { border-color: ButtonText; } .drop:focus-visible, .act:focus-visible { outline-color: Highlight; } }
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#ffffff, #17181c); color: var(--sb-text); font: 14px/20px system-ui, sans-serif; }
+.sheet { padding: 14px 16px 20px; display: grid; gap: 18px; justify-items: start; }
+.sheet h2 { margin: 0 0 6px; font: 600 12px/16px system-ui, sans-serif; color: light-dark(#5d6169, #a0a4ae); }
+.status { margin: 0; color: light-dark(#5d6169, #a0a4ae); font-size: 13px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Say what ran, so the demo is not silent. A real split button calls your handler here.
+const status = document.querySelector('.status');
+document.addEventListener('click', e => {
+  const b = e.target.closest('.act, [role="menuitem"]');
+  if (b) status.textContent = `Ran: ${b.textContent.trim()}`;
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the first menu open.
+document.querySelector('.drop').click();
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="420" data-hint="Click the label to run the default; click the arrow for the alternatives. In the menu use ↑ ↓ and Esc."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Action part</th><td>The label. Clicking it runs the default action immediately. It is a normal button with a verb, and it should not appear again in the menu (Fluent).</td></tr>
+        <tr><th>Menu part</th><td>A square 40px button with a chevron that opens the alternatives. NN/g: it needs a visible divider, and both parts should be at least about 1cm for touch.</td></tr>
+        <tr><th>Divider</th><td>Divided style: a 1px line in the label color at 35%. Connected style: a 2px gap and tight inner corners (4px) instead.</td></tr>
+        <tr><th>Menu</th><td>A popover under the whole control: three to a dozen items, no submenus (NN/g). Items are plain verbs; the default action is not among them.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Heights and the 2px gap and 4px inner corner follow Material 3’s small split button (40px, 2px, 4px; the inner corner opens to 12px on hover). Colors and the divided style are ours.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>When to use</th><td>Only when one action is clearly the default most of the time and the rest are variations of it (Save and Save as; Reply and Reply all). NN/g: with no strong default, use a menu button.</td></tr>
+        <tr><th>Open</th><td>The menu part opens a <code>popover</code> through <code>popovertarget</code>: light dismiss, Esc to close and top-layer rendering come with it. Items close it with <code>commandfor</code> and <code>command="hide-popover"</code>, so closing needs no script.</td></tr>
+        <tr><th>Position</th><td>Anchored below the invoking button and aligned to its start; <code>position-try-fallbacks: flip-block</code> flips it above at the viewport edge.</td></tr>
+        <tr><th>Keys</th><td>Enter or Space on the menu part opens the menu; <code>focusgroup="menu nomemory"</code> gives ↑ ↓ with wrap. APG’s menu button also allows ↓ to open and move to the first item; this demo opens on activation only.</td></tr>
+        <tr><th>Names</th><td>The menu part is named for what it opens (“More save options”). Where menu items drop a word from the main label (Fluent’s “New” and “Event”), carry the full phrase with <code>aria-describedby</code>.</td></tr>
+        <tr><th>Disabled</th><td>Disable both parts together, or only the menu part if there are no alternatives right now.</td></tr>
+        <tr><th>Reduced motion</th><td>The corner morph and fill transitions stop.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Action part, then menu part.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Run the action, or open the menu.</td></tr>
+          <tr><th><kbd>↑</kbd> <kbd>↓</kbd></th><td>Move through the open menu.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close the menu and return focus to the menu part.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Two buttons in a labelled <code>group</code>, not one control with two halves: each has its own name, role and focus.</li>
+          <li>The menu part has <code>aria-haspopup="menu"</code> and the popover relationship sets <code>aria-expanded</code> implicitly.</li>
+          <li>The status line is a polite live region so a screen-reader user hears what ran.</li>
+          <li>Focus ring is 2px with a 2px offset and lifts above its neighbor so the shared edge is never hidden.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>
