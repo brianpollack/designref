@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Material 3 Basic Dialog</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/material-3-dialog">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">New note</span>
+    <button class="btn-text" type="button" data-open>Discard draft</button>
+  </header>
+  <p class="note">The draft is saved on this device until you leave the screen.</p>
+
+  <dialog class="dlg" id="discard" closedby="any" aria-labelledby="discard-title" aria-describedby="discard-body">
+    <form method="dialog" class="dlg-form">
+      <svg class="icon dlg-icon" aria-hidden="true"><use href="#i-info"/></svg>
+      <h2 id="discard-title" class="dlg-title">Discard this draft?</h2>
+      <p id="discard-body" class="dlg-body">Nothing you wrote here will be kept. This can’t be undone.</p>
+      <!-- Material 3 orders actions with the confirming action on the trailing end. -->
+      <footer class="dlg-actions">
+        <button class="btn-text" value="cancel" type="submit">Cancel</button>
+        <button class="btn-text" value="discard" type="submit">Discard</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container: Material 3 surface roles, resolved from its token source */
+  --m3d-container: light-dark(#ece6f0, #2b2930);              /* Surface container high (light #ECE6F0, dark #2B2930) */
+  --m3d-min: 280px;                                           /* Minimum dialog width, DialogMinWidth */
+  --m3d-max: 560px;                                           /* Maximum dialog width, DialogMaxWidth */
+  --m3d-pad: 24px;                                            /* Container padding, all sides */
+  --m3d-gap: 8px;                                             /* Space between actions, horizontal and stacked */
+  --m3d-radius: 28px;                                         /* Extra-large corner (ShapeTokens CornerExtraLarge) */
+  --m3d-shadow: 0 3px 1px -2px rgb(0 0 0 / .2), 0 6px 10px 0 rgb(0 0 0 / .14), 0 1px 18px 0 rgb(0 0 0 / .12); /* Elevation level 3 (6dp); shadow values are ours */
+
+  /* @group Type and color: each role resolves to a Material 3 color token */
+  --m3d-icon: light-dark(#625b71, #cdc2dc);                   /* Secondary: the icon */
+  --m3d-headline: light-dark(#1d1b20, #e6e0e9);               /* On surface: headline */
+  --m3d-body: light-dark(#49454f, #cac4d0);                   /* On surface variant: supporting text */
+  --m3d-action: light-dark(#6750a4, #d0bcff);                 /* Primary: action labels */
+  --m3d-focus: light-dark(#6750a4, #d0bcff);                  /* Focus indicator, the primary role */
+
+  /* @group Motion (ours) */
+  --m3d-dur: 200ms;                                           /* Enter and exit */
+}
+
+/* ---- Component ---- */
+.dlg {
+  width: min(var(--m3d-max), max(var(--m3d-min), calc(100% - 32px)));
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--m3d-radius);
+  background: var(--m3d-container);
+  color: var(--m3d-headline);
+  box-shadow: var(--m3d-shadow);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity var(--m3d-dur), transform var(--m3d-dur), overlay var(--m3d-dur) allow-discrete, display var(--m3d-dur) allow-discrete;
+}
+.dlg[open] { opacity: 1; transform: none; }
+@starting-style { .dlg[open] { opacity: 0; transform: translateY(8px); } }
+.dlg::backdrop { background: transparent; transition: background var(--m3d-dur); }
+.dlg[open]::backdrop { background: rgb(0 0 0 / .32); }
+@starting-style { .dlg[open]::backdrop { background: transparent; } }
+
+.dlg-form { display: grid; gap: 16px; padding: var(--m3d-pad); margin: 0; }
+.dlg-icon { width: 24px; height: 24px; color: var(--m3d-icon); justify-self: start; }
+.dlg-title { margin: 0; font: 400 24px/32px system-ui, sans-serif; }
+.dlg-body { margin: 0; font: 400 14px/20px system-ui, sans-serif; color: var(--m3d-body); }
+.dlg-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--m3d-gap); }
+
+/* Text buttons in a dialog: the label uses the primary role; the hit area is 48px tall. */
+.btn-text {
+  min-height: 48px; min-width: 58px; padding: 0 12px; border: 0; border-radius: 999px;
+  background: transparent; color: var(--m3d-action); font: 500 14px/20px system-ui, sans-serif; cursor: pointer;
+}
+.btn-text:hover { background: color-mix(in oklab, var(--m3d-action) 8%, transparent); }
+.btn-text:active { background: color-mix(in oklab, var(--m3d-action) 12%, transparent); }
+.btn-text:focus-visible { outline: 2px solid var(--m3d-focus); outline-offset: 2px; }
+
+.icon { width: 24px; height: 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dlg, .dlg::backdrop { transition: none; }
+}
+@media (forced-colors: active) {
+  .dlg { border: 1px solid CanvasText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#fef7ff, #141218); color: light-dark(#1d1b20, #e6e0e9); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 340px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 500 16px/24px system-ui, sans-serif; }
+.note, .status { margin: 0; font-size: 13px; color: light-dark(#49454f, #cac4d0); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens the dialog and reports the choice. Escape and the scrim close without a value.
+const dlg = document.getElementById('discard');
+const status = document.querySelector('.status');
+document.querySelector('[data-open]').addEventListener('click', () => dlg.showModal());
+dlg.addEventListener('close', () => {
+  status.textContent = dlg.returnValue === 'discard' ? 'Draft discarded.' : 'Draft kept.';
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the discard dialog open.
+{
+  document.querySelector('[data-open]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="440" data-hint="Open the dialog. Choose Cancel or Discard, or press Escape."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Icon</th><td>Optional, 24dp, in the secondary role, above the headline.</td></tr>
+        <tr><th>Headline</th><td>One line for the question or the decision. Headline role, the on-surface color.</td></tr>
+        <tr><th>Supporting text</th><td>What happens next. Body role, the on-surface-variant color.</td></tr>
+        <tr><th>Actions</th><td>Up to two text buttons, the dismissive one first and the confirming one last, on the trailing end.</td></tr>
+        <tr><th>Container</th><td>Surface container high, elevation level 3, 28dp corners, 24dp padding.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">The container, padding, width, spacing and corner, and the color roles, are taken from Compose’s dialog tokens. The scrim and shadow are ours: the page gives the level 3 elevation, not the shadow values.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>When to use</th><td>Alerts, simple confirmations and quick choices, with no more than two actions here. For several actions or a choice of many items, use a different pattern.</td></tr>
+        <tr><th>Width</th><td>Between 280dp and 560dp: the container grows with its content until it reaches the maximum, then wraps.</td></tr>
+        <tr><th>Actions</th><td>The confirming action sits on the trailing end, with 8dp between buttons; when they wrap, the confirming action goes on top.</td></tr>
+        <tr><th>Dismissal</th><td>Escape, the scrim, or an action. A confirmation that loses data can be locked so only an action closes it: see Destructive Confirm.</td></tr>
+        <tr><th>Motion</th><td>Enter and exit fade and rise 8px over 200ms. Reduced motion removes it.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between the two actions; focus stays in the dialog.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Choose the focused action.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close without a choice.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The action labels use the primary role at 4.5:1 or better against the container in both themes; the focus ring uses the same role.</li>
+          <li>The icon is decorative, so it is hidden from assistive technology; the headline carries the meaning.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

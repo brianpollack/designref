@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Responsive Sheet</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/responsive-sheet">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Filters</span>
+    <button class="btn" type="button" data-open>Open filters</button>
+  </header>
+  <p class="note">Narrow the list by owner, date and status.</p>
+
+  <!-- One element. Phone: a bottom sheet with a grab handle. Wide: a centred modal. -->
+  <dialog class="sheet" id="filters" closedby="any" aria-labelledby="filters-title">
+    <form method="dialog" class="sheet-form">
+      <span class="grab" aria-hidden="true"></span>
+      <h2 id="filters-title" class="sheet-title">Filter tasks</h2>
+      <fieldset class="group">
+        <legend>Status</legend>
+        <label><input type="checkbox" name="s" value="open" checked> Open</label>
+        <label><input type="checkbox" name="s" value="done"> Done</label>
+        <label><input type="checkbox" name="s" value="blocked"> Blocked</label>
+      </fieldset>
+      <footer class="sheet-actions">
+        <button class="btn" type="submit" value="reset">Reset</button>
+        <button class="btn primary" type="submit" value="apply">Show 12 tasks</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --rs-bg: light-dark(#ffffff, #25262b);                      /* Sheet and modal surface */
+  --rs-fg: light-dark(#1c1d21, #ececef);                      /* Title and labels */
+  --rs-muted: light-dark(#5d6169, #a0a4ae);                   /* Legend and status text */
+  --rs-radius: 16px;                                          /* Top corners of the sheet; all four corners on the wide modal */
+  --rs-pad: 20px;                                             /* Padding inside */
+  --rs-wide: 440px;                                           /* Width of the centred modal, from 640px up */
+  --rs-break: 640px;                                          /* Below this the dialog is a bottom sheet */
+  --rs-handle: light-dark(#b4bac4, #54575f);                  /* Grab handle on the sheet */
+
+  /* @group Controls */
+  --rs-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill and focus ring */
+  --rs-on-accent: light-dark(#ffffff, #101218);               /* Label on primary */
+  --rs-rule: light-dark(#c9ced8, #444853);                    /* Button outline */
+  --rs-scrim: light-dark(rgb(20 22 28 / .42), rgb(0 0 0 / .6)); /* Behind the dialog */
+
+  /* @group Motion (ours) */
+  --rs-dur: 240ms;                                            /* Enter and exit */
+}
+
+/* ---- Component ---- */
+/* Phone first: a sheet anchored to the bottom edge, full width, rounded at the top. */
+.sheet {
+  inline-size: 100%;
+  max-inline-size: 100%;
+  margin: auto 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rs-radius) var(--rs-radius) 0 0;
+  background: var(--rs-bg);
+  color: var(--rs-fg);
+  box-shadow: 0 -12px 32px rgb(0 0 0 / .2);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform var(--rs-dur) cubic-bezier(.2, .8, .2, 1), opacity var(--rs-dur), overlay var(--rs-dur) allow-discrete, display var(--rs-dur) allow-discrete;
+}
+.sheet[open] { opacity: 1; transform: none; }
+@starting-style { .sheet[open] { opacity: 0; transform: translateY(100%); } }
+.sheet::backdrop { background: transparent; transition: background var(--rs-dur); }
+.sheet[open]::backdrop { background: var(--rs-scrim); }
+@starting-style { .sheet[open]::backdrop { background: transparent; } }
+
+/* Wide screens: the same element becomes a centred modal with all four corners rounded. */
+@media (min-width: 640px) {
+  .sheet {
+    inline-size: min(var(--rs-wide), calc(100% - 48px));
+    margin: auto;
+    border-radius: var(--rs-radius);
+    transform: translateY(12px);
+  }
+  .sheet[open] { transform: none; }
+  @starting-style { .sheet[open] { transform: translateY(12px); } }
+}
+
+.sheet-form { display: grid; gap: 16px; padding: 12px var(--rs-pad) var(--rs-pad); margin: 0; }
+/* The grab handle only makes sense on the phone sheet: it says the sheet can be dragged. */
+.grab { justify-self: center; width: 36px; height: 4px; border-radius: 2px; background: var(--rs-handle); }
+@media (min-width: 640px) { .grab { display: none; } }
+.sheet-title { margin: 0; font: 600 18px/24px system-ui, sans-serif; }
+.group { margin: 0; padding: 0; border: 0; display: grid; gap: 10px; }
+.group legend { padding: 0; margin-bottom: 6px; font: 600 13px/18px system-ui, sans-serif; color: var(--rs-muted); }
+.group label { display: flex; align-items: center; gap: 10px; min-height: 40px; font: 14px/20px system-ui, sans-serif; }
+.group input { width: 20px; height: 20px; accent-color: var(--rs-accent); }
+.sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+.btn {
+  min-height: 44px; padding: 0 16px; border: 1px solid var(--rs-rule); border-radius: 999px;
+  background: transparent; color: var(--rs-fg); font: 500 15px/20px system-ui, sans-serif; cursor: pointer;
+}
+.btn.primary { background: var(--rs-accent); border-color: transparent; color: var(--rs-on-accent); }
+.btn:hover { background: color-mix(in oklab, var(--rs-bg), light-dark(#000, #fff) 6%); }
+.btn.primary:hover { background: color-mix(in oklab, var(--rs-accent), light-dark(#000, #fff) 10%); }
+.btn:focus-visible, .group input:focus-visible { outline: 2px solid var(--rs-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .sheet::backdrop { transition: none; }
+  .sheet[open] { transform: none; }
+}
+@media (forced-colors: active) {
+  .sheet { border: 1px solid CanvasText; }
+  .btn { border-color: ButtonText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 420px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 600 16px/22px system-ui, sans-serif; }
+.note, .status { margin: 0; font-size: 13px; color: light-dark(#5d6169, #a0a4ae); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens the filter sheet and reports the choice. Show applies; Reset clears the checks.
+const dlg = document.getElementById('filters');
+const status = document.querySelector('.status');
+document.querySelector('[data-open]').addEventListener('click', () => dlg.showModal());
+dlg.addEventListener('close', () => {
+  status.textContent = dlg.returnValue === 'apply' ? 'Filters applied.' : 'Closed without applying.';
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the filter sheet open.
+{
+  document.querySelector('[data-open]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Resize the window past 640px to see the sheet become a centred modal. Same element, same focus, no script."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Sheet</th><td>On a phone, a full-width panel anchored to the bottom edge with 16px top corners.</td></tr>
+        <tr><th>Grab handle</th><td>A 36 × 4px bar at the top. It shows the sheet can be dismissed by a drag on a phone; hidden on wide screens.</td></tr>
+        <tr><th>Modal</th><td>From 640px up, the same dialog is a 440px centred panel with all four corners rounded.</td></tr>
+        <tr><th>Footer</th><td>Two buttons sharing the width on a phone and at the end on wide screens.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">These values are ours: a neutral default, not a system’s. The 640px break is a common tablet width, not a published one.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Why one element</th><td>A dialog that changes shape by width keeps one focus order, one set of names and one close path. A second element for the phone would have to stay in sync.</td></tr>
+        <tr><th>Open and close</th><td>Opened with <code>showModal()</code>, so it is modal at every width. Escape, a backdrop click and the footer buttons all close it.</td></tr>
+        <tr><th>Motion</th><td>On a phone the sheet slides up 100%; on a wide screen it rises 12px and fades. Both over 240ms. Reduced motion removes the movement.</td></tr>
+        <tr><th>Drag to dismiss</th><td>Not included: it needs script. The grab handle is decorative here; the close paths above are the real ones.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves through the filters and the footer, and stays inside.</td></tr>
+          <tr><th><kbd>Space</kbd></th><td>Checks or unchecks a filter.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Closes without applying.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The grab handle is <code>aria-hidden</code> because it is not a control.</li>
+          <li>Each checkbox is a native input, so the browser supplies the state and the label is the text beside it.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

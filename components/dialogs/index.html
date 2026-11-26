@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dialogs & Modals</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+</head>
+<!-- Category page. Title, summary and the concept list come from assets/catalog.js. -->
+<body data-page="components/dialogs">
+  <main>
+    <div class="page">
+      <header class="page-header" data-auto></header>
+
+      <section data-concepts></section>
+
+      <section class="ruled">
+        <h2>Choosing one</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>You need…</th><th>Reach for</th></tr></thead>
+          <tbody>
+            <tr><th>A modal that opens from script and returns a value</th><td><a href="native-dialog.html">Native Dialog</a></td></tr>
+            <tr><th>A dialog that opens and closes from its buttons alone</th><td><a href="zero-js-dialog.html">Invoker Dialog</a></td></tr>
+            <tr><th>A basic alert or simple choice, in Material’s style</th><td><a href="material-3-dialog.html">Material 3 Basic Dialog</a></td></tr>
+            <tr><th>A footer of up to three actions, in Fluent’s style</th><td><a href="fluent-2-dialog.html">Fluent 2 Dialog</a></td></tr>
+            <tr><th>Two or three footer buttons on a grid, in Carbon’s style</th><td><a href="carbon-modal.html">Carbon Modal</a></td></tr>
+            <tr><th>Urgent information, or a choice the user started, on iOS</th><td><a href="apple-style-alert.html">Apple-Style Alert and Action Sheet</a></td></tr>
+            <tr><th>One dialog that is a sheet on a phone and a modal on a wide screen</th><td><a href="responsive-sheet.html">Responsive Sheet</a></td></tr>
+            <tr><th>A confirmation for an action that loses data</th><td><a href="destructive-confirm.html">Destructive Confirm</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled">
+        <h2>How it closes</h2>
+        <table class="kv long-keys">
+          <thead><tr><th>Question</th><th>What the platform gives</th></tr></thead>
+          <tbody>
+            <tr><th>Can Escape close it?</th><td>Yes by default on <code>showModal()</code>. <code>closedby="none"</code> turns that off, and <code>closedby="closerequest"</code> keeps only Escape and the platform’s back gesture.</td></tr>
+            <tr><th>Can an outside click close it?</th><td>Only with <code>closedby="any"</code>. Chrome: a press that starts and ends on the backdrop, not a drag that ends there.</td></tr>
+            <tr><th>Does it need a close button?</th><td>The APG asks for a visible close control in every modal. Fluent places it top right when there is no Cancel.</td></tr>
+            <tr><th>Where does focus go?</th><td>In on open, to the first focusable element. Back to the opening element on close. For a destructive final step, the least destructive action may take focus (APG).</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="ruled" data-core>
+        <h2>Core libraries</h2>
+      </section>
+
+      <section class="ruled prose">
+        <h2>The modern stack</h2>
+        <p>A modal needs no library. These platform features replace what used to be a focus trap, a backdrop listener and a stacking rule.</p>
+        <ul>
+          <li><strong><code>&lt;dialog&gt;</code> and <code>showModal()</code></strong> put the dialog in the top layer, make the page behind it inert, and draw the <code>::backdrop</code>. No z-index, no focus trap written by hand.</li>
+          <li><strong><code>closedby</code></strong> gives Escape and the outside click declaratively. A script fallback covers browsers without it.</li>
+          <li><strong><code>method="dialog"</code> and <code>returnValue</code></strong> return the chosen button’s value on close, so the page reads the result without a click handler.</li>
+          <li><strong>Invoker commands</strong> (<code>commandfor</code> with <code>show-modal</code> and <code>close</code>) open and close a dialog with no script.</li>
+          <li><strong><code>@starting-style</code> and <code>transition-behavior: allow-discrete</code></strong> animate the dialog and its backdrop in and out, including <code>display</code>.</li>
+          <li><strong><code>container queries</code> and media queries</strong> let one element be a sheet on a phone and a modal on a wide screen.</li>
+        </ul>
+        <p>What still needs script: a value to return from a confirm before it closes, drag-to-dismiss on a sheet, and any focus trap for a custom element instead of a <code>&lt;dialog&gt;</code>. Each page carries a Rules check where a system applies.</p>
+      </section>
+
+      <section class="ruled prose" data-sources>
+        <h2>Sources</h2>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

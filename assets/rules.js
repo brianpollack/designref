@@ -53,6 +53,8 @@
     if (by) return by.split(/\s+/).map(id => doc.getElementById(id)?.textContent ?? '').join(' ').trim();
     const own = el.getAttribute('aria-label')?.trim();
     if (own) return own;
+    // Form controls get their name from <label for> or a wrapping <label>, exposed as el.labels.
+    if (el.labels?.length) return [...el.labels].map(l => l.textContent).join(' ').trim();
     const text = el.textContent.trim() || el.querySelector('img[alt]')?.alt?.trim() || el.querySelector('svg title')?.textContent.trim();
     return text || el.getAttribute('title')?.trim() || el.getAttribute('alt')?.trim() || (el.value ?? '').toString().trim() || '';
   }

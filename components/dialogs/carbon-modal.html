@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carbon Modal</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/carbon-modal">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Document</span>
+    <button class="btn" type="button" data-open>Close document</button>
+  </header>
+  <p class="note">Unsaved changes will be lost if you close without saving.</p>
+
+  <dialog class="modal" id="unsaved" closedby="any" aria-labelledby="unsaved-title" aria-describedby="unsaved-body">
+    <form method="dialog" class="modal-form">
+      <header class="modal-head">
+        <h2 id="unsaved-title" class="modal-title">Save changes to the document?</h2>
+        <button class="btn-close" type="submit" value="close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+      </header>
+      <div class="modal-content">
+        <p id="unsaved-body" class="modal-body">You made changes in the last hour. Saving keeps them in the shared copy.</p>
+      </div>
+      <!-- Two buttons: secondary on the left, primary on the right, 50% each. -->
+      <footer class="modal-footer">
+        <button class="btn secondary" type="submit" value="discard">Don’t save</button>
+        <button class="btn primary" type="submit" value="save">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Size: Carbon's modal container widths at the lg breakpoint (_modal.scss) */
+  --cm-width: 60%;                                            /* Default size (md 84%, lg 60%, xlg 48%); the small variant is 42% */
+  --cm-width-min: 320px;                                      /* Our floor: the modal never shrinks below this on a phone */
+  --cm-footer: 64px;                                          /* Footer height (convert.to-rem(64px)) */
+  --cm-pad-top: 8px;                                          /* Content top padding, spacing-03 */
+  --cm-pad-x: 16px;                                           /* Content side padding, spacing-05 */
+  --cm-pad-bottom: 48px;                                      /* Content bottom padding, spacing-09 */
+  --cm-btn-h: 48px;                                           /* Button height in the footer; the large size, our choice */
+
+  /* @group Color: ours, not Carbon's theme tokens */
+  --cm-bg: light-dark(#ffffff, #262626);                      /* Modal surface */
+  --cm-fg: light-dark(#161616, #f4f4f4);                      /* Title and body */
+  --cm-muted: light-dark(#525252, #c6c6c6);                   /* Body text */
+  --cm-accent: light-dark(#0f62fe, #78a9ff);                  /* Primary fill and focus ring */
+  --cm-on-accent: light-dark(#ffffff, #161616);               /* Label on primary */
+  --cm-secondary: light-dark(#393939, #393939);               /* Secondary fill */
+  --cm-on-secondary: light-dark(#ffffff, #f4f4f4);            /* Label on secondary */
+  --cm-overlay: light-dark(rgb(22 22 22 / .5), rgb(22 22 22 / .6)); /* Overlay behind the modal */
+}
+
+/* ---- Component ---- */
+.modal {
+  inline-size: var(--cm-width);
+  min-inline-size: var(--cm-width-min);
+  max-inline-size: calc(100% - 32px);
+  max-block-size: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--cm-bg);
+  color: var(--cm-fg);
+  box-shadow: 0 16px 40px rgb(0 0 0 / .3);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 240ms, transform 240ms, overlay 240ms allow-discrete, display 240ms allow-discrete;
+}
+.modal[open] { opacity: 1; transform: none; }
+@starting-style { .modal[open] { opacity: 0; transform: translateY(12px); } }
+.modal::backdrop { background: transparent; transition: background 240ms; }
+.modal[open]::backdrop { background: var(--cm-overlay); }
+@starting-style { .modal[open]::backdrop { background: transparent; } }
+
+.modal-form { margin: 0; display: grid; grid-template-rows: auto 1fr auto; max-height: inherit; }
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; padding: var(--cm-pad-top) var(--cm-pad-x) 0; }
+.modal-title { margin: 0; padding-block: 8px; font: 600 20px/28px system-ui, sans-serif; }
+.modal-content { padding: 8px var(--cm-pad-x) var(--cm-pad-bottom); }
+.modal-body { margin: 0; font: 14px/20px system-ui, sans-serif; color: var(--cm-muted); }
+
+/* Footer: 64px tall, buttons flex 0 1 50% (two) or 25% (three), the primary only on the right. */
+.modal-footer { display: flex; justify-content: flex-end; block-size: var(--cm-footer); }
+.modal-footer .btn { flex: 0 1 50%; }
+.modal-footer:has(> :nth-child(3)) .btn { flex-basis: 25%; }
+
+.btn {
+  min-height: var(--cm-btn-h); padding: 0 16px; border: 0;
+  font: 400 14px/18px system-ui, sans-serif; text-align: start; cursor: pointer;
+}
+.btn.primary { background: var(--cm-accent); color: var(--cm-on-accent); }
+.btn.secondary { background: var(--cm-secondary); color: var(--cm-on-secondary); }
+.btn:hover { filter: brightness(1.08); }
+.btn:active { filter: brightness(.92); }
+.btn:focus-visible, .btn-close:focus-visible { outline: 2px solid var(--cm-accent); outline-offset: -2px; }
+.btn-close { width: 48px; height: 48px; padding: 0; border: 0; background: transparent; color: var(--cm-fg); cursor: pointer; }
+.btn-close:hover { background: color-mix(in oklab, var(--cm-bg), light-dark(#000, #fff) 10%); }
+.icon { width: 16px; height: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .modal, .modal::backdrop { transition: none; }
+}
+@media (forced-colors: active) {
+  .modal { border: 1px solid CanvasText; }
+  .btn:focus-visible { outline-color: Highlight; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f4f4f4, #161616); color: light-dark(#161616, #f4f4f4); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 360px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 600 16px/22px system-ui, sans-serif; }
+.note, .status { margin: 0; font-size: 13px; color: light-dark(#525252, #c6c6c6); }
+.surface .btn { min-height: 40px; padding: 0 16px; }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens the modal and reports the choice. Close, Escape and the overlay report nothing.
+const dlg = document.getElementById('unsaved');
+const status = document.querySelector('.status');
+document.querySelector('[data-open]').addEventListener('click', () => dlg.showModal());
+dlg.addEventListener('close', () => {
+  status.textContent = dlg.returnValue ? `Ran: ${dlg.returnValue}` : 'Closed without a choice.';
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the save-changes modal open.
+{
+  document.querySelector('[data-open]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="Two buttons split the footer evenly, with the primary on the right. Escape and the close button dismiss."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Title</th><td>A brief verb phrase, sentence case. Named by <code>aria-labelledby</code>.</td></tr>
+        <tr><th>Close</th><td>A 48px icon button top right with an accessible name.</td></tr>
+        <tr><th>Content</th><td>Body text and any form. Carbon’s padding is 8px above, 16px at the sides and 48px below, so the footer never touches the text.</td></tr>
+        <tr><th>Footer</th><td>64px tall. Two buttons at 50% each, or three at 25%. Only the outermost right button may be primary.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Widths (60% at the lg size, 42% for the small variant), padding, the 64px footer and the 50% and 25% button flex values come from Carbon’s modal stylesheet. Button height, colors and the overlay are ours.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Sizes</th><td>Four responsive sizes: extra small, small, medium and large. Carbon: brief text suits extra small or small; complex content, such as a data table, the default or large size.</td></tr>
+        <tr><th>Two buttons</th><td>Secondary on the left, primary on the right, each spanning 50%.</td></tr>
+        <tr><th>Three buttons</th><td>Each 25%, aligned to the right. Only the outermost right button is primary.</td></tr>
+        <tr><th>One button</th><td>On the right side, spanning 50% of the modal.</td></tr>
+        <tr><th>Danger</th><td>A transactional modal for a destructive or irreversible action. The primary button becomes a danger button, and the title should say what is lost.</td></tr>
+        <tr><th>Labels</th><td>Verbs for what happens. Avoid “Done” and “OK”.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between the close button, the footer buttons and back again.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Closes without a value.</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>Activates the focused button.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The focus ring is drawn inside the button (negative offset) so it is never clipped by the footer edge.</li>
+          <li>Forced-colors mode keeps the border on the modal and the focus outline in the system highlight color.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

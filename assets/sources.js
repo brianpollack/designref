@@ -194,6 +194,7 @@ window.SOURCES = {
 
     // Chrome for Developers
     'chrome-menu':            { site: 'chrome', title: 'Build a popup menu', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/ui-components/menu' },
+    'chrome-light-dismiss': { site: 'chrome', title: 'Light-dismiss a dialog', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/ui-behaviors/light-dismiss-a-dialog' },
     'chrome-sibling-styling': { site: 'chrome', title: 'Styling siblings based on count and index', url: 'https://developer.chrome.com/docs/modern-web-guidance/guides/css/dynamic-sibling-styling' },
 
     // MDN
@@ -202,6 +203,7 @@ window.SOURCES = {
     'mdn-invoker-commands':       { site: 'mdn', title: 'Invoker Commands API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API' },
     'mdn-interest-invokers':      { site: 'mdn', title: 'Using interest invokers', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Popover_API/Using_interest_invokers' },
     'mdn-closedby':               { site: 'mdn', title: 'HTMLDialogElement: closedBy', url: 'https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/closedBy' },
+    'mdn-dialog': { site: 'mdn', title: 'dialog element', url: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog' },
     'mdn-highlight-api':          { site: 'mdn', title: 'CSS Custom Highlight API', url: 'https://developer.mozilla.org/en-US/docs/Web/API/CSS_Custom_Highlight_API' },
     'mdn-aria-active-descendant': { site: 'mdn', title: 'ariaActiveDescendantElement', url: 'https://developer.mozilla.org/en-US/docs/Web/API/Element/ariaActiveDescendantElement' },
     'mdn-backdrop-filter':        { site: 'mdn', title: 'backdrop-filter', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/backdrop-filter' },
@@ -217,6 +219,7 @@ window.SOURCES = {
     // WAI-ARIA Authoring Practices
     'apg-menu-button': { site: 'apg', title: 'Menu button pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/' },
     'apg-menubar':     { site: 'apg', title: 'Menu and menubar pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/menubar/' },
+    'apg-dialog-modal': { site: 'apg', title: 'Dialog (Modal) pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/' },
     'apg-combobox':    { site: 'apg', title: 'Combobox pattern', url: 'https://www.w3.org/WAI/ARIA/apg/patterns/combobox/' },
 
     // Rules check
@@ -242,6 +245,7 @@ window.SOURCES = {
     'fluent-dialog-actions-styles': { site: 'fluent-2', title: 'useDialogActionsStyles.styles.ts', url: 'https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-dialog/library/src/components/DialogActions/useDialogActionsStyles.styles.ts' },
     'carbon-button-style': { site: 'carbon', title: 'Button: style', url: 'https://www.carbondesignsystem.com/building-blocks/core/components/button/specifications' },
     'carbon-modal': { site: 'carbon', title: 'Modal', url: 'https://www.carbondesignsystem.com/building-blocks/core/components/modal/guidelines' },
+    'carbon-modal-scss': { site: 'carbon', title: 'modal/_modal.scss', url: 'https://github.com/carbon-design-system/carbon/blob/main/packages/styles/scss/components/modal/_modal.scss' },
     'carbon-dialog-pattern': { site: 'carbon', title: 'Dialog pattern', url: 'https://www.carbondesignsystem.com/building-blocks/core/patterns/dialogs' },
     'carbon-button-scss': { site: 'carbon', title: '_button.scss', url: 'https://github.com/carbon-design-system/carbon/blob/main/packages/styles/scss/components/button/_button.scss' },
     'carbon-button-vars': { site: 'carbon', title: 'button/_vars.scss', url: 'https://github.com/carbon-design-system/carbon/blob/main/packages/styles/scss/components/button/_vars.scss' },

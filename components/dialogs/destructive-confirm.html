@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Destructive Confirm</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/destructive-confirm">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Workspace</span>
+    <button class="btn danger-text" type="button" data-open>Delete workspace</button>
+  </header>
+  <p class="note">Deleting a workspace removes its boards, comments and files for everyone.</p>
+
+  <!-- closedby="none": Escape and a backdrop click do nothing. Only the footer buttons close it. -->
+  <dialog class="dlg" id="confirm" closedby="none" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+    <form method="dialog" class="dlg-form">
+      <h2 id="confirm-title" class="dlg-title">Delete “Design Research”?</h2>
+      <p id="confirm-body" class="dlg-body">This removes 14 boards, 230 comments and 3 GB of files for all 9 members. It cannot be undone.</p>
+      <footer class="dlg-actions">
+        <!-- Focus starts here: the least destructive choice. -->
+        <button class="btn" type="submit" value="cancel" autofocus>Cancel</button>
+        <button class="btn danger" type="submit" value="delete">Delete workspace</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --dc-bg: light-dark(#ffffff, #26272b);                      /* Dialog surface */
+  --dc-fg: light-dark(#1c1d21, #ececef);                      /* Title */
+  --dc-muted: light-dark(#5d6169, #a0a4ae);                   /* Consequence text */
+  --dc-width: 420px;                                          /* Preferred width; 16px side margins on a phone */
+  --dc-radius: 16px;                                          /* Corner of the dialog */
+  --dc-pad: 24px;                                             /* Padding inside */
+  --dc-scrim: light-dark(rgb(20 22 28 / .5), rgb(0 0 0 / .65)); /* Behind the dialog; heavier than a plain modal, because it blocks a loss */
+
+  /* @group Controls */
+  --dc-rule: light-dark(#c9ced8, #444853);                    /* Cancel outline */
+  --dc-danger: light-dark(#b42318, #ff8a80);                  /* Danger fill; the text on it is white in light, dark in dark */
+  --dc-on-danger: light-dark(#ffffff, #1a0f0e);               /* Label on the danger fill */
+  --dc-focus: light-dark(#2b59e0, #8ea6ff);                   /* Focus ring */
+}
+
+/* ---- Component ---- */
+.dlg {
+  width: min(var(--dc-width), calc(100% - 32px));
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--dc-radius);
+  background: var(--dc-bg);
+  color: var(--dc-fg);
+  box-shadow: 0 24px 60px rgb(0 0 0 / .32);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms, transform 200ms, overlay 200ms allow-discrete, display 200ms allow-discrete;
+}
+.dlg[open] { opacity: 1; transform: none; }
+@starting-style { .dlg[open] { opacity: 0; transform: translateY(8px); } }
+.dlg::backdrop { background: transparent; transition: background 200ms; }
+.dlg[open]::backdrop { background: var(--dc-scrim); }
+@starting-style { .dlg[open]::backdrop { background: transparent; } }
+
+.dlg-form { display: grid; gap: 12px; padding: var(--dc-pad); margin: 0; }
+.dlg-title { margin: 0; font: 600 18px/24px system-ui, sans-serif; }
+.dlg-body { margin: 0; font: 14px/20px system-ui, sans-serif; color: var(--dc-muted); }
+.dlg-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+.btn {
+  min-height: 44px; min-width: 96px; padding: 0 16px; border: 1px solid var(--dc-rule); border-radius: 999px;
+  background: transparent; color: var(--dc-fg); font: 500 14px/20px system-ui, sans-serif; cursor: pointer;
+}
+.btn:hover { background: color-mix(in oklab, var(--dc-bg), light-dark(#000, #fff) 6%); }
+.btn:focus-visible { outline: 2px solid var(--dc-focus); outline-offset: 2px; }
+.btn.danger { background: var(--dc-danger); border-color: transparent; color: var(--dc-on-danger); }
+.btn.danger:hover { background: color-mix(in oklab, var(--dc-danger), light-dark(#000, #fff) 10%); }
+.danger-text { min-height: 40px; padding: 0 12px; border: 0; background: transparent; color: var(--dc-danger); font: 500 14px/20px system-ui, sans-serif; cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dlg, .dlg::backdrop { transition: none; }
+}
+@media (forced-colors: active) {
+  .dlg { border: 1px solid CanvasText; }
+  .btn { border-color: ButtonText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 340px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 600 16px/22px system-ui, sans-serif; }
+.note, .status { margin: 0; font-size: 13px; color: light-dark(#5d6169, #a0a4ae); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens the confirm and reports the choice. Escape and a click on the dimmed page do nothing,
+// so the only ways out are the two footer buttons.
+const dlg = document.getElementById('confirm');
+const status = document.querySelector('.status');
+document.querySelector('[data-open]').addEventListener('click', () => dlg.showModal());
+dlg.addEventListener('close', () => {
+  status.textContent = dlg.returnValue === 'delete' ? 'Workspace deleted.' : 'Nothing was deleted.';
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the confirm open, with focus on Cancel.
+{
+  document.querySelector('[data-open]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="420" data-hint="Try Escape and a click outside: nothing closes it. Only Cancel or Delete does."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Title</th><td>Names the object and the action: “Delete ‘Design Research’?”, not “Are you sure?”.</td></tr>
+        <tr><th>Consequence</th><td>What is lost, how much, and who is affected, in one or two sentences. This is the part that makes the confirm worth its interruption.</td></tr>
+        <tr><th>Actions</th><td>Cancel on the left, quiet and first to receive focus. The destructive action on the right, in the danger color, labelled with its verb and object.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">The 420px width and padding are ours. The danger color is ours, chosen to read as destructive at 4.5:1 in both themes; the pattern follows the sources below.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>When to use</th><td>Only for destructive or irreversible actions. Carbon: the danger modal for these. Fluent: alert dialogs for potential loss. Don’t put a confirm on every action.</td></tr>
+        <tr><th>Dismissal</th><td><code>closedby="none"</code> makes Escape and the outside click do nothing. A close button would give a third way out, so this page has none. Fluent: alert dialogs can only be dismissed by a footer button.</td></tr>
+        <tr><th>Initial focus</th><td>The APG says that for a destructive final step, focus may start on the least destructive action. Here it is Cancel, so Enter does not delete by accident.</td></tr>
+        <tr><th>Return</th><td>After Cancel or Delete, focus returns to the Delete workspace button that opened it.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between Cancel and Delete; focus stays in the dialog.</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>Activates the focused button.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Does nothing; the dialog needs a footer button to close.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>role="alertdialog"</code> tells assistive technology that the dialog needs an answer, and the consequence is its description.</li>
+          <li>Because Escape is disabled, the footer must always offer a way out. Cancel is that way out.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

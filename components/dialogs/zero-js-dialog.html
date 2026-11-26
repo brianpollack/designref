@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoker Dialog</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/zero-js-dialog">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Team settings</span>
+    <!-- Invoker: opens the dialog with no script. -->
+    <button class="btn" type="button" commandfor="invite" command="show-modal">Invite people</button>
+  </header>
+  <p class="note">Members can see each other’s comments once they accept.</p>
+
+  <dialog class="dlg" id="invite" closedby="any" aria-labelledby="invite-title">
+    <form method="dialog" class="dlg-form">
+      <h2 id="invite-title" class="dlg-title">Invite people</h2>
+      <label class="field">
+        <span>Email addresses</span>
+        <input name="emails" placeholder="name@example.com" autocomplete="off">
+      </label>
+      <footer class="dlg-actions">
+        <!-- Invoker: closes the dialog with no returned value. -->
+        <button class="btn" type="button" commandfor="invite" command="close">Cancel</button>
+        <!-- Form submit: closes the dialog and sets returnValue to “send”. -->
+        <button class="btn primary" type="submit" value="send">Send invites</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --zd-bg: light-dark(#ffffff, #26272b);                      /* Dialog surface */
+  --zd-fg: light-dark(#1c1d21, #ececef);                      /* Title and field text */
+  --zd-muted: light-dark(#5d6169, #a0a4ae);                   /* Note text */
+  --zd-width: 400px;                                          /* Preferred width; 16px side margins on a phone */
+  --zd-radius: 16px;                                          /* Corner of the dialog */
+  --zd-pad: 24px;                                             /* Padding inside */
+  --zd-scrim: light-dark(rgb(20 22 28 / .42), rgb(0 0 0 / .6)); /* Behind the dialog in the top layer */
+
+  /* @group Controls */
+  --zd-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill and focus ring */
+  --zd-on-accent: light-dark(#ffffff, #101218);               /* Label on primary */
+  --zd-rule: light-dark(#c9ced8, #444853);                    /* Field and button outline */
+}
+
+/* ---- Component ---- */
+.dlg {
+  width: min(var(--zd-width), calc(100% - 32px));
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--zd-radius);
+  background: var(--zd-bg);
+  color: var(--zd-fg);
+  box-shadow: 0 24px 60px rgb(0 0 0 / .28);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 180ms, transform 180ms, overlay 180ms allow-discrete, display 180ms allow-discrete;
+}
+.dlg[open] { opacity: 1; transform: none; }
+@starting-style { .dlg[open] { opacity: 0; transform: translateY(8px); } }
+.dlg::backdrop { background: transparent; transition: background 180ms; }
+.dlg[open]::backdrop { background: var(--zd-scrim); }
+@starting-style { .dlg[open]::backdrop { background: transparent; } }
+
+.dlg-form { display: grid; gap: 16px; padding: var(--zd-pad); margin: 0; }
+.dlg-title { margin: 0; font: 600 18px/24px system-ui, sans-serif; }
+.field { display: grid; gap: 6px; font: 500 13px/18px system-ui, sans-serif; }
+.field input {
+  height: 40px; padding: 0 12px; border: 1px solid var(--zd-rule); border-radius: 8px;
+  background: var(--zd-bg); color: var(--zd-fg); font: 14px/20px system-ui, sans-serif;
+}
+.field input:focus-visible { outline: 2px solid var(--zd-accent); outline-offset: 1px; }
+.dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+.btn {
+  min-height: 40px; min-width: 40px; padding: 0 16px; border: 1px solid var(--zd-rule); border-radius: 999px;
+  background: transparent; color: var(--zd-fg); font: 500 14px/20px system-ui, sans-serif; cursor: pointer;
+}
+.btn.primary { background: var(--zd-accent); border-color: transparent; color: var(--zd-on-accent); }
+.btn:hover { background: color-mix(in oklab, var(--zd-bg), light-dark(#000, #fff) 6%); }
+.btn.primary:hover { background: color-mix(in oklab, var(--zd-accent), light-dark(#000, #fff) 10%); }
+.btn:focus-visible { outline: 2px solid var(--zd-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dlg, .dlg::backdrop { transition: none; }
+}
+@media (forced-colors: active) {
+  .dlg { border: 1px solid CanvasText; }
+  .btn, .field input { border-color: ButtonText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 300px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 600 16px/22px system-ui, sans-serif; }
+.note, .status { margin: 0; font-size: 13px; color: light-dark(#5d6169, #a0a4ae); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// No script opens or closes the dialog. The only script reports the result, which is
+// the returnValue the form sets (“send”), or “nothing” for Cancel and Escape.
+const dlg = document.getElementById('invite');
+const status = document.querySelector('.status');
+dlg.addEventListener('close', () => {
+  status.textContent = dlg.returnValue === 'send' ? 'Invites sent.' : 'Closed without sending.';
+});
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the invite dialog open. Clicking the invoker is the same input a user gives.
+{
+  document.querySelector('[commandfor="invite"]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="420" data-hint="Open with the button. Cancel closes it without a script; Send returns the value."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Invoker</th><td>A button with <code>commandfor</code> naming the dialog and <code>command="show-modal"</code>. The browser performs the action; there is no click handler.</td></tr>
+        <tr><th>Close invoker</th><td>A button with <code>command="close"</code> on the same dialog. Used for Cancel, which returns no value.</td></tr>
+        <tr><th>Form</th><td><code>method="dialog"</code>. Submitting closes the dialog and sets <code>returnValue</code> to the submit button’s <code>value</code>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Values are ours, the same neutral defaults as Native Dialog.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>When to use</th><td>A dialog that opens from one place and closes with one of its own buttons. Use the native dialog with a script when the open state must be set in code, or when you need the result before closing.</td></tr>
+        <tr><th>Open</th><td><code>command="show-modal"</code> opens the dialog modally. Focus goes to its first focusable element, as with <code>showModal()</code>.</td></tr>
+        <tr><th>Close</th><td>Escape, a backdrop click (from <code>closedby="any"</code>), the Cancel invoker, or a submit. Only the submit sets a return value.</td></tr>
+        <tr><th>Focus</th><td>Returned to the invoker that opened the dialog, when the invoker still exists.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Open the dialog from the invoker; activate Cancel or Send inside it.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close the dialog without a value.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Moves within the dialog only.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Invoker commands are a browser feature, so keyboard and screen-reader behavior is the browser’s own, not ours to script.</li>
+          <li>Give the dialog a visible title named by <code>aria-labelledby</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

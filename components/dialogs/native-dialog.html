@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Native Dialog</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/native-dialog">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Q3 launch</span>
+    <button class="btn" type="button" data-open>Rename project</button>
+  </header>
+  <ul class="rows" aria-label="Project files">
+    <li>Launch plan.doc</li>
+    <li>Press kit.pdf</li>
+    <li>Budget.xlsx</li>
+  </ul>
+
+  <!-- closedby="any": Escape, a backdrop click and a form submit all close it.
+       method="dialog" makes the submit button set the returned value. -->
+  <dialog class="dlg" id="rename" closedby="any" aria-labelledby="rename-title" aria-describedby="rename-body">
+    <form method="dialog" class="dlg-form">
+      <h2 id="rename-title" class="dlg-title">Rename project</h2>
+      <p id="rename-body" class="dlg-body">Shared members see the new name straight away.</p>
+      <label class="field">
+        <span>Name</span>
+        <input name="name" value="Q3 launch" autocomplete="off">
+      </label>
+      <footer class="dlg-actions">
+        <button class="btn" value="cancel" type="submit">Cancel</button>
+        <button class="btn primary" value="save" type="submit">Save</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Container */
+  --nd-bg: light-dark(#ffffff, #26272b);                      /* Dialog surface */
+  --nd-fg: light-dark(#1c1d21, #ececef);                      /* Title and field text */
+  --nd-muted: light-dark(#5d6169, #a0a4ae);                   /* Body text, 6:1 on the surface */
+  --nd-width: 420px;                                          /* Preferred width; shrinks to 16px side margins on a phone */
+  --nd-radius: 16px;                                          /* Corner of the dialog */
+  --nd-pad: 24px;                                             /* Padding inside, all sides (Material 3 uses 24dp too) */
+  --nd-shadow: 0 24px 60px rgb(0 0 0 / .28);                  /* Elevation over the page */
+
+  /* @group Backdrop */
+  --nd-scrim: light-dark(rgb(20 22 28 / .42), rgb(0 0 0 / .6)); /* Behind the dialog; the browser draws it in the top layer */
+  --nd-blur: 2px;                                             /* Light blur of the page behind, where backdrop-filter is supported */
+
+  /* @group Motion */
+  --nd-dur: 200ms;                                            /* Enter and exit duration */
+  --nd-ease: cubic-bezier(.2, 0, 0, 1);                       /* Standard decelerate */
+  --nd-rise: 8px;                                             /* How far the dialog travels on enter */
+
+  /* @group Controls */
+  --nd-accent: light-dark(#2b59e0, #8ea6ff);                  /* Primary fill and focus ring */
+  --nd-on-accent: light-dark(#ffffff, #101218);               /* Label on primary */
+  --nd-rule: light-dark(#c9ced8, #444853);                    /* Field and button outline */
+}
+
+/* ---- Component ---- */
+.dlg {
+  width: min(var(--nd-width), calc(100% - 32px));
+  max-width: none;                                            /* Overrides the UA max-width so the width rule above wins */
+  padding: 0;
+  border: 0;
+  border-radius: var(--nd-radius);
+  background: var(--nd-bg);
+  color: var(--nd-fg);
+  box-shadow: var(--nd-shadow);
+  /* Enter and exit: opacity and translate, with display and overlay allowed to transition. */
+  opacity: 0;
+  transform: translateY(var(--nd-rise));
+  transition: opacity var(--nd-dur) var(--nd-ease), transform var(--nd-dur) var(--nd-ease),
+              overlay var(--nd-dur) allow-discrete, display var(--nd-dur) allow-discrete;
+}
+.dlg[open] { opacity: 1; transform: none; }
+/* @starting-style gives the first frame of the enter animation, with no script. */
+@starting-style { .dlg[open] { opacity: 0; transform: translateY(var(--nd-rise)); } }
+
+.dlg::backdrop {
+  background: transparent;
+  backdrop-filter: blur(0);
+  transition: background var(--nd-dur) var(--nd-ease), backdrop-filter var(--nd-dur) var(--nd-ease);
+}
+.dlg[open]::backdrop { background: var(--nd-scrim); backdrop-filter: blur(var(--nd-blur)); }
+@starting-style { .dlg[open]::backdrop { background: transparent; backdrop-filter: blur(0); } }
+
+.dlg-form { display: grid; gap: 16px; padding: var(--nd-pad); margin: 0; }
+.dlg-title { margin: 0; font: 600 18px/24px system-ui, sans-serif; }
+.dlg-body { margin: 0; font: 14px/20px system-ui, sans-serif; color: var(--nd-muted); }
+.field { display: grid; gap: 6px; font: 500 13px/18px system-ui, sans-serif; }
+.field input {
+  height: 40px; padding: 0 12px; border: 1px solid var(--nd-rule); border-radius: 8px;
+  background: var(--nd-bg); color: var(--nd-fg); font: 14px/20px system-ui, sans-serif;
+}
+.field input:focus-visible { outline: 2px solid var(--nd-accent); outline-offset: 1px; }
+.dlg-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
+
+.btn {
+  min-height: 40px; min-width: 40px; padding: 0 16px; border: 1px solid var(--nd-rule); border-radius: 999px;
+  background: transparent; color: var(--nd-fg); font: 500 14px/20px system-ui, sans-serif; cursor: pointer;
+}
+.btn.primary { background: var(--nd-accent); border-color: transparent; color: var(--nd-on-accent); }
+.btn:hover { background: color-mix(in oklab, var(--nd-bg), light-dark(#000, #fff) 6%); }
+.btn.primary:hover { background: color-mix(in oklab, var(--nd-accent), light-dark(#000, #fff) 10%); }
+.btn:focus-visible { outline: 2px solid var(--nd-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dlg, .dlg::backdrop { transition: none; }
+  .dlg[open] { transform: none; }
+}
+@media (forced-colors: active) {
+  .dlg { border: 1px solid CanvasText; }
+  .btn, .field input { border-color: ButtonText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f3f4f6, #141518); color: light-dark(#1c1d21, #ececef); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 340px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar { display: flex; align-items: center; justify-content: space-between; }
+.title { font: 600 16px/22px system-ui, sans-serif; }
+.rows { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.rows li { padding: 10px 12px; border-radius: 8px; background: light-dark(#ffffff, #1d1e22); }
+.status { margin: 0; font-size: 13px; color: light-dark(#5d6169, #a0a4ae); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens the dialog from the trigger and reports what the user chose.
+// The browser does the closing, focus return and Escape handling; the script only
+// reports the result and provides a fallback for browsers without closedby.
+const dlg = document.getElementById('rename');
+const status = document.querySelector('.status');
+document.querySelector('[data-open]').addEventListener('click', () => dlg.showModal());
+dlg.addEventListener('close', () => {
+  // returnValue is the value of the submit button used, or '' for Escape and backdrop clicks.
+  status.textContent = dlg.returnValue ? `Closed: ${dlg.returnValue}` : 'Closed without a choice.';
+});
+
+// Fallback for browsers without the closedby attribute: close on a click that starts
+// and ends on the backdrop. Clicks inside the padding count as inside, so they don't close.
+if (!('closedBy' in HTMLDialogElement.prototype)) {
+  dlg.addEventListener('click', (event) => {
+    if (event.target !== dlg) return;
+    const r = dlg.getBoundingClientRect();
+    const inside = r.top <= event.clientY && event.clientY <= r.bottom &&
+                   r.left <= event.clientX && event.clientX <= r.right;
+    if (!inside) dlg.close();
+  });
+}
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the rename dialog open, with focus on the field as the browser places it.
+{
+  document.querySelector('[data-open]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="440" data-hint="Press Escape, click the backdrop or pick an action. Tab stays inside the dialog."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Container</th><td>A <code>&lt;dialog&gt;</code> opened with <code>showModal()</code>. The browser puts it in the top layer, so no z-index or stacking context of the page can cover it.</td></tr>
+        <tr><th>Title</th><td>A visible heading named by <code>aria-labelledby</code>. Fluent requires one; the APG requires a name for every dialog.</td></tr>
+        <tr><th>Body</th><td>One sentence of consequence or context, named by <code>aria-describedby</code>.</td></tr>
+        <tr><th>Actions</th><td>Two buttons in a footer, aligned to the end. The primary is the one the user most likely wants; the cancel is quieter.</td></tr>
+        <tr><th>Backdrop</th><td>The <code>::backdrop</code> pseudo-element, a scrim over the page. Clicks on it close the dialog with <code>closedby="any"</code>.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">These are ours. The container radius, padding and the 420px width are a neutral default, not a system's value; the Material, Fluent and Carbon pages carry their own.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Open</th><td><code>showModal()</code>. A non-modal <code>show()</code> dialog has no backdrop and no inert page, so <code>closedby</code> does nothing there.</td></tr>
+        <tr><th>Close</th><td>Escape, a backdrop click (<code>closedby="any"</code>), or a <code>method="dialog"</code> form button. Each sets <code>returnValue</code> to the button’s value; Escape and backdrop leave it empty.</td></tr>
+        <tr><th>Focus</th><td>On open, the first focusable element inside receives focus. On close, focus returns to the element that opened the dialog, unless it no longer exists.</td></tr>
+        <tr><th>Page behind</th><td>Inert while open: clicks and Tab do not reach it. Chrome’s <code>closedby</code> guidance is that a click starting inside the dialog and ending on the backdrop should not close it; the fallback checks the press position.</td></tr>
+        <tr><th>Motion</th><td>200ms opacity and an 8px rise on enter and exit; the scrim fades. Reduced motion removes all of it. Exit uses <code>allow-discrete</code> so the dialog stays on screen until the fade ends.</td></tr>
+        <tr><th>Empty and long</th><td>A long body scrolls inside the dialog, not behind it: keep the title and actions visible.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd> <kbd>Shift</kbd>+<kbd>Tab</kbd></th><td>Move through the dialog; focus does not leave it.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Close the dialog and return focus to the trigger.</td></tr>
+          <tr><th><kbd>Enter</kbd></th><td>Submits the form with the focused button’s value.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li><code>showModal()</code> sets <code>aria-modal="true"</code> implicitly. The APG asks for a modal only when the page behind is really inert, and the browser makes it so.</li>
+          <li>The APG’s close guidance: include a visible button that closes the dialog. The Cancel button here does that.</li>
+          <li>Escape closes only the last modal shown when several are open.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

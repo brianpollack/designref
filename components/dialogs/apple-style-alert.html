@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apple-Style Alert</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/dialogs/apple-style-alert">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="surface">
+  <header class="bar">
+    <span class="title">Photos</span>
+  </header>
+  <div class="row">
+    <button class="btn" type="button" data-open="alert">Delete album</button>
+    <button class="btn" type="button" data-open="sheet">Share options</button>
+  </div>
+
+  <!-- Alert: short, centred, the actions side by side; the destructive one is red and not the default. -->
+  <dialog class="alert" id="alert" closedby="any" aria-labelledby="alert-title" aria-describedby="alert-msg">
+    <form method="dialog" class="alert-form">
+      <div class="alert-text">
+        <h2 id="alert-title" class="alert-title">Delete “Summer 2025”?</h2>
+        <p id="alert-msg" class="alert-msg">The album and its 48 photos will be removed from all devices.</p>
+      </div>
+      <div class="alert-actions">
+        <button class="alert-btn" type="submit" value="cancel">Cancel</button>
+        <button class="alert-btn destructive" type="submit" value="delete">Delete</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Action sheet: choices the user started, a list with Cancel as its own button at the bottom. -->
+  <dialog class="sheet" id="sheet" closedby="any" aria-labelledby="sheet-title">
+    <form method="dialog" class="sheet-form">
+      <div class="sheet-group">
+        <h2 id="sheet-title" class="sheet-title">Share “Summer 2025”</h2>
+        <button class="sheet-btn" type="submit" value="link">Copy link</button>
+        <button class="sheet-btn" type="submit" value="messages">Messages</button>
+        <button class="sheet-btn destructive" type="submit" value="remove">Remove from shared</button>
+      </div>
+      <button class="sheet-btn cancel" type="submit" value="cancel">Cancel</button>
+    </form>
+  </dialog>
+
+  <p class="status" role="status" aria-live="polite">Nothing run yet.</p>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* ---- Tokens ---- */
+:root {
+  color-scheme: light dark;
+
+  /* @group Alert */
+  --aa-alert-bg: light-dark(rgb(255 255 255 / .92), rgb(44 44 46 / .92)); /* Translucent surface, over a blur where supported */
+  --aa-radius: 14px;                                          /* Corner of the alert and the sheet groups (ours, not published) */
+  --aa-alert-w: 270px;                                        /* Alert width; the system alert is narrow and centred */
+  --aa-title: light-dark(#000000, #ffffff);                   /* Title text */
+  --aa-body: light-dark(#3c3c43, #ebebf5);                    /* Message text, 13pt-ish on iOS */
+  --aa-rule: light-dark(rgb(60 60 67 / .3), rgb(84 84 88 / .65)); /* Hairline between actions */
+
+  /* @group Actions */
+  --aa-action: light-dark(#0060df, #0a84ff);                  /* Action label. Apple’s #007AFF is about 4:1 on white, under WCAG’s 4.5:1 for text, so the light label is darker */
+  --aa-destructive: light-dark(#d70015, #ff453a);             /* Destructive label (system red) */
+  --aa-hit: 44px;                                             /* Action height: the HIG hit region */
+
+  /* @group Motion (ours) */
+  --aa-dur: 260ms;                                            /* Alert scale and fade */
+  --aa-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ---- Component ---- */
+.alert, .sheet {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--aa-title);
+  opacity: 0;
+  transition: opacity var(--aa-dur) var(--aa-ease), transform var(--aa-dur) var(--aa-ease), overlay var(--aa-dur) allow-discrete, display var(--aa-dur) allow-discrete;
+}
+.alert[open], .sheet[open] { opacity: 1; }
+.alert::backdrop, .sheet::backdrop { background: transparent; transition: background var(--aa-dur); }
+.alert[open]::backdrop, .sheet[open]::backdrop { background: rgb(0 0 0 / .4); }
+@starting-style { .alert[open], .sheet[open] { opacity: 0; } .alert[open]::backdrop, .sheet[open]::backdrop { background: transparent; } }
+
+/* Alert: the centred group, scaled up a little as it appears. */
+.alert { width: var(--aa-alert-w); max-width: calc(100% - 32px); margin: auto; transform: scale(1.06); }
+.alert[open] { transform: none; }
+@starting-style { .alert[open] { transform: scale(1.06); } }
+.alert-form { margin: 0; background: var(--aa-alert-bg); border-radius: var(--aa-radius); overflow: hidden; backdrop-filter: blur(20px); }
+.alert-text { padding: 16px 16px 14px; text-align: center; }
+.alert-title { margin: 0 0 4px; font: 600 17px/22px system-ui, sans-serif; }
+.alert-msg { margin: 0; font: 13px/18px system-ui, sans-serif; color: var(--aa-body); }
+.alert-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-top: 1px solid var(--aa-rule); }
+.alert-btn {
+  min-height: var(--aa-hit); padding: 0 8px; border: 0; background: transparent;
+  color: var(--aa-action); font: 400 17px/22px system-ui, sans-serif; cursor: pointer;
+}
+.alert-btn + .alert-btn { border-inline-start: 1px solid var(--aa-rule); }
+.alert-btn.destructive { color: var(--aa-destructive); font-weight: 600; }
+.alert-btn:active { background: color-mix(in oklab, var(--aa-action) 14%, transparent); }
+.alert-btn.destructive:active { background: color-mix(in oklab, var(--aa-destructive) 14%, transparent); }
+
+/* Action sheet: a bottom list, the Cancel button set apart below its own group. */
+.sheet { width: min(420px, 100%); max-width: calc(100% - 16px); margin: auto auto 8px; }
+.sheet[open] { transform: none; }
+.sheet { transform: translateY(24px); }
+@starting-style { .sheet[open] { transform: translateY(24px); } }
+.sheet-form { display: grid; gap: 8px; margin: 0; }
+.sheet-group { background: var(--aa-alert-bg); border-radius: var(--aa-radius); overflow: hidden; backdrop-filter: blur(20px); }
+.sheet-title { margin: 0; padding: 12px 16px; text-align: center; font: 13px/18px system-ui, sans-serif; color: var(--aa-body); border-bottom: 1px solid var(--aa-rule); }
+.sheet-btn {
+  display: block; width: 100%; min-height: var(--aa-hit); padding: 0 16px; border: 0; border-top: 1px solid var(--aa-rule);
+  background: transparent; color: var(--aa-action); font: 400 20px/24px system-ui, sans-serif; text-align: center; cursor: pointer;
+}
+.sheet-group .sheet-btn:first-of-type { border-top: 0; }
+.sheet-btn.destructive { color: var(--aa-destructive); }
+.sheet-btn.cancel { background: var(--aa-alert-bg); border-radius: var(--aa-radius); font-weight: 600; }
+.sheet-btn:active { background: color-mix(in oklab, var(--aa-action) 14%, transparent); }
+
+/* Trigger buttons: white on the light blue measures 3.6:1 in dark mode, so the label is black there. */
+.btn { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--aa-action); color: light-dark(#ffffff, #000000); font: 500 14px/20px system-ui, sans-serif; cursor: pointer; }
+.btn:hover { filter: brightness(1.08); }
+.btn:focus-visible, .alert-btn:focus-visible, .sheet-btn:focus-visible { outline: 2px solid var(--aa-action); outline-offset: -2px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+@media (prefers-reduced-motion: reduce) {
+  .alert, .sheet, .alert::backdrop, .sheet::backdrop { transition: none; }
+  .alert[open], .sheet[open] { transform: none; }
+}
+@media (forced-colors: active) {
+  .alert-form, .sheet-group, .sheet-btn.cancel { border: 1px solid CanvasText; }
+}
+
+/* ---- Demo surface (not part of the component) ---- */
+body { margin: 0; background: light-dark(#f2f2f7, #000000); color: light-dark(#000000, #ffffff); font: 14px/20px system-ui, sans-serif; }
+.surface { min-height: 380px; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bar .title { font: 600 17px/22px system-ui, sans-serif; }
+.status { margin: 0; font-size: 13px; color: light-dark(#3c3c43, #ebebf5); }
+</style>
+
+<script type="text/plain" data-demo="js">
+// Opens each dialog from its button and reports the choice. Dismissal by Escape, a tap on the dimmed page
+// or Cancel reports nothing. A real app would delete or share in the handler.
+const status = document.querySelector('.status');
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => {
+  document.getElementById(b.dataset.open).showModal();
+}));
+document.querySelectorAll('dialog').forEach(d => d.addEventListener('close', () => {
+  status.textContent = d.returnValue && d.returnValue !== 'cancel' ? `Ran: ${d.returnValue}` : 'Closed without a choice.';
+}));
+</script>
+
+<script type="text/plain" data-demo="pin">
+// Rest state: the alert open, the way it appears on first use.
+{
+  document.querySelector('[data-open="alert"]').click();
+}
+</script>
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="460" data-hint="The alert asks for a decision about something that happened. The sheet offers choices the user started."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Alert</th><td>A centred group with a short title, one line of message and two actions side by side with a hairline between.</td></tr>
+        <tr><th>Action sheet</th><td>A bottom list of choices, with Cancel in its own group at the bottom.</td></tr>
+        <tr><th>Destructive</th><td>One action in the destructive color (red), labelled with its verb. It is not the default action the user is most likely to choose.</td></tr>
+        <tr><th>Hit area</th><td>44pt tall actions, the HIG’s hit region on iOS. Rules check measures it.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Inspired by Apple’s alert and action sheet. Apple publishes no radii or type sizes for these, so the corner radius, widths, blur and the blue and red are ours, matched to what iOS shows. The light-mode blue is darker than Apple’s #007AFF, which measures about 4:1 on white and fails WCAG’s 4.5:1 for text. Hit areas follow the HIG.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>When to use an alert</th><td>Critical information the user needs right away, usually about a problem or a change, per the HIG’s alerts guidance.</td></tr>
+        <tr><th>When to use an action sheet</th><td>Choices tied to an action the user started. HIG: Cancel is required, and it is best to keep the other choices to about three.</td></tr>
+        <tr><th>Dismissal</th><td>Cancel, Escape, or a tap outside. An alert whose action has to be taken can drop the outside tap; this demo keeps it.</td></tr>
+        <tr><th>Motion</th><td>The alert scales up 6% over 260ms; the sheet slides up 24px. Reduced motion removes both.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Tab</kbd></th><td>Moves between actions.</td></tr>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Choose the focused action.</td></tr>
+          <tr><th><kbd>Esc</kbd></th><td>Dismiss without a choice.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>The alert’s title and message are the accessible name and description.</li>
+          <li>The destructive action is announced by its label (“Delete”), not by its color alone.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>
