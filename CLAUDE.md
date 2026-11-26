@@ -28,6 +28,7 @@ assets/icon-libraries.js       Icon libraries we track: license, style, naming, 
 assets/icon-sets.js            GENERATED artwork for non-Lucide sets (scripts/fetch-icons.mjs)
 assets/icons-page.js           Renders icons.html
 assets/rules.js                Rules check: WCAG + per-core-library rules, measured in the demo frames
+assets/vendor/                 Vendored third-party scripts (Tailwind's browser build), loaded into demo frames
 components/<category>/index.html         Category page
 components/<category>/<concept>.html     Concept page
 templates/<category>/…                   Page Templates section (same layout)
@@ -55,6 +56,14 @@ scripts/                       new-category.sh, new-concept.sh, check.mjs, check
   from that library's own token source. Our own values in a library's style are
   `inspired: true`. Their foundations live in `sources.js` → `systems`; every row cites the
   page it was read from, and nothing unverified goes in.
+- **Tailwind concepts:** set `stack: 'tailwind'` in the catalog (stacks live in `CATALOG.STACKS`).
+  `concept.js` compiles the CSS block with the vendored browser build inside each frame, wraps
+  the base styles in `@layer base` (unlayered CSS would beat every utility), gives the dark
+  frame `class="dark"`, and waits for Tailwind's output before reading the spec table. Write
+  the CSS block as a Tailwind stylesheet (`@custom-variant dark (&:is(.dark *))`, `@theme
+  inline`, tokens on `:root` with `light-dark()`); copy a library's real class strings, merged
+  as tailwind-merge would. Pilot: `components/buttons/shadcn-buttons.html`. To upgrade Tailwind,
+  download the new `@tailwindcss/browser` `dist/index.global.js` and bump `version`, `cdn` together.
 - **Icons:** a concept built to a core library uses that library's own icons when its
   license allows: `icons: 'material-symbols'` / `'fluent-system-icons'` / `'carbon-icons'`
   in the catalog (default `'lucide'`; SF Symbols can't ship, so Apple-style pages use

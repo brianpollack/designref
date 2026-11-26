@@ -298,9 +298,14 @@
     .join('');
 
   /** "Built to Material 3" / "Inspired by Apple HIG", linked to the library on sources.html. */
-  const systemLine = k => k.system
+  const systemLine = k => (k.system
     ? `<span class="built-to">${k.inspired ? 'Inspired by' : 'Built to'} <a href="${sourcesUrl(k.system)}">${esc(siteLabel(k.system))}</a></span>`
-    : '';
+    : '') + stackLine(k);
+  /** "Styled with Tailwind CSS v4" for a concept whose demo uses a CSS stack (catalog STACKS). */
+  const stackLine = k => {
+    const s = C.STACKS?.[k.stack];
+    return s ? `<span class="built-to">Styled with <a href="${s.url}">${esc(s.name)}</a></span>` : '';
+  };
 
   function renderHeader(header) {
     const { category, concept } = here;

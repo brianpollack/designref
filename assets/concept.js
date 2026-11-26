@@ -59,6 +59,8 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
   /** Demo sources; read in boot() because this script runs before <body> is parsed. */
   let src = { html: '', css: '', js: '', pin: '' };
   const title = () => Site.here.concept?.title ?? document.title;
+  /** The concept's CSS stack (catalog `stack` → CATALOG.STACKS), or null for plain CSS. */
+  const stack = () => window.CATALOG.STACKS?.[Site.here.concept?.stack] ?? null;
   /** The concept's icon library (catalog `icons`, default Lucide) and its registry entry. */
   const iconSet = () => Site.here.concept?.icons ?? 'lucide';
   const iconLib = () => window.ICON_LIBRARIES.libraries[iconSet()];
@@ -73,19 +75,20 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
    * @param {boolean} [o.inert=false]    Thumbnails: an inert <body> can't take focus, so
    *                                     autofocus, focus() and showModal() can't steal focus
    *                                     or scroll the category page. Popovers still render.
+   * @param {boolean} [o.portable=false] "Open standalone" and "Copy as one file": a stack's
+   *                                     script comes from its CDN, not the vendored copy.
    */
-  function buildDoc({ scheme, pin = true, inert = false } = {}) {
+  function buildDoc({ scheme, pin = true, inert = false, portable = false } = {}) {
     const forced = scheme ? ` style="color-scheme: ${scheme}"` : '';
     const sprite = Icons.spriteFor(src.html, iconSet());
     return [
       '<!doctype html>',
-      `<html lang="en"${forced}>`,
+      `<html lang="en"${forced}${stack() && scheme === 'dark' ? ' class="dark"' : ''}>`,
       '<head>',
       '<meta charset="utf-8">',
       '<meta name="viewport" content="width=device-width, initial-scale=1">',
       `<title>${esc(title())}</title>`,
-      `<style>\n${DEMO_BASE}\n</style>`,
-      `<style>\n${src.css}\n</style>`,
+      ...(stack() ? stackHead(scheme, portable) : [`<style>\n${DEMO_BASE}\n</style>`, `<style>\n${src.css}\n</style>`]),
       '</head>',
       inert ? '<body inert>' : '<body>',
       sprite,
@@ -95,6 +98,49 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
       '</body>',
       '</html>',
     ].filter(Boolean).join('\n');
+  }
+
+  /**
+   * <head> parts for a concept styled with a CSS stack (only Tailwind so far).
+   *
+   * - Base styles go in `@layer base`: Tailwind's utilities live in layers, and any unlayered
+   *   rule (such as `button { color: inherit }`) would beat every utility.
+   * - The demo CSS goes in <style type="text/tailwindcss">, which the browser build compiles,
+   *   along with every class it finds in the page, into a <style> it appends to <head>.
+   * - Frames load the vendored script so pages work offline; portable copies load the CDN.
+   * - `dark:` variants follow a `dark` class on <html>. Frames get it from buildDoc when forced
+   *   dark; a portable copy has no forced scheme, so one line sets it from the OS.
+   */
+  function stackHead(scheme, portable) {
+    const s = stack();
+    const scriptUrl = portable ? s.cdn : Site.url(s.script);
+    return [
+      `<style>\n@layer base {\n${DEMO_BASE}\n}\n</style>`,
+      `<style type="text/tailwindcss">\n${src.css}\n</style>`,
+      !scheme ? `<script>if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark');</script>` : '',
+      `<script src="${scriptUrl}"></script>`,
+    ];
+  }
+
+  /**
+   * Resolve once a frame's styles are final. Plain CSS is final at `load`; Tailwind compiles
+   * after it, asynchronously, into a <style> whose output starts with its license banner. Gives
+   * up after 5s (offline with no script, say) so the page still renders its tables.
+   */
+  function settled(win) {
+    if (!stack()) return Promise.resolve(win);
+    const start = performance.now();
+    return new Promise(resolve => {
+      const poll = () => {
+        const built = [...win.document.head.querySelectorAll('style:not([type])')]
+          .some(el => el.textContent.includes('tailwindcss v'));
+        // No requestAnimationFrame here: it never fires in a background tab, and getComputedStyle
+        // brings styles up to date on its own.
+        if (built || performance.now() - start > 5000) resolve(win);
+        else setTimeout(poll, 30);
+      };
+      poll();
+    });
   }
 
   /** Lines of real JavaScript: no blanks, no comment-only lines. */
@@ -111,7 +157,7 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
   /** Load (or reload) the frames; resolves with their windows once loaded. */
   function loadFrames() {
     return Promise.all(frames.map(f => new Promise(resolve => {
-      f.addEventListener('load', () => resolve(f.contentWindow), { once: true });
+      f.addEventListener('load', () => settled(f.contentWindow).then(resolve), { once: true });
       f.srcdoc = buildDoc({ scheme: f.dataset.scheme, inert: document.documentElement.classList.contains('thumb') });
     })));
   }
@@ -134,7 +180,7 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === 'reset') loadFrames();
       if (act === 'open') {
-        const blob = new Blob([buildDoc({ pin: false })], { type: 'text/html' });
+        const blob = new Blob([buildDoc({ pin: false, portable: true })], { type: 'text/html' });
         window.open(URL.createObjectURL(blob), '_blank');
       }
     });
@@ -185,9 +231,12 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
     const note = document.createElement('p');
     note.className = 'code-note';
     const icons = `Icons are from ${iconLib().name}, in an inline SVG sprite`;
-    note.textContent = src.js
-      ? `${icons}. “Copy as one file” includes the sprite and base styles.`
-      : `No JavaScript: everything above is HTML attributes and CSS. ${icons}; “Copy as one file” includes it.`;
+    note.textContent = stack()
+      // A stack page's CSS is not plain CSS: say where it goes and what the one-file copy loads.
+      ? `Styled with ${stack().name} utilities. The CSS tab goes in your main stylesheet, after @import "tailwindcss". ${icons}. “Copy as one file” runs Tailwind’s browser build from a CDN, which suits prototypes, not production.`
+      : src.js
+        ? `${icons}. “Copy as one file” includes the sprite and base styles.`
+        : `No JavaScript: everything above is HTML attributes and CSS. ${icons}; “Copy as one file” includes it.`;
     const base = document.createElement('details');
     base.className = 'base';
     base.innerHTML = `<summary>Base styles every demo shares</summary><pre class="code-panel"><code>${highlight(DEMO_BASE, 'css')}</code></pre>`;
@@ -211,7 +260,7 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
       if (tab) return show(tab.dataset.lang);
       const act = e.target.closest('[data-act]')?.dataset.act;
       if (act === 'copy') Site.copy(src[lang], `Copied ${lang.toUpperCase()}`);
-      if (act === 'copy-file') Site.copy(buildDoc({ pin: false }), 'Copied single HTML file');
+      if (act === 'copy-file') Site.copy(buildDoc({ pin: false, portable: true }), 'Copied single HTML file');
     });
     // Arrow keys move between tabs (WAI-ARIA tabs pattern, automatic activation).
     bar.querySelector('[role="tablist"]').addEventListener('keydown', e => {
@@ -474,7 +523,9 @@ svg.icon { width: 16px; height: 16px; flex: none; }`;
     if (previewEl) {
       const ready = renderPreview(previewEl, ['light', 'dark']);
       const specEl = $('[data-spec]');
-      if (specEl) ready.then(wins => { renderSpec(specEl, wins); renderRules(specEl, wins); });
+      // Log failures: an error in a .then() is otherwise only an unhandled rejection.
+      if (specEl) ready.then(wins => { renderSpec(specEl, wins); return renderRules(specEl, wins); })
+        .catch(e => console.error('Specs / Rules check failed:', e));
     }
   }
 

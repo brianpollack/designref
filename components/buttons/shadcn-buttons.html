@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>shadcn/ui Buttons</title>
+  <link rel="stylesheet" href="../../assets/site.css">
+  <script src="../../assets/catalog.js"></script>
+  <script src="../../assets/sources.js"></script>
+  <script src="../../assets/icons.js"></script>
+  <script src="../../assets/icon-libraries.js"></script>
+  <script src="../../assets/icon-sets.js"></script>
+  <script src="../../assets/site.js"></script>
+  <script src="../../assets/concept.js"></script>
+</head>
+<body data-page="components/buttons/shadcn-buttons">
+
+<!-- ======================================================================
+     DEMO SOURCE. concept.js builds the previews, code tabs and spec table
+     from these blocks. Tokens on :root with a trailing comment become spec rows.
+     Contract and rules: CLAUDE.md → "Concept page contract".
+
+     Tailwind page (catalog `stack: 'tailwind'`): the CSS block is compiled by
+     Tailwind's browser build inside each frame, and the dark frame's <html> gets
+     class="dark". Each button carries the exact class list shadcn/ui renders:
+     buttonVariants' base + variant + size, merged as tailwind-merge would.
+     ====================================================================== -->
+
+<script type="text/plain" data-demo="html">
+<div class="grid gap-5 p-4">
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">Variants</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" data-slot="button" data-variant="default" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Button</button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Outline</button>
+      <button type="button" data-slot="button" data-variant="secondary" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Secondary</button>
+      <button type="button" data-slot="button" data-variant="ghost" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Ghost</button>
+      <button type="button" data-slot="button" data-variant="destructive" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Destructive</button>
+      <button type="button" data-slot="button" data-variant="link" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 text-primary underline-offset-4 hover:underline h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Link</button>
+    </div>
+  </section>
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">Sizes: xs, sm, default, lg</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" data-slot="button" data-variant="outline" data-size="xs"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3">Extra small</button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="sm"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5">Small</button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Default</button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="lg"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Large</button>
+    </div>
+  </section>
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">Icon sizes</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" data-slot="button" data-variant="outline" data-size="icon-xs" aria-label="Submit"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="icon-sm" aria-label="Submit"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="icon" aria-label="Submit"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-8"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="icon-lg" aria-label="Submit"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-9"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+    </div>
+  </section>
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">With an icon, and rounded-full</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" data-slot="button" data-variant="outline" data-size="sm"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"><svg class="icon" data-icon="inline-start"><use href="#i-git-branch"/></svg> New branch</button>
+      <button type="button" data-slot="button" data-variant="default" data-size="default"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Send <svg class="icon" data-icon="inline-end"><use href="#i-send"/></svg></button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="icon" aria-label="Scroll up"
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 size-8 rounded-full"><svg class="icon"><use href="#i-arrow-up"/></svg></button>
+    </div>
+  </section>
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">Loading, disabled, invalid</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <button type="button" data-slot="button" data-variant="outline" data-size="sm" disabled
+      class="group/button inline-flex shrink-0 items-center justify-center border bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5"><svg class="size-4 animate-spin" data-slot="spinner" data-icon="inline-start" role="status" aria-label="Loading"><use href="#i-loader-circle"/></svg> Generating</button>
+      <button type="button" data-slot="button" data-variant="default" data-size="default" disabled
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Disabled</button>
+      <button type="button" data-slot="button" data-variant="outline" data-size="default" aria-invalid="true"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Pick a date</button>
+    </div>
+  </section>
+  <section>
+    <h2 class="mb-2 text-xs font-medium text-muted-foreground">A link styled as a button (asChild)</h2>
+    <div class="flex flex-wrap items-center gap-2">
+      <a data-slot="button" data-variant="default" data-size="default" href="#"
+      class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2">Log in</a>
+    </div>
+  </section>
+</div>
+</script>
+
+<style data-demo="css" media="not all">
+/* shadcn/ui's default theme (neutral), from its Theming page. Token names stay shadcn's own,
+   unprefixed, so this block can be pasted into a shadcn project as is. shadcn writes light on
+   :root and dark on .dark; here each token is one light-dark() pair instead. */
+@custom-variant dark (&:is(.dark *));
+
+/* Map the variables to Tailwind utilities (bg-primary, ring-ring, rounded-lg…). */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* @group Color */
+  --background: light-dark(oklch(1 0 0), oklch(0.145 0 0));                  /* Page; outline button fill in light */
+  --foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));              /* Page text; outline and ghost label on hover */
+  --primary: light-dark(oklch(0.205 0 0), oklch(0.922 0 0));                 /* Default fill (80% on hover); link text */
+  --primary-foreground: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));      /* Label on the default fill */
+  --secondary: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));                /* Secondary fill; hover mixes in 5% foreground */
+  --secondary-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));    /* Secondary label */
+  --muted: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));                    /* Outline and ghost hover (ghost at 50% in dark) */
+  --muted-foreground: light-dark(oklch(0.556 0 0), oklch(0.708 0 0));        /* Section labels on this page */
+  --destructive: light-dark(oklch(0.577 0.245 27.325), oklch(0.704 0.191 22.216)); /* Destructive label; its fill is this at 10% (20% dark), 20% (30%) on hover */
+  --border: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));                /* Outline border in light */
+  --input: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 15%));                 /* Outline border in dark, and its fill at 30% (50% on hover) */
+  --ring: light-dark(oklch(0.708 0 0), oklch(0.556 0 0));                    /* Focus: border in this color plus a 3px ring at 50% */
+
+  /* @group Shape */
+  --radius: 0.625rem;                                                        /* rounded-lg on default, lg and icon sizes; xs and sm use 80% of it, capped at 10px and 12px */
+}
+
+/* shadcn's base layer: every border and outline takes the theme colors. */
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+}
+</style>
+
+<!-- No JavaScript in the demo: shadcn's Button is a React wrapper that only joins these classes. -->
+
+<!-- ======================================================================
+     PAGE
+     ====================================================================== -->
+<main>
+  <div class="page">
+    <header class="page-header" data-auto></header>
+
+    <section data-preview data-height="470" data-hint="Hover, press and Tab through the buttons. Every style is a Tailwind utility on the element."></section>
+
+    <section class="ruled">
+      <h2>Anatomy</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Element</th><td>A <code>button</code>, or with <code>asChild</code> any element, usually an <code>a</code>. It carries <code>data-slot="button"</code>, <code>data-variant</code> and <code>data-size</code>, so parents (a button group, a form) can style it without knowing its classes.</td></tr>
+        <tr><th>Box</th><td><code>inline-flex</code>, centered, 1px border that is transparent except on outline, <code>rounded-lg</code> (10px), <code>bg-clip-padding</code> so a translucent fill stops inside the border.</td></tr>
+        <tr><th>Label</th><td><code>text-sm</code> (14px, 20px line height), <code>font-medium</code> (500), never wraps. The small size uses 12.8px and extra small 12px.</td></tr>
+        <tr><th>Icon</th><td>Any <code>svg</code> child is 16px (14px at sm, 12px at xs) unless it has its own <code>size-*</code> class, and ignores the pointer. <code>data-icon="inline-start"</code> or <code>"inline-end"</code> trims the padding on that side.</td></tr>
+        <tr><th>Sizes</th><td>Height xs 24px, sm 28px, default 32px, lg 36px; side padding 8px at xs, 10px otherwise. Icon-only sizes are squares of the same heights.</td></tr>
+        <tr><th>Variants</th><td>Default (solid primary), outline (border, page fill), secondary (gray fill), ghost (no fill until hover), destructive (red label on a 10% red tint), link (underline on hover).</td></tr>
+        <tr><th>States</th><td>Hover changes the fill, pressed nudges the button down 1px, focus draws a ring, disabled is 50% opacity with no pointer events, and <code>aria-invalid</code> turns the border and ring red.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-spec>
+      <h2>Specs</h2>
+      <p class="spec-note">Colors are shadcn’s default neutral theme. Sizes and spacing are Tailwind’s scale (1 unit = 4px), written in the classes rather than as tokens.</p>
+    </section>
+
+    <section class="ruled">
+      <h2>Behavior</h2>
+      <table class="kv long-keys"><tbody>
+        <tr><th>Variant and size</th><td>Pick one of each. In React, <code>&lt;Button variant="outline" size="sm"&gt;</code>; here, the classes that call produces. Extra classes win over the variant’s (tailwind-merge drops the one they replace), which is how <code>rounded-full</code> makes a round button.</td></tr>
+        <tr><th>Hover</th><td>Default fades to 80%; secondary mixes 5% of the text color into its fill; outline and ghost fill with muted; destructive deepens its tint. 150ms, Tailwind’s default <code>transition-all</code>.</td></tr>
+        <tr><th>Pressed</th><td>Moves down 1px, except a button with <code>aria-haspopup</code>, which opens a menu instead.</td></tr>
+        <tr><th>Focus</th><td><code>:focus-visible</code> only: the border takes the ring color and a 3px ring at 50% surrounds it (red on destructive). The ring is a box shadow, so it follows the corner radius.</td></tr>
+        <tr><th>Disabled and loading</th><td>Native <code>disabled</code>: 50% opacity and no pointer events. For loading, shadcn disables the button and puts a spinner first; the spinner is <code>role="status"</code> with the label “Loading”.</td></tr>
+        <tr><th>Invalid</th><td><code>aria-invalid="true"</code> gives a red border and ring. It is for buttons that act as a form field, such as a date picker trigger.</td></tr>
+        <tr><th>Cursor</th><td>Tailwind v4 resets buttons to the default arrow cursor. shadcn suggests a base rule for <code>cursor: pointer</code> if you want it; this page keeps Tailwind’s default.</td></tr>
+        <tr><th>Dark mode</th><td>The tokens switch with <code>light-dark()</code>, and the <code>dark:</code> classes follow a <code>dark</code> class on <code>&lt;html&gt;</code> (shadcn’s convention). In dark, outline uses the input color for its border and fill, and destructive and ghost use stronger tints.</td></tr>
+      </tbody></table>
+    </section>
+
+    <section class="ruled" data-code>
+      <h2>Code</h2>
+    </section>
+
+    <section class="ruled">
+      <h2>Accessibility</h2>
+      <table class="kv">
+        <thead><tr><th>Key</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><th><kbd>Enter</kbd> <kbd>Space</kbd></th><td>Activate. The link styled as a button responds to Enter only, like any link.</td></tr>
+          <tr><th><kbd>Tab</kbd></th><td>Move to the next button. Disabled buttons are skipped.</td></tr>
+        </tbody>
+      </table>
+      <div class="prose" style="margin-top:16px">
+        <ul>
+          <li>Icon-only buttons need an <code>aria-label</code>; shadcn’s own examples set one.</li>
+          <li>The destructive label is 4.0:1 against its tint in light (5.3:1 in dark), below the 4.5:1 WCAG asks for at this text size. Every other variant is above 14:1. To fix it, darken <code>--destructive</code>’s light value, for example to <code>oklch(0.5 0.21 27)</code>.</li>
+          <li>The extra small size is 24px high, exactly WCAG 2.2’s minimum target. Use sm or larger for touch.</li>
+          <li>The default theme is grayscale, so primary and secondary differ by fill only, not hue. Add a brand color to <code>--primary</code> to make the main action stand out more.</li>
+          <li>The spinner’s <code>animate-spin</code> keeps turning under reduced motion. Use <code>motion-safe:animate-spin</code> if that matters for your product.</li>
+          <li>shadcn adds no <code>type</code>; inside a form a <code>button</code> submits by default. This page sets <code>type="button"</code>.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="ruled prose" data-sources>
+      <h2>Sources</h2>
+    </section>
+  </div>
+</main>
+</body>
+</html>

@@ -21,6 +21,8 @@
  *                         and guidance but the values are our own.
  *         platform        Optional, for Apple-style concepts: 'ios' | 'macos' | 'visionos'. Picks the HIG
  *                         size thresholds in the Rules check (default 'ios').
+ *         stack           Optional key of STACKS below, e.g. 'tailwind': the demo is styled with
+ *                         that framework's utilities instead of plain CSS.
  *         icons           Optional icon library id (icon-libraries.js) the demo draws from;
  *                         default 'lucide'. Built-to-spec concepts use their library's own set.
  *         refs[]          Citations, rendered as the page's Sources section. Each is
@@ -82,6 +84,23 @@ window.CATALOG = {
     'aria-busy': { name: 'aria-busy', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-busy' },
     'aria-disabled': { name: 'aria-disabled', url: 'https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-disabled' },
     'anchored-queries':   { name: 'Anchored container queries', url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/container-type' },
+  },
+
+  /**
+   * CSS stacks a concept can be styled with instead of plain CSS (concept `stack: 'tailwind'`).
+   * concept.js loads `script` (vendored, so pages still work offline from file://) into each demo
+   * frame, puts the demo CSS in a <style type="text/tailwindcss">, and gives the dark frame a
+   * `dark` class for `dark:` variants. "Open standalone" and "Copy as one file" load `cdn`
+   * instead, so the copied file works anywhere. Bump `version`, `script` and `cdn` together.
+   */
+  STACKS: {
+    tailwind: {
+      name: 'Tailwind CSS v4',
+      version: '4.3.5',
+      url: 'https://tailwindcss.com/',
+      script: 'assets/vendor/tailwindcss-browser.js',
+      cdn: 'https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.5',
+    },
   },
 
   sections: [
@@ -197,6 +216,23 @@ window.CATALOG = {
                 ['hig-materials', 'Liquid Glass for controls, sparingly, clear variant needs a 35% dark dimming layer over bright content.'],
                 ['hig-toggles', 'A button that behaves like a toggle needs an obvious state change, not color alone.'],
                 ['hig-action-sheets', 'Destructive choices at the top, Cancel at the bottom of a stack.'],
+              ],
+            },
+            {
+              id: 'shadcn-buttons',
+              title: 'shadcn/ui Buttons',
+              summary: 'shadcn/ui’s button as Tailwind CSS v4 utilities with no React: six variants, eight sizes, icons, loading, invalid and a link styled as a button, in shadcn’s default Nova style and neutral theme.',
+              stack: 'tailwind',
+              features: ['light-dark', 'has'],
+              refs: [
+                ['shadcn-button-nova', 'Every class on this page: the base, variant and size strings from buttonVariants in the default Nova style, and the data-slot, data-variant, data-size and data-icon attributes.'],
+                ['shadcn-spinner-nova', 'The loading spinner: Lucide Loader2 at size-4 with animate-spin, role status and the label Loading.'],
+                ['shadcn-button-docs', 'The examples: sizes, icon buttons, data-icon for an icon’s side, rounded-full, the spinner, and asChild for a link that looks like a button; the cursor note.'],
+                ['shadcn-theming', 'The default neutral theme: every color token in light and dark, --radius, the @theme inline mapping and the base layer.'],
+                ['tailwind-play-cdn', 'The browser build that compiles the utilities at runtime; Tailwind marks it for development, not production.'],
+                ['tailwind-dark-mode', 'dark: follows prefers-color-scheme unless @custom-variant points it at a class; shadcn uses the .dark class.'],
+                ['tailwind-theme', '@theme inline maps a variable to utilities such as bg-primary without copying its value.'],
+                [['wcag-contrast-minimum', 'wcag-target-size'], '4.5:1 label contrast; 24px minimum target, which the xs size (24px) just meets.'],
               ],
             },
             {

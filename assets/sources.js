@@ -59,6 +59,8 @@ window.SOURCES = {
     'blender': { name: 'Blender', url: 'https://docs.blender.org/manual/en/latest/', kind: 'product' },
     'raycast': { name: 'Raycast', url: 'https://developers.raycast.com/', kind: 'product' },
     'cmdk':    { name: 'cmdk', url: 'https://github.com/dip/cmdk', kind: 'product' },
+    'tailwind': { name: 'Tailwind CSS', url: 'https://tailwindcss.com/', kind: 'product' },
+    'shadcn':   { name: 'shadcn/ui', url: 'https://ui.shadcn.com/docs', kind: 'product', note: 'MIT-licensed components that are copied into a project rather than installed. Its default style is now Nova; the older New York style uses different sizes.' },
 
     'slack':    { name: 'Slack', url: 'https://slack.com/help', kind: 'product' },
     'discord':  { name: 'Discord', url: 'https://discord.com/blog', kind: 'product' },
@@ -329,6 +331,15 @@ window.SOURCES = {
     'blender-pie-menus':    { site: 'blender', title: 'Pie menus', url: 'https://docs.blender.org/manual/en/latest/interface/controls/buttons/menus.html#pie-menus' },
     'raycast-action-panel': { site: 'raycast', title: 'Action Panel', url: 'https://developers.raycast.com/api-reference/user-interface/action-panel' },
     'cmdk':                 { site: 'cmdk', title: 'cmdk', url: 'https://github.com/dip/cmdk' },
+
+    // Tailwind CSS and shadcn/ui
+    'tailwind-play-cdn':  { site: 'tailwind', title: 'Play CDN (the browser build)', url: 'https://tailwindcss.com/docs/installation/play-cdn' },
+    'tailwind-dark-mode': { site: 'tailwind', title: 'Dark mode', url: 'https://tailwindcss.com/docs/dark-mode' },
+    'tailwind-theme':     { site: 'tailwind', title: 'Theme variables', url: 'https://tailwindcss.com/docs/theme' },
+    'shadcn-button-docs': { site: 'shadcn', title: 'Button', url: 'https://ui.shadcn.com/docs/components/radix/button' },
+    'shadcn-button-nova': { site: 'shadcn', title: 'Button source, Radix Nova style (registry)', url: 'https://ui.shadcn.com/r/styles/radix-nova/button.json' },
+    'shadcn-spinner-nova': { site: 'shadcn', title: 'Spinner source, Radix Nova style (registry)', url: 'https://ui.shadcn.com/r/styles/radix-nova/spinner.json' },
+    'shadcn-theming':     { site: 'shadcn', title: 'Theming', url: 'https://ui.shadcn.com/docs/theming' },
   },
 
   /*

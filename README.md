@@ -14,7 +14,7 @@ anchor positioning, invoker commands, `focusgroup`, `light-dark()`) with no fall
 
 | Section | Category | Concepts |
 |---|---|---|
-| Components | [Buttons](components/buttons/) | 12: styles, Material 3, Fluent 2, Carbon, Apple-style, pairs, rows, split, segmented, icon/FAB, loading |
+| Components | [Buttons](components/buttons/) | 13: styles, Material 3, Fluent 2, Carbon, Apple-style, shadcn/ui (Tailwind), pairs, rows, split, segmented, icon/FAB, loading |
 | Components | [Context Menus](components/context-menus/) | 10: right-click, overflow, cascading, Material 3 Expressive, Fluent 2, Carbon, glass, radial, long-press, filterable |
 | Components | [Tabs](components/tabs/) | 5: underline, scroll-spy, Material 3, Fluent 2, Carbon |
 | Page Templates | [Chat & Messaging](templates/chat/) | 6: channel, DM bubbles, composer, meeting panel, Fluent 2 Teams, Matrix room |
@@ -43,6 +43,7 @@ No build step, no framework, no npm dependencies. Pages open straight from disk
 | `assets/rules.js` | Rules check run inside the demo frames |
 | `assets/site.js`, `site.css` | Sidebar, splitter, theme, headers, lists, pager |
 | `assets/icons.js`, `icon-sets.js` | Lucide plus fetched Material, Fluent and Carbon icons |
+| `assets/vendor/` | Tailwind CSS browser build, for concepts styled with Tailwind |
 | `_scaffold/` | Templates copied by the new-page scripts |
 
 ## Scripts

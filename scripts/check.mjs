@@ -101,6 +101,12 @@ for (const section of C.sections) {
       if (!/data-sources/.test(html)) fail(`${dir}/${k.id}: no data-sources section`);
       checkRefs(`${dir}/${k.id}`, k.refs, true);
       if (k.system && !S.systems[k.system]) fail(`${dir}/${k.id}: system "${k.system}" is not a core library in sources.js`);
+      if (k.stack) {
+        // A stack's vendored script must exist, or the demo frames render unstyled.
+        const st = C.STACKS?.[k.stack];
+        if (!st) fail(`${dir}/${k.id}: stack "${k.stack}" is not in catalog.js STACKS`);
+        else if (!existsSync(join(ROOT, st.script))) fail(`${dir}/${k.id}: stack script ${st.script} is missing`);
+      }
       const documented = (html.match(/--[\w-]+\s*:[^;]+;[ \t]*\/\*/g) ?? []).length;
       if (!documented) fail(`${dir}/${k.id}: no documented tokens (spec table would be empty)`);
       tokens += documented;
